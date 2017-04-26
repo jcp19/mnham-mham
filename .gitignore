@@ -4,3 +4,7 @@
 # Ficheiros temporarios do MS Word
 ~$*
 
+# Ficheiros de backup do VisualParadigm
+*.vpp.bak*
+*.vpp.lck
+
