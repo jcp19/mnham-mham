@@ -23,7 +23,7 @@ using Mikepenz.MaterialDrawer.Models;
 using Mikepenz.MaterialDrawer.Models.Interfaces;
 using Android.Content.PM;
 
-namespace Mnham.Droid
+namespace Mnham_Mnham
 {
 
     [Activity(Label = "Mnham Mnham", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]

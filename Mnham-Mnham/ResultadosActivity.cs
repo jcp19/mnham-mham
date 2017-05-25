@@ -11,7 +11,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
 
-namespace Mnham.Droid
+namespace Mnham_Mnham
 {
     [Activity(Label = "ResultadosActivity", Theme = "@style/AppTheme")]
     public class ResultadosActivity : Activity
@@ -130,7 +130,7 @@ namespace Mnham.Droid
         {
             // instantiates the item layout file and the view holder
             View itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.AlimentoCardView, parent, false);
-
+            
             ResultadoViewHolder vh = new ResultadoViewHolder(itemView);
             return vh;
         }

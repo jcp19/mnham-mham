@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Android.Content.PM;
 using Android.Graphics;
 
-namespace Mnham.Droid
+namespace Mnham_Mnham
 {
     [Activity(Label = "Mnham.Droid", Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
     public class MainActivity : Activity

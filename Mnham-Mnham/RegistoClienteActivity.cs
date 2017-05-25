@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace Mnham.Droid
+namespace Mnham_Mnham
 {
     [Activity(Label = "RegistoClienteActivity", Icon = "@drawable/icon", Theme = "@style/AppTheme")]
     public class RegistoClienteActivity : Activity
