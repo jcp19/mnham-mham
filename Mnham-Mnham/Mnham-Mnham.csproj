@@ -95,6 +95,7 @@
     <AndroidAsset Include="Assets\fonts\materialdesignicons-v1.3.41.ttf" />
     <AndroidAsset Include="Assets\fonts\google-material-font-v2.1.0.1.ttf" />
     <AndroidAsset Include="Assets\fonts\fontawesome-webfont-v4.5.0.1.ttf" />
+    <AndroidAsset Include="Assets\fonts\yellowtail-regular.ttf" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
