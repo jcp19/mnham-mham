@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:minWidth="25px"
+    p1:minHeight="25px"
+    p1:layout_width="match_parent"
+    p1:layout_height="match_parent"
+    p1:id="@+id/relativeLayout1"
+    p1:theme="@style/AppTheme">
+    <TextView
+        p1:text="@string/login"
+        p1:layout_height="wrap_content"
+        p1:layout_width="150dp"
+        p1:textSize="45dp"
+        p1:id="@+id/loginTextView"
+        p1:gravity="center"
+        p1:layout_margin="35dp"
+        p1:textColor="@color/title_color"
+        p1:layout_alignParentLeft="true"
+        p1:shadowColor="#ff778774"
+        p1:shadowDx="1"
+        p1:shadowDy="1"
+        p1:shadowRadius="2" />
+    <EditText
+        p1:inputType="textEmailAddress"
+        p1:layout_width="match_parent"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/loginTextView"
+        p1:id="@+id/emailLoginEditText"
+        p1:hint="Email"
+        p1:padding="12dp"
+        p1:layout_marginLeft="35dp"
+        p1:layout_marginRight="35dp"
+        p1:layout_marginBottom="35dp"
+        p1:layout_marginTop="15dp"
+        p1:backgroundTint="#ff000000" />
+    <EditText
+        p1:inputType="textPassword"
+        p1:layout_width="match_parent"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/emailLoginEditText"
+        p1:id="@+id/passwordLoginEditText"
+        p1:hint="Password"
+        p1:padding="12dp"
+        p1:layout_marginLeft="35dp"
+        p1:layout_marginRight="35dp"
+        p1:backgroundTint="#ff000000" />
+    <Button
+        p1:id="@+id/confirmLoginButton"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/passwordLoginEditText"
+        p1:text="Confirmar"
+        p1:layout_alignRight="@id/passwordLoginEditText"
+        p1:gravity="center"
+        p1:layout_marginTop="35dp" />
+    <Button
+        p1:id="@+id/cancelLoginButton"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/passwordLoginEditText"
+        p1:text="Voltar"
+        p1:gravity="center"
+        p1:layout_marginTop="35dp"
+        p1:layout_toLeftOf="@id/confirmLoginButton"
+        p1:layout_marginRight="15dp" />
+</RelativeLayout>

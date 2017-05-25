@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="Hello">Hello World, Click Me!</string>
-    <string name="ApplicationName">Mnham-Mnham</string>
+  <string name="hello">Hello World, Click Me!</string>
+  <string name="app_name">Mnham Mnham</string>
+  <string name="login">Login</string>
+  <string name="registoCliente">Registar Cliente</string>
+  <string name="genero_prompt">Género</string>
+  <string name="registoProprietario">Registar Proprietário</string>
+  <string-array name="generos">
+    <item>Masculino</item>
+    <item>Feminino</item>
+  </string-array>
 </resources>
+

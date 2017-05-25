@@ -31,6 +31,60 @@ namespace Mnham_Mnham
 		public partial class Attribute
 		{
 			
+			// aapt resource value: 0x7f010008
+			public const int ico_background_color = 2130771976;
+			
+			// aapt resource value: 0x7f010001
+			public const int ico_color = 2130771969;
+			
+			// aapt resource value: 0x7f010006
+			public const int ico_contour_color = 2130771974;
+			
+			// aapt resource value: 0x7f010007
+			public const int ico_contour_width = 2130771975;
+			
+			// aapt resource value: 0x7f010009
+			public const int ico_corner_radius = 2130771977;
+			
+			// aapt resource value: 0x7f010000
+			public const int ico_icon = 2130771968;
+			
+			// aapt resource value: 0x7f010003
+			public const int ico_offset_x = 2130771971;
+			
+			// aapt resource value: 0x7f010004
+			public const int ico_offset_y = 2130771972;
+			
+			// aapt resource value: 0x7f010005
+			public const int ico_padding = 2130771973;
+			
+			// aapt resource value: 0x7f010002
+			public const int ico_size = 2130771970;
+			
+			// aapt resource value: 0x7f010010
+			public const int iiv_background_color = 2130771984;
+			
+			// aapt resource value: 0x7f01000b
+			public const int iiv_color = 2130771979;
+			
+			// aapt resource value: 0x7f01000e
+			public const int iiv_contour_color = 2130771982;
+			
+			// aapt resource value: 0x7f01000f
+			public const int iiv_contour_width = 2130771983;
+			
+			// aapt resource value: 0x7f010011
+			public const int iiv_corner_radius = 2130771985;
+			
+			// aapt resource value: 0x7f01000a
+			public const int iiv_icon = 2130771978;
+			
+			// aapt resource value: 0x7f01000d
+			public const int iiv_padding = 2130771981;
+			
+			// aapt resource value: 0x7f01000c
+			public const int iiv_size = 2130771980;
+			
 			static Attribute()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -57,6 +111,22 @@ namespace Mnham_Mnham
 			}
 		}
 		
+		public partial class Id
+		{
+			
+			// aapt resource value: 0x7f040000
+			public const int iconics_tag_id = 2130968576;
+			
+			static Id()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Id()
+			{
+			}
+		}
+		
 		public partial class Layout
 		{
 			
@@ -76,11 +146,50 @@ namespace Mnham_Mnham
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f040001
-			public const int ApplicationName = 2130968577;
+			// aapt resource value: 0x7f05000e
+			public const int ApplicationName = 2131034126;
 			
-			// aapt resource value: 0x7f040000
-			public const int Hello = 2130968576;
+			// aapt resource value: 0x7f05000d
+			public const int Hello = 2131034125;
+			
+			// aapt resource value: 0x7f050000
+			public const int app_name = 2131034112;
+			
+			// aapt resource value: 0x7f050001
+			public const int define_AndroidIconics = 2131034113;
+			
+			// aapt resource value: 0x7f050002
+			public const int library_AndroidIconics_author = 2131034114;
+			
+			// aapt resource value: 0x7f050003
+			public const int library_AndroidIconics_authorWebsite = 2131034115;
+			
+			// aapt resource value: 0x7f050004
+			public const int library_AndroidIconics_isOpenSource = 2131034116;
+			
+			// aapt resource value: 0x7f050005
+			public const int library_AndroidIconics_libraryDescription = 2131034117;
+			
+			// aapt resource value: 0x7f050006
+			public const int library_AndroidIconics_libraryName = 2131034118;
+			
+			// aapt resource value: 0x7f050007
+			public const int library_AndroidIconics_libraryVersion = 2131034119;
+			
+			// aapt resource value: 0x7f050008
+			public const int library_AndroidIconics_libraryWebsite = 2131034120;
+			
+			// aapt resource value: 0x7f050009
+			public const int library_AndroidIconics_licenseId = 2131034121;
+			
+			// aapt resource value: 0x7f05000a
+			public const int library_AndroidIconics_owner = 2131034122;
+			
+			// aapt resource value: 0x7f05000b
+			public const int library_AndroidIconics_repositoryLink = 2131034123;
+			
+			// aapt resource value: 0x7f05000c
+			public const int library_AndroidIconics_year = 2131034124;
 			
 			static String()
 			{
@@ -88,6 +197,95 @@ namespace Mnham_Mnham
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Styleable
+		{
+			
+			public static int[] Iconics = new int[] {
+					2130771968,
+					2130771969,
+					2130771970,
+					2130771971,
+					2130771972,
+					2130771973,
+					2130771974,
+					2130771975,
+					2130771976,
+					2130771977};
+			
+			// aapt resource value: 8
+			public const int Iconics_ico_background_color = 8;
+			
+			// aapt resource value: 1
+			public const int Iconics_ico_color = 1;
+			
+			// aapt resource value: 6
+			public const int Iconics_ico_contour_color = 6;
+			
+			// aapt resource value: 7
+			public const int Iconics_ico_contour_width = 7;
+			
+			// aapt resource value: 9
+			public const int Iconics_ico_corner_radius = 9;
+			
+			// aapt resource value: 0
+			public const int Iconics_ico_icon = 0;
+			
+			// aapt resource value: 3
+			public const int Iconics_ico_offset_x = 3;
+			
+			// aapt resource value: 4
+			public const int Iconics_ico_offset_y = 4;
+			
+			// aapt resource value: 5
+			public const int Iconics_ico_padding = 5;
+			
+			// aapt resource value: 2
+			public const int Iconics_ico_size = 2;
+			
+			public static int[] IconicsImageView = new int[] {
+					2130771978,
+					2130771979,
+					2130771980,
+					2130771981,
+					2130771982,
+					2130771983,
+					2130771984,
+					2130771985};
+			
+			// aapt resource value: 6
+			public const int IconicsImageView_iiv_background_color = 6;
+			
+			// aapt resource value: 1
+			public const int IconicsImageView_iiv_color = 1;
+			
+			// aapt resource value: 4
+			public const int IconicsImageView_iiv_contour_color = 4;
+			
+			// aapt resource value: 5
+			public const int IconicsImageView_iiv_contour_width = 5;
+			
+			// aapt resource value: 7
+			public const int IconicsImageView_iiv_corner_radius = 7;
+			
+			// aapt resource value: 0
+			public const int IconicsImageView_iiv_icon = 0;
+			
+			// aapt resource value: 3
+			public const int IconicsImageView_iiv_padding = 3;
+			
+			// aapt resource value: 2
+			public const int IconicsImageView_iiv_size = 2;
+			
+			static Styleable()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Styleable()
 			{
 			}
 		}

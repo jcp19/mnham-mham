@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-</LinearLayout>
+<RelativeLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:minWidth="25px"
+    p1:minHeight="25px"
+    p1:layout_width="match_parent"
+    p1:layout_height="match_parent"
+    p1:id="@+id/relativeLayout1"
+    p1:theme="@style/AppTheme">
+    <TextView
+        p1:text="Mnham Mnham"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/textView1"
+        p1:layout_width="250dp"
+        p1:textSize="65dp"
+        p1:layout_centerHorizontal="true"
+        p1:layout_marginTop="45dp"
+        p1:layout_marginBottom="45dp"
+        p1:textColor="@color/title_color"
+        p1:gravity="center"
+        p1:shadowDx="1"
+        p1:shadowDy="1"
+        p1:shadowRadius="2"
+        p1:shadowColor="#ff778774" />
+    <EditText
+        p1:id="@+id/editText1"
+        p1:layout_height="wrap_content"
+        p1:layout_width="match_parent"
+        p1:layout_marginLeft="30dp"
+        p1:layout_marginRight="30dp"
+        p1:layout_marginTop="45dp"
+        p1:layout_centerHorizontal="true"
+        p1:layout_below="@id/textView1"
+        p1:hint="Ex.: Francesinha Especial"
+        p1:paddingBottom="12dp"
+        p1:paddingLeft="12dp"
+        p1:paddingRight="12dp"
+        p1:paddingTop="12dp"
+        p1:background="@drawable/rounded_edittext"
+        p1:inputType="text"
+        p1:elevation="5dp"
+        p1:drawableRight="@drawable/ic_magnify_grey600_24dp" />
+</RelativeLayout>
