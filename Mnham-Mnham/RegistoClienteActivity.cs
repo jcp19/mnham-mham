@@ -9,12 +9,14 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Graphics;
 
 namespace Mnham_Mnham
 {
     [Activity(Label = "RegistoClienteActivity", Icon = "@drawable/icon", Theme = "@style/AppTheme")]
     public class RegistoClienteActivity : Activity
     {
+        TextView title;
         EditText nameEditText, emailEditText, passwordEditText, confirmaPasswordEditText;
         Spinner generoSpinner;
         Button confirmButton, cancelButton;
@@ -25,6 +27,12 @@ namespace Mnham_Mnham
             SetContentView(Resource.Layout.RegistoClienteLayout);
 
             // Create your application here
+            title = FindViewById<TextView>(Resource.Id.regClienteTextView);
+            Typeface tf = null;
+            tf = Typeface.CreateFromAsset(Application.Context.Assets, "fonts/yellowtail-regular.ttf");
+            if (tf != null)
+                title.SetTypeface(tf, TypefaceStyle.Normal);
+
             nameEditText = FindViewById<EditText>(Resource.Id.nomeRegClienteEditText);
             emailEditText = FindViewById<EditText>(Resource.Id.emailRegClienteEditText);
             passwordEditText = FindViewById<EditText>(Resource.Id.passwordRegClienteEditText);

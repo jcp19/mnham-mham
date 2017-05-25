@@ -3,96 +3,106 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-  <android.support.v7.widget.CardView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      card_view:cardElevation="4dp"
-      card_view:cardUseCompatPadding="true"
-      card_view:cardCornerRadius="5dp">
-    <RelativeLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/picAlimentoResImageView"
-          android:scaleType="centerCrop"
-          android:paddingBottom="8dp"
-          android:paddingRight="8dp" />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Nome"
-          android:id="@+id/nomeAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_toRightOf="@id/picAlimentoResImageView"
-          android:layout_marginBottom="8dp" />
-      <RatingBar
-          android:layout_below="@id/nomeAlimentoResTextView"
-          android:layout_toRightOf="@id/picAlimentoResImageView"
-          android:id="@+id/ratingAlimentoResRatingBar"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:numStars="5"
-          android:stepSize="1.0"
-          android:isIndicator="true"
-          android:layout_marginBottom="8dp" />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Restaurante"
-          android:id="@+id/restauranteAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_toRightOf="@id/picAlimentoResImageView"
-          android:layout_below="@id/ratingAlimentoResRatingBar"
-          android:layout_marginBottom="8dp" />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Distancia"
-          android:id="@+id/distanciaAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_toRightOf="@id/restauranteAlimentoResTextView"
-          android:layout_below="@id/ratingAlimentoResRatingBar"
-          android:layout_marginBottom="8dp" />
-      <!-- Use lighter Text color here  -->
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Rua"
-          android:id="@+id/ruaAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_below="@id/picAlimentoResImageView"
-          android:layout_marginBottom="8dp" />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Contacto"
-          android:id="@+id/contactoAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_below="@id/ruaAlimentoResTextView" />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:textColor="#333333"
-          android:text="Preço"
-          android:id="@+id/precoAlimentoResTextView"
-          android:layout_gravity="center"
-          android:layout_alignParentBottom="true"
-          android:layout_alignParentRight="true" />
-    </RelativeLayout>
-  </android.support.v7.widget.CardView>
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardCornerRadius="5dp"
+        android:id="@+id/alimentoCardView">
+        <RelativeLayout
+            android:id="@+id/cardRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/picAlimentoResImageView"
+                android:scaleType="centerCrop"
+                android:paddingBottom="8dp"
+                android:paddingRight="8dp"
+                android:src="@drawable/profile3" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Nome"
+                android:id="@+id/nomeAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@id/picAlimentoResImageView"
+                android:layout_marginBottom="15dp" />
+            <RatingBar
+                android:layout_below="@id/nomeAlimentoResTextView"
+                android:layout_toRightOf="@id/picAlimentoResImageView"
+                android:id="@+id/ratingAlimentoResRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:isIndicator="true"
+                android:layout_marginBottom="15dp"
+                style="@style/customRatingBar"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:translationX="35dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Restaurante"
+                android:id="@+id/restauranteAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@id/picAlimentoResImageView"
+                android:layout_below="@id/ratingAlimentoResRatingBar"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Distancia"
+                android:id="@+id/distanciaAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_below="@id/ratingAlimentoResRatingBar"
+                android:layout_marginBottom="8dp"
+                android:layout_alignBaseline="@id/restauranteAlimentoResTextView"
+                android:layout_alignParentRight="true" />
+        <!-- Use lighter Text color here  -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Rua"
+                android:id="@+id/ruaAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_below="@id/picAlimentoResImageView"
+                android:layout_marginBottom="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Contacto"
+                android:id="@+id/contactoAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_below="@id/ruaAlimentoResTextView" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Preço"
+                android:id="@+id/precoAlimentoResTextView"
+                android:layout_gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/distanciaAlimentoResTextView"
+                android:layout_alignBaseline="@id/contactoAlimentoResTextView" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </FrameLayout>

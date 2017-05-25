@@ -43,7 +43,7 @@ namespace Mnham_Mnham
 
             // Create your application here
             // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Relative);
+            SetContentView(Resource.Layout.Main);
 
             string email = Intent.GetStringExtra("user_email") ?? "";
 
