@@ -1,16 +1,58 @@
 using System;
 public class MnhamMnham {
-	private int idUtilizadorAutenticado;
+	private string clienteAutenticado;
 	private bool utilizadorEProprietario;
 
-	public AlimentoEstabelecimento[] EfetuarPedido(ref string termo) {
+    public void IniciarSessaoCliente(string email, string palavraPasse)
+    {
+        Cliente cliente;
+        if(clientes.TryGetValue(email, cliente))
+        {
+            if (palavraPasse.Equals(cliente.ObterPalavraPasse()){
+                this.clienteAutenticado = email;
+            }
+            else
+            {
+                // Palavra Passe errada
+            }
+        }
+        else
+        {
+            // Email não existe
+        }
+    }
+
+    public void IniciarSessaoProprietario(string email, string palavraPasse)
+    {
+        //
+    }
+
+    public void RegistarCliente(Cliente cliente)
+    {
+        string email = cliente.ObterEmail();
+        if (clientes.ContainsKey(email))
+        {
+            // Email já existe
+        }
+        else
+        {
+            clientes.Add(email, cliente);
+        }
+    }
+
+    public void RegistarProprietario()
+    {
+
+    }
+
+	public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo) {
         RegistaPedidoHistorico(termo);
         PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
         Cliente cliente;
 
         List<string> preferencias;
         List<string> naoPreferencias;
-        if (clientes.TryGetValue(idUtilizadorAutenticado, cliente))
+        if (clientes.TryGetValue(clienteAutenticado, cliente))
         {
             // cliente
             preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
@@ -129,6 +171,6 @@ public class MnhamMnham {
 	private Dictionary<int, Proprietario> proprietarios;
 	private Dictionary<int, Estabelecimento> estabelecimentos;
 	private Dictionary<int, List<Pedido>> pedidos;
-	private Dictionary<int, Cliente> clientes;
+	private Dictionary<string, Cliente> clientes;
 
 }
