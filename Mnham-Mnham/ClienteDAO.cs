@@ -16,8 +16,6 @@ namespace Mnham_Mnham
 {
     class ClienteDAO : DAO
     {
-        private SqlConnection sqlCon;
-
         public ClienteDAO() : base()
         {
         }
@@ -26,33 +24,27 @@ namespace Mnham_Mnham
         {
         }
 
-        public Cliente get(string email, string passwordMD5)
+        public bool Contains(string email, string password)
         {
-            SqlCommand cmd = new SqlCommand(/* put values here */);
-        }
+            SqlCommand cmd = new SqlCommand("SELECT email FROM Cliente WHERE email = @email AND palavra_passe = @pp", base.sqlCon);
 
-        static int Main()
-        {
-            DAO d = new Mnham_Mnham.DAO();
-            SqlCommand cmd = new SqlCommand();
-            SqlDataReader reader;
+            cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+            cmd.Parameters["@email"].Value = email;
 
-            cmd.CommandText = "SELECT * FROM Cliente";
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = d.sqlCon;
+            cmd.Parameters.Add("@pp", SqlDbType.Char, 32);
+            cmd.Parameters["@pp"].Value = password;
+            SqlDataReader reader = cmd.ExecuteReader();
+            bool contains = false;
 
-            d.sqlCon.Open();
-
-            reader = cmd.ExecuteReader();
-            // Data is accessible through the DataReader object here.
-            while (reader.Read())
+            try
             {
-                IDataRecord data = reader;
-                Console.WriteLine(String.Format("{0}, {1}", data[0], data[1]));
+                contains = reader.Read();
             }
-            d.sqlCon.Close();
-
-            return 0;
+            finally
+            {
+                reader.Close();
+            }
+            return contains;
         }
     }
 }
