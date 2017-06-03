@@ -1,15 +1,33 @@
 using System;
-public class Preferencia {
+
+public class Preferencia
+{
 	private string designacaoIngrediente;
 	private string designacaoAlimento;
 
-    public string ObterDesignacaoIngrediente()
+    public string DesignacaoIngrediente { get; }
+    public string DesignacaoAlimento { get; }
+
+    private Preferencia() {}
+
+    public Preferencia(string designacaoIngrediente)
     {
-        return this.designacaoIngrediente;
+        this(designacaoIngrediente, "");
     }
 
-    public string ObterDesignacaoAlimento()
+    public Preferencia(string designacaoIngrediente, string designacaoAlimento)
     {
-        return this.designacaoAlimento;
+        this.designacaoIngrediente = designacaoIngrediente;
+        this.designacaoAlimento = designacaoAlimento;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || obj.GetType() != Preferencia)
+            return false;
+
+        Preferencia pref = (Preferencia)obj;
+
+        return designacaoIngrediente.Equals(pref.designacaoIngrediente) && designacaoAlimento.Equals(pref.designacaoAlimento);
     }
 }

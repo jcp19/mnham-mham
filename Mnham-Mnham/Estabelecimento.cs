@@ -1,74 +1,142 @@
 using System;
-public class Estabelecimento {
-	private string nome;
-	private string contacto_tel;
+
+public class Estabelecimento : IComparable, IComparable<Estabelecimento>
+{
+    private int id;
+    private string nome;
+	private string contactoTel;
 	private string coords;
 	private string horario;
 	private string tipo;
 	private string descricao;
-	private bool aceita_reservas;
-	private bool tem_mb;
-	private bool tem_takeaway;
-	private bool tem_serv_mesa;
-	private bool tem_esplanada;
-	private bool tem_parque_estac;
-	private bool tem_tv;
-	private bool tem_wifi;
-	private bool tem_zona_fum;
-	private int id;
+	private bool? aceitaReservas;
+    private bool? temMb;
+	private bool? temTakeaway;
+	private bool? temServMesa;
+	private bool? temEsplanada;
+	private bool? temParqueEstac;
+	private bool? temTv;
+	private bool? temWifi;
+	private bool? temZonaFum;
+    private bool? permanFechado;
 	private string morada;
+    private IDictionary<int, Alimento> alimentos;
+    private IDictionary<int, Classificacao> classificacoes;
+    private Image foto;
 
-	public List<Alimento> ObtemAlimentos(ref string nomeAlimento) {
-        List<Alimento> alims = new List<Alimento>();
-        foreach (Alimento a in alimentos)
-        {
-            if (a.ObterDesignacao().Compare(nomeAlimento) == 0)
-            {
-                alims.Add(a);
-            }
-        }
-        return alims;
-	}
-	public Alimento ObtemAlimentoPorId(ref int id) {
-		throw new System.Exception("Not implemented");
-	}
-	public void AssociaFotoAlimento(ref int idAlimento, ref Image photo) {
-		throw new System.Exception("Not implemented");
-	}
-	public void AssociaIngredienteAlimento(ref int idAlimento, ref string designacaoIngrediente) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoverClassificacaoEstabelecimento(ref int idAutor) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoveAlimento(ref int idAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarAlimento(ref int idAlimento, ref int idCliente, ref int classificacao, ref string comentario) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificareEstabelecimento(ref int idCliente, ref int classificacao, ref string comentario) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarAlimento(ref int idAlimento, ref int idCliente, ref int classificacao) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarEstabelecimento(ref int idCliente, ref int classificacao) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoverClassificacaoAlimento(ref int idAlimento, ref int idCliente) {
-		throw new System.Exception("Not implemented");
-	}
+    public int Id { get; }
+    public string Nome { get; }
+    public string ContactoTel { get; }
+    public string Coords { get; }
+    public string Horario { get; }
+    public string Tipo { get; }
+    public string Descricao { get; }
+    public bool? AceitaReservas { get; }
+    public bool? TemMb { get; set;  }
+    public bool? TemTakeaway { get; set; }
+    public bool? TemServMesa { get; set; }
+    public bool? TemEsplanada { get; set; }
+    public bool? TemParqueEstac { get; set; }
+    public bool? TemTv { get; set; }
+    public bool? TemWifi { get; }
+    public bool? TemZonaFum { get; }
+    public bool? PermanFechado { get; }
+    public string Morada { get; }
+    public Image foto { get; }
 
-    public int compareTo(Estabelecimento e)
+    public Estabelecimento(int id, string nome, string contactoTel, string coords, string horario, bool permanFechado)
     {
-        // Classificação do estabelecimento !!
-        return 0;
+        this.id = id;
+        this.nome = nome;
+        this.contactoTel = contactoTel;
+        this.coords = coords;
+        this.horario = horario;
+        this.permanFechado = permanFechado;
+        this.alimentos = new Dictionary<int, Alimento>();
+        this.classificacoes = new Dictionary<int, Classificacao>();
     }
 
-    private List<Alimento> alimentos;
-	private Classificacao classificacao;
-	private Image foto;
+	public IList<Alimento> ObtemAlimentos(string nomeAlimento)
+    {
+        IList<Alimento> res = new List<Alimento>();
 
+        foreach (Alimento a in alimentos.Values)
+        {
+            if (a.Designacao.Contains(nomeAlimento))
+            {
+                res.Add(a.Clone());
+            }
+        }
+        return res;
+	}
 
+	public Alimento ObtemAlimentoPorId(int id)
+    {
+        return alimentos[id].Clone();
+	}
+
+	public void AssociaFotoAlimento(int idAlimento, Image foto)
+    {
+        alimentos[id].Foto = foto.Clone();
+	}
+
+	public void AssociaIngredienteAlimento(int idAlimento, string designacaoIngrediente)
+    {
+        Alimento a = alimentos[idAlimento];
+
+        a.AdicionaIngrediente(designacaoIngrediente);
+	}
+
+    public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
+    {
+        return alimentos[idAlimento].RemoverClassificacaoAlimento();
+    }
+
+    public bool RemoverClassificacaoEstabelecimento(int idAutor)
+    {
+        return classificacoes.Remove(idAutor);
+	}
+
+	public void RemoveAlimento(int idAlimento)
+    {
+        return alimentos.Remove(idAlimento);
+	}
+
+	public void ClassificarAlimento(int idAlimento, int idCliente, int avaliacao, string comentario)
+    {
+        alimentos[idAlimento].ClassificarAlimento(idCliente, avaliacao, comentario);
+	}
+
+    public void ClassificarAlimento(int idAlimento, int idCliente, int avaliacao)
+    {
+        alimentos[idAlimento].ClassificarAlimento(idCliente, avaliacao);
+    }
+
+    public void ClassificareEstabelecimento(int idCliente, int avaliacao, string comentario)
+    {
+        classificacoes[idCliente] = new Classificacao(avaliacao, comentario, idCliente);
+	}
+
+	public void ClassificarEstabelecimento(int idCliente, int avaliacao)
+    {
+        classificacoes[idCliente] = new Classificacao(avaliacao, idCliente);
+	}
+
+    public float ObterAvaliacaoMedia()
+    {
+        int total = 0;
+        float soma = 0.0f;
+
+        foreach (var classificacao in classificacoes.Values)
+        {
+            soma += classificacao.Avaliacao;
+            ++total;
+        }
+        return soma / total;
+    }
+
+    public int CompareTo(Estabelecimento e)
+    {
+        
+    }
 }
