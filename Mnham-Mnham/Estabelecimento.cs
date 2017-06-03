@@ -4,22 +4,22 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
 {
     private int id;
     private string nome;
-	private string contactoTel;
-	private string coords;
-	private string horario;
-	private string tipo;
-	private string descricao;
-	private bool? aceitaReservas;
+    private string contactoTel;
+    private string coords;
+    private string horario;
+    private string tipo;
+    private string descricao;
+    private bool? aceitaReservas;
     private bool? temMb;
-	private bool? temTakeaway;
-	private bool? temServMesa;
-	private bool? temEsplanada;
-	private bool? temParqueEstac;
-	private bool? temTv;
-	private bool? temWifi;
-	private bool? temZonaFum;
+    private bool? temTakeaway;
+    private bool? temServMesa;
+    private bool? temEsplanada;
+    private bool? temParqueEstac;
+    private bool? temTv;
+    private bool? temWifi;
+    private bool? temZonaFum;
     private bool? permanFechado;
-	private string morada;
+    private string morada;
     private IDictionary<int, Alimento> alimentos;
     private IDictionary<int, Classificacao> classificacoes;
     private Image foto;
@@ -32,17 +32,19 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     public string Tipo { get; }
     public string Descricao { get; }
     public bool? AceitaReservas { get; }
-    public bool? TemMb { get; set;  }
+    public bool? TemMb { get; set; }
     public bool? TemTakeaway { get; set; }
     public bool? TemServMesa { get; set; }
     public bool? TemEsplanada { get; set; }
     public bool? TemParqueEstac { get; set; }
     public bool? TemTv { get; set; }
-    public bool? TemWifi { get; }
-    public bool? TemZonaFum { get; }
-    public bool? PermanFechado { get; }
+    public bool? TemWifi { get; set; }
+    public bool? TemZonaFum { get; set; }
+    public bool? PermanFechado { get; set; }
     public string Morada { get; }
     public Image foto { get; }
+
+    private Estabelecimento() { }
 
     public Estabelecimento(int id, string nome, string contactoTel, string coords, string horario, bool permanFechado)
     {
@@ -56,7 +58,7 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
         this.classificacoes = new Dictionary<int, Classificacao>();
     }
 
-	public IList<Alimento> ObtemAlimentos(string nomeAlimento)
+    public IList<Alimento> ObtemAlimentos(string nomeAlimento)
     {
         IList<Alimento> res = new List<Alimento>();
 
@@ -68,24 +70,24 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
             }
         }
         return res;
-	}
+    }
 
-	public Alimento ObtemAlimentoPorId(int id)
+    public Alimento ObtemAlimentoPorId(int id)
     {
         return alimentos[id].Clone();
-	}
+    }
 
-	public void AssociaFotoAlimento(int idAlimento, Image foto)
+    public void AssociaFotoAlimento(int idAlimento, Image foto)
     {
         alimentos[id].Foto = foto.Clone();
-	}
+    }
 
-	public void AssociaIngredienteAlimento(int idAlimento, string designacaoIngrediente)
+    public void AssociaIngredienteAlimento(int idAlimento, string designacaoIngrediente)
     {
         Alimento a = alimentos[idAlimento];
 
         a.AdicionaIngrediente(designacaoIngrediente);
-	}
+    }
 
     public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
     {
@@ -95,17 +97,17 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     public bool RemoverClassificacaoEstabelecimento(int idAutor)
     {
         return classificacoes.Remove(idAutor);
-	}
+    }
 
-	public void RemoveAlimento(int idAlimento)
+    public void RemoveAlimento(int idAlimento)
     {
         return alimentos.Remove(idAlimento);
-	}
+    }
 
-	public void ClassificarAlimento(int idAlimento, int idCliente, int avaliacao, string comentario)
+    public void ClassificarAlimento(int idAlimento, int idCliente, int avaliacao, string comentario)
     {
         alimentos[idAlimento].ClassificarAlimento(idCliente, avaliacao, comentario);
-	}
+    }
 
     public void ClassificarAlimento(int idAlimento, int idCliente, int avaliacao)
     {
@@ -115,12 +117,12 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     public void ClassificareEstabelecimento(int idCliente, int avaliacao, string comentario)
     {
         classificacoes[idCliente] = new Classificacao(avaliacao, comentario, idCliente);
-	}
+    }
 
-	public void ClassificarEstabelecimento(int idCliente, int avaliacao)
+    public void ClassificarEstabelecimento(int idCliente, int avaliacao)
     {
         classificacoes[idCliente] = new Classificacao(avaliacao, idCliente);
-	}
+    }
 
     public float ObterAvaliacaoMedia()
     {
@@ -135,8 +137,31 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
         return soma / total;
     }
 
-    public int CompareTo(Estabelecimento e)
+    public int CompareTo(Estabelecimento estabelecimento)
     {
-        
+        if (estabelecimento == null)
+            return 1;
+
+        float aval1 = this.ObterAvaliacaoMedia();
+        float aval2 = estabelecimento.ObterAvaliacaoMedia();
+
+        return aval1.CompareTo(aval2);
+    }
+
+    public int CompareTo(object obj)
+    {
+        if (obj == null)
+            return 1;
+
+        Estabelecimento estabelecimento = obj as Estabelecimento;
+        if (estabelecimento != null)
+        {
+            float aval1 = this.ObterAvaliacaoMedia();
+            float aval2 = estabelecimento.ObterAvaliacaoMedia();
+
+            return aval1.CompareTo(aval2);
+        }
+        else
+            throw new ArgumentException("O objeto passado como argumento não é um Estabelecimento.");
     }
 }

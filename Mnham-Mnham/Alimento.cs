@@ -2,19 +2,19 @@ using System;
 
 public class Alimento : IComparable, IComparable<Alimento>
 {
-	private int id;
-	private string designacao;
-	private float? preco;
-	private ISet<string> ingredientes;
+    private int id;
+    private string designacao;
+    private float? preco;
+    private ISet<string> ingredientes;
     private IDictionary<int, Classificacao> classificacoes;
     private Image foto;
 
     public int Id { get; }
     public string Designacao { get; set; }
     public float Preco { get; set; }
-    
+
     // Assegura que não é possível criar alimentos sem especificar os seus atributos.
-    private Alimento() {}
+    private Alimento() { }
 
     public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, Image foto)
     {
@@ -23,6 +23,7 @@ public class Alimento : IComparable, IComparable<Alimento>
 
         this.id = id;
         this.designacao = designacao;
+        this.preco = preco;
         this.ingredientes = (ingredientes == null) ? new HashSet<string>() : new HashSet<string>(ingredientes);
         this.classificacoes = new Dictionary<int, Classificacao>();
         this.foto = foto;
@@ -55,9 +56,9 @@ public class Alimento : IComparable, IComparable<Alimento>
             }
         }
         return false;
-	}
+    }
 
-	public int QuantasPreferenciasContem(List<string> preferencias)
+    public int QuantasPreferenciasContem(List<string> preferencias)
     {
         int n = 0;
 
@@ -70,9 +71,14 @@ public class Alimento : IComparable, IComparable<Alimento>
             }
         }
         return n;
-	}
+    }
 
-    public void AdicionaIngrediente(string designacaoIngrediente)
+    public void AdicionarClassificacoes(IEnumerable<Classificacao> classificacoes)
+    {
+        this.classificacoes.UnionWith(classificacoes);
+    }
+
+    public void AdicionarIngrediente(string designacaoIngrediente)
     {
         ingredientes.Add(designacaoIngrediente);
     }
@@ -80,17 +86,17 @@ public class Alimento : IComparable, IComparable<Alimento>
     public void ClassificarAlimento(int idCliente, int avaliacao, string comentario)
     {
         classificacoes[idCliente] = new Classificacao(avaliacao, idCliente, comentario);
-	}
+    }
 
-	public void ClassificarAlimento(int idCliente, int avaliacao)
+    public void ClassificarAlimento(int idCliente, int avaliacao)
     {
         classificacoes[idCliente] = new Classificacao(avaliacao, idCliente);
     }
 
-	public bool RemoverClassificacaoAlimento(int idCliente)
+    public bool RemoverClassificacaoAlimento(int idCliente)
     {
-        return classificacoes.Remove(idCliente);    
-	}
+        return classificacoes.Remove(idCliente);
+    }
 
     public float ObterAvaliacaoMedia()
     {
@@ -110,17 +116,31 @@ public class Alimento : IComparable, IComparable<Alimento>
         return new Alimento(this);
     }
 
-    public int CompareTo(Alimento a)
+    public int CompareTo(Alimento alimento)
     {
-        float aval1 = this.ObterAvaliacaoMedia();
-        float aval2 = a.ObterAvaliacaoMedia();
-
-        // Classificação do alimento !!
-        if (aval1 < aval2)
-            return -1;
-        else if (aval1 > aval2)
+        if (alimento == null)
             return 1;
+
+        float aval1 = this.ObterAvaliacaoMedia();
+        float aval2 = alimento.ObterAvaliacaoMedia();
+
+        return aval1.CompareTo(aval2);
+    }
+
+    public int CompareTo(object obj)
+    {
+        if (obj == null)
+            return 1;
+
+        Alimento alimento = obj as Alimento;
+        if (alimento != null)
+        {
+            float aval1 = this.ObterAvaliacaoMedia();
+            float aval2 = alimento.ObterAvaliacaoMedia();
+
+            return aval1.CompareTo(aval2);
+        }
         else
-            return 0;
+            throw new ArgumentException("O objeto passado como argumento não é um Alimento.");
     }
 }

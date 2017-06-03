@@ -2,13 +2,13 @@ using System;
 
 public class Preferencia
 {
-	private string designacaoIngrediente;
-	private string designacaoAlimento;
+    private string designacaoIngrediente;
+    private string designacaoAlimento;
 
     public string DesignacaoIngrediente { get; }
     public string DesignacaoAlimento { get; }
 
-    private Preferencia() {}
+    private Preferencia() { }
 
     public Preferencia(string designacaoIngrediente)
     {
@@ -26,8 +26,13 @@ public class Preferencia
         if (obj == null || obj.GetType() != Preferencia)
             return false;
 
-        Preferencia pref = (Preferencia)obj;
-
-        return designacaoIngrediente.Equals(pref.designacaoIngrediente) && designacaoAlimento.Equals(pref.designacaoAlimento);
+        Preferencia pref = obj as Preferencia;
+        if (obj != null)
+        {
+            return designacaoIngrediente.Equals(pref.designacaoIngrediente)
+                && designacaoAlimento.Equals(pref.designacaoAlimento);
+        }
+        else
+            throw new ArgumentException("O objeto passado como argumento não é uma Preferencia.");
     }
 }
