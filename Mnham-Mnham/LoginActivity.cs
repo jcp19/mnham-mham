@@ -15,6 +15,7 @@ namespace Mnham_Mnham
     [Activity(Label = "Mnham.Droid", Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
     public class MainActivity : Activity
     {
+        MnhamMnham m = new MnhamMnham();
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -37,11 +38,14 @@ namespace Mnham_Mnham
             {
                 string email = emailEditText.Text;
                 string password = passwordEditText.Text;
-                if (!email.Equals("") && !passwordEditText.Equals(""))
+                if (!email.Equals("") && !password.Equals(""))
                 {
                     var intent = new Intent(this, typeof(RelativeActivity));
                     intent.PutExtra("user_email", email);
                     StartActivity(intent);
+                    bool login = IniciarSessaoCliente(email, password);
+                    Toast loginM = Toast.MakeText(this, login? "success" : "Login Failed", ToastLength.Short);
+                    loginM.Show();
                     this.Finish();
                 }
                 else

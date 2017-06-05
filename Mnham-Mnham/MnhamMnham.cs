@@ -1,176 +1,213 @@
 using System;
-public class MnhamMnham {
-	private string clienteAutenticado;
-	private bool utilizadorEProprietario;
-
-    public void IniciarSessaoCliente(string email, string palavraPasse)
+namespace MnhamMnham
+{
+    public class MnhamMnham
     {
-        Cliente cliente;
-        if(clientes.TryGetValue(email, cliente))
+        private string clienteAutenticado;
+        private bool utilizadorEProprietario;
+
+        public MnhamMnham()
         {
-            if (palavraPasse.Equals(cliente.ObterPalavraPasse()){
-                this.clienteAutenticado = email;
+
+        }
+
+        public bool IniciarSessaoCliente(string email, string palavraPasse)
+        {
+            Cliente cliente;
+            if (clientes.TryGetValue(email, cliente))
+            {
+                if (palavraPasse.Equals(cliente.ObterPalavraPasse()))
+                {
+                    this.clienteAutenticado = email;
+
+                    return true;
+                }
+                else
+                {
+                    // Palavra Passe errada
+                    return false;
+                }
             }
             else
             {
-                // Palavra Passe errada
+                // Email n√£o existe
+                return false;
             }
         }
-        else
+
+        public void IniciarSessaoProprietario(string email, string palavraPasse)
         {
-            // Email n„o existe
-        }
-    }
-
-    public void IniciarSessaoProprietario(string email, string palavraPasse)
-    {
-        //
-    }
-
-    public void RegistarCliente(Cliente cliente)
-    {
-        string email = cliente.ObterEmail();
-        if (clientes.ContainsKey(email))
-        {
-            // Email j· existe
-        }
-        else
-        {
-            clientes.Add(email, cliente);
-        }
-    }
-
-    public void RegistarProprietario()
-    {
-
-    }
-
-	public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo) {
-        RegistaPedidoHistorico(termo);
-        PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
-        Cliente cliente;
-
-        List<string> preferencias;
-        List<string> naoPreferencias;
-        if (clientes.TryGetValue(clienteAutenticado, cliente))
-        {
-            // cliente
-            preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
-            List<string> preferenciasPedido = pedidoProcessado.ObterPreferencias();
-            preferencias.AddRange(preferenciasPedido);
-
-            naoPreferencias = cliente.ObterNaoPreferencias(pedidoProcessado.ObterNomeAlimento());
-            List<string> naoPreferenciasPedido = pedidoProcessado.ObterNaoPreferencias();
-            naoPreferencias.AddRange(naoPreferenciasPedido);
-        }
-        else
-        {
-            // utilizador n„o autenticado
-            preferencias = pedidoProcessado.ObterPreferencias();
-            naoPreferencias = pedidoProcessado.ObterNaoPreferencias();
+            //
         }
 
-        // Obter localizaÁ„o !!
-
-        List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
-        foreach(Estabelecimento e in estabelecimentos.Values())
+        public void RegistarCliente(Cliente cliente)
         {
-            List<Alimento> alimentos = e.ObtemAlimentos(pedidoProcessado.ObterNomeAlimento());
-            foreach(Alimento a in alimentos)
+            string email = cliente.ObterEmail();
+            if (clientes.ContainsKey(email))
             {
-                if(a.ContemNaoPreferencias(naoPreferencias) == false)
+                // Email j√° existe
+            }
+            else
+            {
+                clientes.Add(email, cliente);
+            }
+        }
+
+        public void RegistarProprietario()
+        {
+
+        }
+
+        public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo)
+        {
+            RegistaPedidoHistorico(termo);
+            PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
+            Cliente cliente;
+
+            List<string> preferencias;
+            List<string> naoPreferencias;
+            if (clientes.TryGetValue(clienteAutenticado, cliente))
+            {
+                // cliente
+                preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
+                List<string> preferenciasPedido = pedidoProcessado.ObterPreferencias();
+                preferencias.AddRange(preferenciasPedido);
+
+                naoPreferencias = cliente.ObterNaoPreferencias(pedidoProcessado.ObterNomeAlimento());
+                List<string> naoPreferenciasPedido = pedidoProcessado.ObterNaoPreferencias();
+                naoPreferencias.AddRange(naoPreferenciasPedido);
+            }
+            else
+            {
+                // utilizador n√£o autenticado
+                preferencias = pedidoProcessado.ObterPreferencias();
+                naoPreferencias = pedidoProcessado.ObterNaoPreferencias();
+            }
+
+            // Obter localiza√ß√£o !!
+
+            List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
+            foreach (Estabelecimento e in estabelecimentos.Values())
+            {
+                List<Alimento> alimentos = e.ObtemAlimentos(pedidoProcessado.ObterNomeAlimento());
+                foreach (Alimento a in alimentos)
                 {
-                    int nPreferencias = a.QuantasPreferenciasContem(preferencias);
-                    AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
-                    listaAEs.Add(ae);
+                    if (a.ContemNaoPreferencias(naoPreferencias) == false)
+                    {
+                        int nPreferencias = a.QuantasPreferenciasContem(preferencias);
+                        AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
+                        listaAEs.Add(ae);
+                    }
                 }
             }
+
+            listaAEs.sort();
+
+            return listaAEs;
         }
-
-        listaAEs.sort();
-
-        return listaAEs;
-	}
-	private void RegistaPedidoHistorico(ref string termo) {
-        Pedido pedido = new Pedido(termo, idUtilizadorAutenticado);
-        List<Pedido> pedidosCliente;
-        if(pedidos.TryGetValue(idUtilizadorAutenticado, pedidosCliente))
+        private void RegistaPedidoHistorico(ref string termo)
         {
-            // cliente
-            pedidosCliente.Add(pedido);
-            pedidos.Remove(idUtilizadorAutenticado);
-            pedidos.Add(idUtilizadorAutenticado, pedidosCliente);
+            Pedido pedido = new Pedido(termo, idUtilizadorAutenticado);
+            List<Pedido> pedidosCliente;
+            if (pedidos.TryGetValue(idUtilizadorAutenticado, pedidosCliente))
+            {
+                // cliente
+                pedidosCliente.Add(pedido);
+                pedidos.Remove(idUtilizadorAutenticado);
+                pedidos.Add(idUtilizadorAutenticado, pedidosCliente);
+            }
+            else
+            {
+                // utilizador n√£o autenticado
+                // Como guardar??
+            }
         }
-        else
+        public void RegistarPreferenciaGeral(ref String designacaoPreferencia)
         {
-            // utilizador n„o autenticado
-            // Como guardar??
+            throw new System.Exception("Not implemented");
         }
-	}
-	public void RegistarPreferenciaGeral(ref String designacaoPreferencia) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RegistarPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RegistarNaoPreferenciaGeral(ref String designacaoPreferencia) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RegistarNaoPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento, ref int idEstabelecimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public Estabelecimento ConsultarEstabelecimento(ref int idEstabelecimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public string[] ConsultarHistorico() {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao, ref string comentario) {
-		throw new System.Exception("Not implemented");
-	}
-	public int RegistarAlimento(ref int idEstabelecimento, ref string nomeAlimento, ref float preco) {
-		throw new System.Exception("Not implemented");
-	}
-	public void AssociaFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref Image photo) {
-		throw new System.Exception("Not implemented");
-	}
-	public void AssociaIngredienteAlimento(ref int idEstabelecimento, ref int idAlimento, ref string designacaoIngrediente) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoveAlimento(ref int idEstabelecimento, ref int idAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemovePreferencia(ref string designacaoIngrediente, ref string designacaoAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoveNaoPreferencia(ref string designacaoIngrediente, ref string designacaoAlimento) {
-		throw new System.Exception("Not implemented");
-	}
-	public string[] ObterTendencias() {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao) {
-		throw new System.Exception("Not implemented");
-	}
-	public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao, ref string comentario) {
-		throw new System.Exception("Not implemented");
-	}
-	public void RemoverClassificacaoAlimento(ref int idAlimento, ref int idEstabelecimento) {
-		throw new System.Exception("Not implemented");
-	}
+        public void RegistarPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RegistarNaoPreferenciaGeral(ref String designacaoPreferencia)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RegistarNaoPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento, ref int idEstabelecimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public Estabelecimento ConsultarEstabelecimento(ref int idEstabelecimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public string[] ConsultarHistorico()
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao, ref string comentario)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public int RegistarAlimento(ref int idEstabelecimento, ref string nomeAlimento, ref float preco)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void AssociaFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref Image photo)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void AssociaIngredienteAlimento(ref int idEstabelecimento, ref int idAlimento, ref string designacaoIngrediente)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RemoveAlimento(ref int idEstabelecimento, ref int idAlimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RemovePreferencia(ref string designacaoIngrediente, ref string designacaoAlimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RemoveNaoPreferencia(ref string designacaoIngrediente, ref string designacaoAlimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public string[] ObterTendencias()
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao, ref string comentario)
+        {
+            throw new System.Exception("Not implemented");
+        }
+        public void RemoverClassificacaoAlimento(ref int idAlimento, ref int idEstabelecimento)
+        {
+            throw new System.Exception("Not implemented");
+        }
 
-	private Dictionary<int, Proprietario> proprietarios;
-	private Dictionary<int, Estabelecimento> estabelecimentos;
-	private Dictionary<int, List<Pedido>> pedidos;
-	private Dictionary<string, Cliente> clientes;
+        /* mudar para DAOs */
+        private Dictionary<int, Proprietario> proprietarios;
+        private Dictionary<int, Estabelecimento> estabelecimentos;
+        private Dictionary<int, List<Pedido>> pedidos;
+        private Dictionary<string, Cliente> clientes;
 
+    }
 }
