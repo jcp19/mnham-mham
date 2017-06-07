@@ -3,7 +3,7 @@ namespace MnhamMnham
 {
     public class MnhamMnham
     {
-        private string clienteAutenticado;
+        private int clienteAutenticado;
         private bool utilizadorEProprietario;
 
         public MnhamMnham()
@@ -13,8 +13,8 @@ namespace MnhamMnham
 
         public bool IniciarSessaoCliente(string email, string palavraPasse)
         {
-            Cliente cliente;
-            if (clientes.TryGetValue(email, cliente))
+            Cliente cliente = clientes.ObterPorEmail(email);
+            if (cliente != null)
             {
                 if (palavraPasse.Equals(cliente.ObterPalavraPasse()))
                 {
@@ -22,17 +22,8 @@ namespace MnhamMnham
 
                     return true;
                 }
-                else
-                {
-                    // Palavra Passe errada
-                    return false;
-                }
             }
-            else
-            {
-                // Email não existe
-                return false;
-            }
+            return false;
         }
 
         public void IniciarSessaoProprietario(string email, string palavraPasse)
@@ -40,17 +31,18 @@ namespace MnhamMnham
             //
         }
 
-        public void RegistarCliente(Cliente cliente)
+        public bool RegistarCliente(Cliente cliente)
         {
             string email = cliente.ObterEmail();
-            if (clientes.ContainsKey(email))
+            if (clientes.ContemEmail(email))
             {
-                // Email já existe
+                return false;
             }
             else
             {
-                clientes.Add(email, cliente);
+                clientes.AdicionarCliente(cliente);
             }
+            return true;
         }
 
         public void RegistarProprietario()
@@ -66,9 +58,11 @@ namespace MnhamMnham
 
             List<string> preferencias;
             List<string> naoPreferencias;
-            if (clientes.TryGetValue(clienteAutenticado, cliente))
+            
+            if (clienteAutenticado != 0)
             {
                 // cliente
+                Cliente cliente = clientes.ObterPorId(clienteAutenticado);
                 preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
                 List<string> preferenciasPedido = pedidoProcessado.ObterPreferencias();
                 preferencias.AddRange(preferenciasPedido);
@@ -85,16 +79,18 @@ namespace MnhamMnham
             }
 
             // Obter localização !!
-
+            
+            // PROVAVELMENTE MUITO PESADO!!!!
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
-            foreach (Estabelecimento e in estabelecimentos.Values())
+            foreach (int idEstabelecimento in estabelecimentos.ObterIdsEstabelecimento())
             {
-                List<Alimento> alimentos = e.ObtemAlimentos(pedidoProcessado.ObterNomeAlimento());
+                List<Alimento> alimentos = estabelecimentos.ObterAlimentos(idEstabelecimento, pedidoProcessado.ObterNomeAlimento());
                 foreach (Alimento a in alimentos)
                 {
                     if (a.ContemNaoPreferencias(naoPreferencias) == false)
                     {
                         int nPreferencias = a.QuantasPreferenciasContem(preferencias);
+                        Estabelecimento e = estabelecimentos.ObterEstabelecimento(idEstabelecimento);
                         AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
                         listaAEs.Add(ae);
                     }
@@ -105,16 +101,14 @@ namespace MnhamMnham
 
             return listaAEs;
         }
+
         private void RegistaPedidoHistorico(ref string termo)
-        {
-            Pedido pedido = new Pedido(termo, idUtilizadorAutenticado);
-            List<Pedido> pedidosCliente;
-            if (pedidos.TryGetValue(idUtilizadorAutenticado, pedidosCliente))
+        {   
+            if(clienteAutenticado != 0)
             {
-                // cliente
-                pedidosCliente.Add(pedido);
-                pedidos.Remove(idUtilizadorAutenticado);
-                pedidos.Add(idUtilizadorAutenticado, pedidosCliente);
+                //cliente
+                Pedido pedido = new Pedido(termo, clienteAutenticado);
+                pedidos.AdicionarPedido(pedido);
             }
             else
             {
@@ -122,22 +116,31 @@ namespace MnhamMnham
                 // Como guardar??
             }
         }
+
         public void RegistarPreferenciaGeral(ref String designacaoPreferencia)
         {
-            throw new System.Exception("Not implemented");
+            Preferencia preferencia = new Preferencia(designacaoPreferencia);
+            clientes.AdicionarPreferencia(clienteAutenticado, preferencia);
         }
+
         public void RegistarPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento)
         {
-            throw new System.Exception("Not implemented");
+            Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
+            clientes.AdicionarPreferencia(clienteAutenticado, preferencia);
         }
-        public void RegistarNaoPreferenciaGeral(ref String designacaoPreferencia)
+
+        public void RegistarNaoPreferenciaGeral(ref String designacaoNaoPreferencia)
         {
-            throw new System.Exception("Not implemented");
+            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia);
+            clientes.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
-        public void RegistarNaoPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento)
+
+        public void RegistarNaoPreferenciaAlimento(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
         {
-            throw new System.Exception("Not implemented");
+            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
+            clientes.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
+
         public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento, ref int idEstabelecimento)
         {
             throw new System.Exception("Not implemented");
@@ -146,18 +149,24 @@ namespace MnhamMnham
         {
             throw new System.Exception("Not implemented");
         }
-        public string[] ConsultarHistorico()
+
+        public List<Pedido> ConsultarHistorico()
         {
-            throw new System.Exception("Not implemented");
+            return pedidos.ObterPedidos(clienteAutenticado);
         }
+
         public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao)
         {
-            throw new System.Exception("Not implemented");
+            Classificacao cla = new Classificacao(classificacao, clienteAutenticado);
+            estabelecimentos.ClassificarAlimento(idAlimento, idEstabelecimento, cla);
         }
+
         public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao, ref string comentario)
         {
-            throw new System.Exception("Not implemented");
+            Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
+            estabelecimentos.ClassificarAlimento(idAlimento, idEstabelecimento, cla);
         }
+
         public int RegistarAlimento(ref int idEstabelecimento, ref string nomeAlimento, ref float preco)
         {
             throw new System.Exception("Not implemented");
@@ -178,26 +187,36 @@ namespace MnhamMnham
         {
             throw new System.Exception("Not implemented");
         }
-        public void RemovePreferencia(ref string designacaoIngrediente, ref string designacaoAlimento)
+
+        public void RemovePreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
+        {
+            Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
+            clientes.RemoverPreferencia(clienteAutenticado, preferencia);   
+        }
+
+        public void RemoveNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
+        {
+            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
+            clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
+        }
+
+        public List<String> ObterTendencias()
         {
             throw new System.Exception("Not implemented");
         }
-        public void RemoveNaoPreferencia(ref string designacaoIngrediente, ref string designacaoAlimento)
-        {
-            throw new System.Exception("Not implemented");
-        }
-        public string[] ObterTendencias()
-        {
-            throw new System.Exception("Not implemented");
-        }
+
         public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao)
         {
-            throw new System.Exception("Not implemented");
+            Classificacao cla = new Classificacao(classificacao, clienteAutenticado);
+            estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
+
         public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao, ref string comentario)
         {
-            throw new System.Exception("Not implemented");
+            Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
+            estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
+
         public void RemoverClassificacaoAlimento(ref int idAlimento, ref int idEstabelecimento)
         {
             throw new System.Exception("Not implemented");
@@ -205,9 +224,12 @@ namespace MnhamMnham
 
         /* mudar para DAOs */
         private Dictionary<int, Proprietario> proprietarios;
-        private Dictionary<int, Estabelecimento> estabelecimentos;
-        private Dictionary<int, List<Pedido>> pedidos;
-        private Dictionary<string, Cliente> clientes;
+        //private Dictionary<int, Estabelecimento> estabelecimentos;
+        //private Dictionary<int, List<Pedido>> pedidos;
+        //private Dictionary<string, Cliente> clientes;
 
+        private ClienteDAO clientes;
+        private EstabelecimentoDAO estabelecimentos;
+        private PedidoDAO pedidos;
     }
 }
