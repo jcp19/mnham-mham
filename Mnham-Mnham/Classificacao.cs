@@ -18,25 +18,19 @@ public class Classificacao
     // Evita instanciação sem os atributos obrigatórios (avaliacao e idAutor).
     private Classificacao() { }
 
-    public Classificacao(int avaliacao, int idAutor)
-    {
-        this(avaliacao, null, idAutor, DateTime.Now);
-    }
+    public Classificacao(int avaliacao, int idAutor) : this(avaliacao, null, idAutor, DateTime.Now) { }
 
-    public Classificacao(int avaliacao, string comentario, int idAutor)
-    {
-        this(avaliacao, comentario, idAutor, DateTime.Now);
-    }
+    public Classificacao(int avaliacao, string comentario, int idAutor) : this(avaliacao, comentario, idAutor, DateTime.Now) { }
 
-    public Classificacao(int avaliacao, string comentario, int idAutor, DateTime date)
+    public Classificacao(int avaliacao, string comentario, int idAutor, DateTime data)
     {
-        if ((avaliacao < Classificacao.AvaliacaoMin) || (classificacao > Classificacao.AvaliacaoMax))
+        if ((avaliacao < Classificacao.AvaliacaoMin) || (avaliacao > Classificacao.AvaliacaoMax))
         {
             string msgErro = string.Format("A classificação tem de ser um inteiro no intervalo [{0},{1}].", Classificacao.AvaliacaoMin, Classificacao.AvaliacaoMax);
 
             throw new ArgumentOutOfRangeException(msgErro);
         }
-        this.avaliacao;
+        this.avaliacao = avaliacao;
         this.comentario = comentario;
         this.idAutor = idAutor;
         this.data = data;

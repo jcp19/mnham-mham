@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Alimento : IComparable, IComparable<Alimento>
 {
@@ -7,16 +8,40 @@ public class Alimento : IComparable, IComparable<Alimento>
     private float? preco;
     private ISet<string> ingredientes;
     private IDictionary<int, Classificacao> classificacoes;
-    private Image foto;
+    private byte[] foto;
 
     public int Id { get; }
     public string Designacao { get; set; }
     public float Preco { get; set; }
+    public byte[] Foto
+    {
+        get
+        {
+            byte[] copia = null;
+
+            if (foto != null)
+            {
+                copia = new byte[foto.Length];
+                Array.Copy(foto, copia, foto.Length);
+            }
+            return copia;
+        }
+        set
+        {
+            if (value != null)
+            {
+                foto = new byte[value.Length];
+                Array.Copy(value, foto, value.Length);
+            }
+            else
+                foto = null;
+        }
+    }
 
     // Assegura que não é possível criar alimentos sem especificar os seus atributos.
     private Alimento() { }
 
-    public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, Image foto)
+    public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, byte[] foto)
     {
         if (preco != null && preco < 0.0f)
             throw new ArgumentOutOfRangeException("O preço do alimento não pode ser negativo.");
@@ -26,7 +51,12 @@ public class Alimento : IComparable, IComparable<Alimento>
         this.preco = preco;
         this.ingredientes = (ingredientes == null) ? new HashSet<string>() : new HashSet<string>(ingredientes);
         this.classificacoes = new Dictionary<int, Classificacao>();
-        this.foto = foto;
+
+        if (foto != null)
+        {
+            this.foto = new byte[foto.Length];
+            Array.Copy(foto, this.foto, foto.Length);
+        }
     }
 
     public Alimento(Alimento original)
@@ -40,9 +70,13 @@ public class Alimento : IComparable, IComparable<Alimento>
         {
             classificacoes = new Dictionary<int, Classificacao>(original.classificacoes.Count);
             foreach (KeyValuePair<int, Classificacao> entrada in original.classificacoes)
-                classificacoes.add(entrada.Key, entrada.Value.Clone());
+                classificacoes.Add(entrada.Key, entrada.Value.Clone());
         }
-        foto = original.foto.Clone();
+        if (original.foto != null)
+        {
+            this.foto = new byte[original.foto.Length];
+            Array.Copy(original.foto, this.foto, original.foto.Length);
+        }
     }
 
     public bool ContemNaoPreferencias(List<string> naoPreferencias)
@@ -75,7 +109,8 @@ public class Alimento : IComparable, IComparable<Alimento>
 
     public void AdicionarClassificacoes(IEnumerable<Classificacao> classificacoes)
     {
-        this.classificacoes.UnionWith(classificacoes);
+        foreach (var c in classificacoes)
+            this.classificacoes[c.IdAutor] = c.Clone();
     }
 
     public void AdicionarIngrediente(string designacaoIngrediente)
@@ -83,9 +118,14 @@ public class Alimento : IComparable, IComparable<Alimento>
         ingredientes.Add(designacaoIngrediente);
     }
 
+    public void AdicionaIngrediente(string designacaoIngrediente)
+    {
+        ingredientes.Add(designacaoIngrediente);
+    }
+
     public void ClassificarAlimento(int idCliente, int avaliacao, string comentario)
     {
-        classificacoes[idCliente] = new Classificacao(avaliacao, idCliente, comentario);
+        classificacoes[idCliente] = new Classificacao(avaliacao, comentario, idCliente);
     }
 
     public void ClassificarAlimento(int idCliente, int avaliacao)

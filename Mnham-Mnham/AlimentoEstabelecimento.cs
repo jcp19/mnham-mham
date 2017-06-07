@@ -44,7 +44,7 @@ public class AlimentoEstabelecimento : IComparable, IComparable<AlimentoEstabele
         if (ae == null)
             throw new ArgumentException("O alimento passado com argumento não é um AlimentoEstabelecimento");
 
-        // (ae != null)
+        // Chegamos aqui se (ae != null)
         int res = this.numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
 
         if (res == 0)

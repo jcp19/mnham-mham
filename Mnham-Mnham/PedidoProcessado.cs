@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 
 public class PedidoProcessado
 {
@@ -9,11 +9,11 @@ public class PedidoProcessado
 
     /** Propriedades. */
     public string NomeAlimento { get; }
-    public string Preferencias
+    public IList<string> Preferencias
     {
         get { return new List<string>(preferencias); }
     }
-    public string NaoPreferencias
+    public IList<string> NaoPreferencias
     {
         get { return new List<string>(naoPreferencias); }
     }
@@ -34,7 +34,7 @@ public class PedidoProcessado
         this.preferencias = new List<string>();
         this.naoPreferencias = new List<string>();
 
-        Text.StringBuilder palavra = new Text.StringBuilder();
+        System.Text.StringBuilder palavra = new System.Text.StringBuilder();
         int contexto = Contexto.NomeAlimento;
 
         for (int i = 0; i < palavras.Length; i++)

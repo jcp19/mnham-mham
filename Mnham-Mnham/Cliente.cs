@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Cliente
 {
@@ -34,7 +35,7 @@ public class Cliente
                 naoPrefsAlimento.Add(naoPref.DesignacaoIngrediente);
             }
         }
-        return naoPrefs;
+        return naoPrefsAlimento;
     }
 
     public List<string> ObterPreferencias(string nomeAlimento)
@@ -48,7 +49,7 @@ public class Cliente
                 prefsAlimento.Add(pref.DesignacaoIngrediente);
             }
         }
-        return prefs;
+        return prefsAlimento;
     }
 
     public bool RegistarPreferenciaGeral(String designacaoIngrediente)
@@ -61,12 +62,12 @@ public class Cliente
         return preferencias.Add(new Preferencia(designacaoIngrediente, designacaoAlimento));
     }
 
-    public void RegistarNaoPreferenciaGeral(String designacaoPreferencia)
+    public bool RegistarNaoPreferenciaGeral(String designacaoPreferencia)
     {
         return naoPreferencias.Add(new Preferencia(designacaoPreferencia));
     }
 
-    public void RegistarNaoPreferenciaAlimento(string designacaoPreferencia, string designacaoAlimento)
+    public bool RegistarNaoPreferenciaAlimento(string designacaoPreferencia, string designacaoAlimento)
     {
         return naoPreferencias.Add(new Preferencia(designacaoPreferencia, designacaoAlimento));
     }
@@ -87,7 +88,7 @@ public class Cliente
         return naoPreferencias.Remove(new Preferencia(designacaoIngrediente));
     }
 
-    public void RemoveNaoPreferencia(string designacaoIngrediente, string designacaoAlimento)
+    public bool RemoveNaoPreferencia(string designacaoIngrediente, string designacaoAlimento)
     {
         return naoPreferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
     }

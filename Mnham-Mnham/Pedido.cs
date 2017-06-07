@@ -12,10 +12,7 @@ public class Pedido
 
     private Pedido() { }
 
-    public Pedido(string termo, int idCliente)
-    {
-        this(DateTime.Now, termo, idCliente);
-    }
+    public Pedido(string termo, int idCliente) : this(DateTime.Now, termo, idCliente) {}
 
     public Pedido(DateTime data, string termo, int idCliente)
     {

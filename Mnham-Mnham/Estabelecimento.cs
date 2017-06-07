@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Estabelecimento : IComparable, IComparable<Estabelecimento>
 {
@@ -22,7 +23,7 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     private string morada;
     private IDictionary<int, Alimento> alimentos;
     private IDictionary<int, Classificacao> classificacoes;
-    private Image foto;
+    private byte[] foto;
 
     public int Id { get; }
     public string Nome { get; }
@@ -42,7 +43,30 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     public bool? TemZonaFum { get; set; }
     public bool? PermanFechado { get; set; }
     public string Morada { get; }
-    public Image foto { get; }
+    public byte[] Foto
+    {
+        get
+        {
+            byte[] copia = null;
+
+            if (foto != null)
+            {
+                copia = new byte[foto.Length];
+                Array.Copy(foto, copia, foto.Length);
+            }
+            return copia;
+        }
+        set
+        {
+            if (value != null)
+            {
+                foto = new byte[value.Length];
+                Array.Copy(value, foto, value.Length);
+            }
+            else
+                foto = null;
+        }
+    }
 
     private Estabelecimento() { }
 
@@ -77,9 +101,9 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
         return alimentos[id].Clone();
     }
 
-    public void AssociaFotoAlimento(int idAlimento, Image foto)
+    public void AssociaFotoAlimento(int idAlimento, byte[] foto)
     {
-        alimentos[id].Foto = foto.Clone();
+        alimentos[idAlimento].Foto = foto;
     }
 
     public void AssociaIngredienteAlimento(int idAlimento, string designacaoIngrediente)
@@ -91,7 +115,7 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
 
     public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
     {
-        return alimentos[idAlimento].RemoverClassificacaoAlimento();
+        return alimentos[idAlimento].RemoverClassificacaoAlimento(idCliente);
     }
 
     public bool RemoverClassificacaoEstabelecimento(int idAutor)
@@ -99,7 +123,7 @@ public class Estabelecimento : IComparable, IComparable<Estabelecimento>
         return classificacoes.Remove(idAutor);
     }
 
-    public void RemoveAlimento(int idAlimento)
+    public bool RemoveAlimento(int idAlimento)
     {
         return alimentos.Remove(idAlimento);
     }
