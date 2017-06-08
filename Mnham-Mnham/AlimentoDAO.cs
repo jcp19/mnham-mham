@@ -30,14 +30,17 @@ namespace Mnham_Mnham
 
         internal void ClassificarAlimento(int idAlimento, Classificacao cla)
         {
-            classificacoes.ClassificarAlimento(idAlimento, idEstabelecimento, cla);
+            classificacoes.ClassificarAlimento(idAlimento, cla);
         }
 
         internal void RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
         {
-            classificacoes.RemoverClassificacaoAlimento(idAlimento, idEstabelecimento, clienteAutenticado);
+            classificacoes.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-
+        internal void RemoverClassificacaoEstabelecimento(int idAlimento, int clienteAutenticado)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

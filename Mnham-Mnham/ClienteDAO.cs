@@ -78,7 +78,7 @@ namespace Mnham_Mnham
 
         internal void AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
-            naoPreferencias.AdicionarPreferencia(clienteAutenticado, naoPreferencia);
+            naoPreferencias.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
 
         internal void RemoverPreferencia(int clienteAutenticado, Preferencia preferencia)

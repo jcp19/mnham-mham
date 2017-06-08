@@ -30,7 +30,7 @@ namespace Mnham_Mnham
 
         internal Alimento ObterAlimento(int idAlimento)
         {
-            return alimentos.ObterIngredientesAlimentos(idEstabelecimento, v);
+            return alimentos.ObterAlimento(idAlimento);
         }
 
         internal void ClassificarAlimento(int idAlimento, Classificacao cla)
@@ -50,7 +50,7 @@ namespace Mnham_Mnham
 
         internal void RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
         {
-            alimentos.RemoverClassificacaoEstabelecimento(idAlimento ,idEstabelecimento, clienteAutenticado);
+            alimentos.RemoverClassificacaoEstabelecimento(idAlimento, clienteAutenticado);
         }
     }
 }
