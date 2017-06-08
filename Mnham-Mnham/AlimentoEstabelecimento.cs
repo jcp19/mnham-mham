@@ -19,6 +19,12 @@ namespace Mnham_Mnham
             this.alimento = alimento;
         }
 
+        public AlimentoEstabelecimento(Estabelecimento e, Alimento a)
+        {
+            this.estabelecimento = e;
+            this.alimento = a;
+        }
+
         public int CompareTo(AlimentoEstabelecimento ae)
         {
             if (ae == null)

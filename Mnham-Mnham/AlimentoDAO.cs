@@ -28,17 +28,24 @@ namespace Mnham_Mnham
             throw new NotImplementedException();
         }
 
-        internal void ClassificarAlimento(int idAlimento, Classificacao cla)
+        internal bool ClassificarAlimento(int idAlimento, Classificacao cla)
         {
-            classificacoes.ClassificarAlimento(idAlimento, cla);
+            return classificacoes.ClassificarAlimento(idAlimento, cla);
         }
 
-        internal void RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
+        internal bool RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
         {
-            classificacoes.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
+            return classificacoes.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        internal void RemoverClassificacaoEstabelecimento(int idAlimento, int clienteAutenticado)
+        internal IEnumerable<Alimento> ObterAlimentos(string nomeAlimento)
+        {
+            // cada alimento apenas tem o id e os seus ingredientes
+            // obter alimentos que contenham 'nomeAlimento'
+            throw new NotImplementedException();
+        }
+
+        internal Estabelecimento ObterEstabelecimento(int idAlimento)
         {
             throw new NotImplementedException();
         }

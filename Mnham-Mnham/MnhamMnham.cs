@@ -85,19 +85,22 @@ namespace Mnham_Mnham
             // Obter localização !!
 
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
-            foreach (int idEstabelecimento in estabelecimentos.ObterIdsEstabelecimento())
+            Dictionary<int, Estabelecimento> estabsObtidos = new Dictionary<int, Estabelecimento>();
+            foreach (Alimento a in estabelecimentos.ObterAlimentos(pedidoProcessado.NomeAlimento))
             {
-                List<Alimento> alimentos = estabelecimentos.ObterIngredientesAlimentos(idEstabelecimento, pedidoProcessado.ObterNomeAlimento());
-                foreach (Alimento a in alimentos)
+                if(a.ContemNaoPreferencias(naoPreferencias) == false)
                 {
-                    if (a.ContemNaoPreferencias(naoPreferencias) == false)
+                    int nPreferencias = a.QuantasPreferenciasContem(preferencias);
+                    Alimento alim = estabelecimentos.ObterAlimento(a.Id);
+                    int idEstab = alim.IdEstabelecimento;
+                    Estabelecimento estab;
+                    if (estabsObtidos.TryGetValue(idEstab, out estab) == false)
                     {
-                        int nPreferencias = a.QuantasPreferenciasContem(preferencias);
-                        Alimento alim = estabelecimentos.ObterAlimento(a.Id);
-                        Estabelecimento e = estabelecimentos.ObterEstabelecimento(idEstabelecimento);
-                        AlimentoEstabelecimento ae = new AlimentoEstabelecimento(nPreferencias, e, alim);
-                        listaAEs.Add(ae);
+                        estab = estabelecimentos.ObterEstabelecimento(idEstab);
+                        estabsObtidos.Add(idEstab, estab);
                     }
+                    AlimentoEstabelecimento ae = new AlimentoEstabelecimento(nPreferencias, estab, alim);
+                    listaAEs.Add(ae);
                 }
             }
 
@@ -157,11 +160,13 @@ namespace Mnham_Mnham
 
         public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento)
         {
-            throw new System.Exception("Not implemented");
+            Alimento a =  estabelecimentos.ObterAlimento(idAlimento);
+            Estabelecimento e = estabelecimentos.ObterEstabelecimento(a.IdEstabelecimento);
+            return new AlimentoEstabelecimento(e, a);
         }
         public Estabelecimento ConsultarEstabelecimento(ref int idEstabelecimento)
         {
-            throw new System.Exception("Not implemented");
+            return estabelecimentos.ObterEstabelecimento(idEstabelecimento);
         }
 
         public List<Pedido> ConsultarHistorico()
@@ -216,9 +221,29 @@ namespace Mnham_Mnham
             clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
 
-        public List<String> ObterTendencias()
+        public SortedSet<Tendencia> ObterTendencias()
         {
-            throw new System.Exception("Not implemented");
+            Dictionary<string, Tendencia> aux = new Dictionary<string, Tendencia>();
+            foreach(string s in pedidos.ObterPedidosUltimaSemana())
+            {
+                Tendencia t;
+                if(aux.TryGetValue(s, out t))
+                {
+                    t.inc();
+                }
+                else
+                {
+                    t = new Tendencia(s);
+                    aux.Add(s, t);
+                }
+            }
+            SortedSet<Tendencia> tendencias = new SortedSet<Tendencia>();
+            foreach(Tendencia t in aux.Values)
+            {
+                tendencias.Add(t);
+            }
+            //Alterar para retornar as 5 mais frequentes!!
+            return tendencias;
         }
 
         public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao)
@@ -236,6 +261,11 @@ namespace Mnham_Mnham
         public void RemoverClassificacaoAlimento(ref int idAlimento)
         {
             estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
+        }
+
+        public void ConsultarClassificacoesAlimento()
+        {
+
         }
 
         /* mudar para DAOs */

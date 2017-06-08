@@ -11,6 +11,7 @@ namespace Mnham_Mnham
         private ISet<string> ingredientes;
         private IDictionary<int, Classificacao> classificacoes;
         private byte[] foto;
+        private int idEstabelecimento;
 
         public int Id { get; }
         public string Designacao { get; set; }
@@ -39,6 +40,7 @@ namespace Mnham_Mnham
                     foto = null;
             }
         }
+        public int IdEstabelecimento { get; internal set; }
 
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }
