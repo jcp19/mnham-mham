@@ -263,9 +263,40 @@ namespace Mnham_Mnham
             estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        public void ConsultarClassificacoesAlimento()
+        public List<Classificacao> ConsultarClassificacoesAlimentos()
         {
+            return estabelecimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
+        }
 
+        public List<Classificacao> ConsultarClassificacoesEstabelecimentos()
+        {
+            return estabelecimentos.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
+        }
+
+        public List<Preferencia> ConsultarPreferencias()
+        {
+            return clientes.ConsultarPreferencias(clienteAutenticado);
+        }
+
+        public List<Preferencia> ConsultarNaoPreferencias()
+        {
+            return clientes.ConsultarNaoPreferencias(clienteAutenticado);
+        }
+
+        public void EditarDados(Cliente cliente)
+        {
+            cliente.DefinirId(this.clienteAutenticado);
+            clientes.EditarDados(cliente);
+        }
+
+        public Cliente ConsultarDados()
+        {
+            return clientes.ObterPorId(clienteAutenticado);
+        }
+        
+        public void TerminarSessao()
+        {
+            this.clienteAutenticado = 0;
         }
 
         /* mudar para DAOs */

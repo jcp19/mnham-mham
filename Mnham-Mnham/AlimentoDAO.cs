@@ -45,9 +45,9 @@ namespace Mnham_Mnham
             throw new NotImplementedException();
         }
 
-        internal Estabelecimento ObterEstabelecimento(int idAlimento)
+        internal List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
-            throw new NotImplementedException();
+            return classificacoes.ConsultarClassificacoesAlimentos(clienteAutenticado);
         }
     }
 }

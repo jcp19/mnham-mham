@@ -106,5 +106,10 @@ namespace Mnham_Mnham
         {
             return naoPreferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
         }
+
+        internal void DefinirId(int id)
+        {
+            this.id = id;
+        }
     }
 }

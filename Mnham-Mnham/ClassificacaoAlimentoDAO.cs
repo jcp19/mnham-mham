@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Mnham_Mnham
 {
@@ -10,6 +11,11 @@ namespace Mnham_Mnham
         }
 
         internal bool RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
             throw new NotImplementedException();
         }

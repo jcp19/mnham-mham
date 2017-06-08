@@ -164,5 +164,20 @@ namespace Mnham_Mnham
         {
             return naoPreferencias.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
+
+        internal List<Preferencia> ConsultarPreferencias(int clienteAutenticado)
+        {
+            return preferencias.ConsultarPreferencias(clienteAutenticado);
+        }
+
+        internal List<Preferencia> ConsultarNaoPreferencias(int clienteAutenticado)
+        {
+            return naoPreferencias.ConsultarNaoPreferencias(clienteAutenticado);
+        }
+
+        internal void EditarDados(Cliente cliente)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

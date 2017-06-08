@@ -43,9 +43,14 @@ namespace Mnham_Mnham
             return alimentos.ObterAlimentos(nomeAlimento);
         }
 
-        internal Estabelecimento ObterEstabelecimentoAlimento(int idAlimento)
+        internal List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
-            return alimentos.ObterEstabelecimento(idAlimento);
+            return alimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
+        }
+
+        internal List<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
+        {
+            return classificacoes.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }
     }
 }
