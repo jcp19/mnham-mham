@@ -145,24 +145,24 @@ namespace Mnham_Mnham
             }
             return adicionou;
         }
-        internal void AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
+        public bool AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
-            preferencias.AdicionarPreferencia(clienteAutenticado, preferencia);
+            return preferencias.AdicionarPreferencia(clienteAutenticado, preferencia);
         }
 
-        internal void AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        public bool AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
-            naoPreferencias.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
+            return naoPreferencias.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
 
-        internal void RemoverPreferencia(int clienteAutenticado, Preferencia preferencia)
+        public bool RemoverPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
-            preferencias.RemoverPreferencia(clienteAutenticado, preferencia);
+            return preferencias.RemoverPreferencia(clienteAutenticado, preferencia);
         }
 
-        internal void RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        public bool RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
-            naoPreferencias.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
+            return naoPreferencias.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
     }
 }
