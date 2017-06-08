@@ -5,13 +5,14 @@ namespace Mnham_Mnham
 {
     public class MnhamMnham
     {
-        // duvida: usar string ou id?
         private int clienteAutenticado;
         private bool utilizadorEProprietario;
 
         public MnhamMnham()
         {
-
+            estabelecimentos = new EstabelecimentoDAO();
+            clientes = new ClienteDAO();
+            pedidos = new PedidoDAO();
         }
 
         public bool IniciarSessaoCliente(string email, string palavraPasse)
@@ -21,8 +22,7 @@ namespace Mnham_Mnham
             {
                 if (palavraPasse.Equals(cliente.PalavraPasse))
                 {
-                    // resolver!!
-                    //this.clienteAutenticado = email;
+                    this.clienteAutenticado = cliente.Id;
 
                     return true;
                 }
@@ -51,7 +51,7 @@ namespace Mnham_Mnham
 
         public void RegistarProprietario()
         {
-
+            throw new System.Exception("Not implemented");
         }
 
         public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo)
@@ -84,19 +84,19 @@ namespace Mnham_Mnham
 
             // Obter localização !!
 
-            // PROVAVELMENTE MUITO PESADO!!!!
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
             foreach (int idEstabelecimento in estabelecimentos.ObterIdsEstabelecimento())
             {
-                List<Alimento> alimentos = estabelecimentos.ObterAlimentos(idEstabelecimento, pedidoProcessado.ObterNomeAlimento());
+                List<Alimento> alimentos = estabelecimentos.ObterIngredientesAlimentos(idEstabelecimento, pedidoProcessado.ObterNomeAlimento());
                 foreach (Alimento a in alimentos)
                 {
                     if (a.ContemNaoPreferencias(naoPreferencias) == false)
                     {
                         int nPreferencias = a.QuantasPreferenciasContem(preferencias);
+                        Alimento alim = estabelecimentos.ObterAlimento(a.Id);
                         Estabelecimento e = estabelecimentos.ObterEstabelecimento(idEstabelecimento);
-                        // AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
-                        // listaAEs.Add(ae);
+                        AlimentoEstabelecimento ae = new AlimentoEstabelecimento(nPreferencias, e, alim);
+                        listaAEs.Add(ae);
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace Mnham_Mnham
             }
         }
 
-        public void RegistarPreferenciaGeral(ref String designacaoPreferencia)
+        /*public void RegistarPreferenciaGeral(ref String designacaoPreferencia)
         {
             Preferencia preferencia = new Preferencia(designacaoPreferencia);
             clientes.AdicionarPreferencia(clienteAutenticado, preferencia);
@@ -143,9 +143,19 @@ namespace Mnham_Mnham
         {
             Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
             clientes.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
+        }*/
+
+        public void RegistarPreferencia(ref Preferencia pref)
+        {
+            clientes.AdicionarPreferencia(clienteAutenticado, pref);
         }
 
-        public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento, ref int idEstabelecimento)
+        public void RegistarNaoPreferencia(ref Preferencia pref)
+        {
+            clientes.AdicionarNaoPreferencia(clienteAutenticado, pref);
+        }
+
+        public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento)
         {
             throw new System.Exception("Not implemented");
         }
@@ -159,48 +169,48 @@ namespace Mnham_Mnham
             return pedidos.ObterPedidos(clienteAutenticado);
         }
 
-        public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao)
+        public void ClassificarAlimento(ref int idAlimento, ref int classificacao)
         {
             Classificacao cla = new Classificacao(classificacao, clienteAutenticado);
-            estabelecimentos.ClassificarAlimento(idAlimento, idEstabelecimento, cla);
+            estabelecimentos.ClassificarAlimento(idAlimento, cla);
         }
 
-        public void ClassificarAlimento(ref int idAlimento, ref int idEstabelecimento, ref int classificacao, ref string comentario)
+        public void ClassificarAlimento(ref int idAlimento, ref int classificacao, ref string comentario)
         {
             Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
-            estabelecimentos.ClassificarAlimento(idAlimento, idEstabelecimento, cla);
+            estabelecimentos.ClassificarAlimento(idAlimento, cla);
         }
 
         public int RegistarAlimento(ref int idEstabelecimento, ref string nomeAlimento, ref float preco)
         {
             throw new System.Exception("Not implemented");
         }
-
-
-        public void AssociaFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref byte[] photo)
+        public void AssociarFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref byte[] photo)
         {
             throw new System.Exception("Not implemented");
         }
-        public void AssociaIngredienteAlimento(ref int idEstabelecimento, ref int idAlimento, ref string designacaoIngrediente)
+        public void AssociarIngredienteAlimento(ref int idEstabelecimento, ref int idAlimento, ref string designacaoIngrediente)
         {
             throw new System.Exception("Not implemented");
         }
+
         public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento)
         {
-            throw new System.Exception("Not implemented");
+            estabelecimentos.RemoverClassificacaoAlimento(idEstabelecimento, clienteAutenticado);
         }
-        public void RemoveAlimento(ref int idEstabelecimento, ref int idAlimento)
+    
+        public void RemoverAlimento(ref int idEstabelecimento, ref int idAlimento)
         {
             throw new System.Exception("Not implemented");
         }
 
-        public void RemovePreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
+        public void RemoverPreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
         {
             Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
             clientes.RemoverPreferencia(clienteAutenticado, preferencia);
         }
 
-        public void RemoveNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
+        public void RemoverNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
         {
             Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
             clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
@@ -223,9 +233,9 @@ namespace Mnham_Mnham
             estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
 
-        public void RemoverClassificacaoAlimento(ref int idAlimento, ref int idEstabelecimento)
+        public void RemoverClassificacaoAlimento(ref int idAlimento)
         {
-            throw new System.Exception("Not implemented");
+            estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
         /* mudar para DAOs */

@@ -13,6 +13,7 @@ namespace Mnham_Mnham
         private ISet<Preferencia> preferencias;
         private ISet<Preferencia> naoPreferencias;
 
+        public int Id { get { return id; } }
         public string Email { get { return email; } }
         public string PalavraPasse { get { return palavraPasse; } }
 

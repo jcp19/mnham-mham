@@ -16,6 +16,9 @@ namespace Mnham_Mnham
 {
     class ClienteDAO : DAO
     {
+        private PreferenciaDAO preferencias;
+        private NaoPreferenciaDAO naoPreferencias;
+
         public ClienteDAO() : base()
         {
         }
@@ -26,6 +29,7 @@ namespace Mnham_Mnham
 
         internal Cliente ObterPorEmail(string email)
         {
+            // basta obter a password e o id
             throw new NotImplementedException();
         }
 
@@ -69,22 +73,22 @@ namespace Mnham_Mnham
 
         internal void AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
-            throw new NotImplementedException();
+            preferencias.AdicionarPreferencia(clienteAutenticado, preferencia);
         }
 
         internal void AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
-            throw new NotImplementedException();
+            naoPreferencias.AdicionarPreferencia(clienteAutenticado, naoPreferencia);
         }
 
         internal void RemoverPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
-            throw new NotImplementedException();
+            preferencias.RemoverPreferencia(clienteAutenticado, preferencia);
         }
 
         internal void RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
-            throw new NotImplementedException();
+            naoPreferencias.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
     }
 }
