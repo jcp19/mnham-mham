@@ -24,6 +24,11 @@ namespace Mnham_Mnham
         {
         }
 
+        internal Cliente ObterPorEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Contains(string email, string password)
         {
             SqlCommand cmd = new SqlCommand("SELECT email FROM Cliente WHERE email = @email AND palavra_passe = @pp", base.sqlCon);
@@ -45,6 +50,41 @@ namespace Mnham_Mnham
                 reader.Close();
             }
             return contains;
+        }
+
+        internal bool ContemEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AdicionarCliente(Cliente cliente)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Cliente ObterPorId(int clienteAutenticado)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoverPreferencia(int clienteAutenticado, Preferencia preferencia)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        {
+            throw new NotImplementedException();
         }
     }
 }

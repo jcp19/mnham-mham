@@ -1,18 +1,33 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
 namespace Mnham_Mnham
 {
-    class EstabelecimentoDAO : DAO
+    internal class EstabelecimentoDAO : DAO
     {
+        internal IEnumerable<int> ObterIdsEstabelecimento()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<Alimento> ObterAlimentos(int idEstabelecimento, string v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Estabelecimento ObterEstabelecimento(int idEstabelecimento)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClassificarAlimento(int idAlimento, int idEstabelecimento, Classificacao cla)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

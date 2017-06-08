@@ -1,8 +1,11 @@
 using System;
-namespace MnhamMnham
+using System.Collections.Generic;
+
+namespace Mnham_Mnham
 {
     public class MnhamMnham
     {
+        // duvida: usar string ou id?
         private int clienteAutenticado;
         private bool utilizadorEProprietario;
 
@@ -16,9 +19,10 @@ namespace MnhamMnham
             Cliente cliente = clientes.ObterPorEmail(email);
             if (cliente != null)
             {
-                if (palavraPasse.Equals(cliente.ObterPalavraPasse()))
+                if (palavraPasse.Equals(cliente.PalavraPasse))
                 {
-                    this.clienteAutenticado = email;
+                    // resolver!!
+                    //this.clienteAutenticado = email;
 
                     return true;
                 }
@@ -33,7 +37,7 @@ namespace MnhamMnham
 
         public bool RegistarCliente(Cliente cliente)
         {
-            string email = cliente.ObterEmail();
+            string email = cliente.Email;
             if (clientes.ContemEmail(email))
             {
                 return false;
@@ -52,17 +56,17 @@ namespace MnhamMnham
 
         public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo)
         {
-            RegistaPedidoHistorico(termo);
+            RegistaPedidoHistorico(ref termo);
             PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
             Cliente cliente;
 
             List<string> preferencias;
             List<string> naoPreferencias;
-            
+
             if (clienteAutenticado != 0)
             {
                 // cliente
-                Cliente cliente = clientes.ObterPorId(clienteAutenticado);
+                cliente = clientes.ObterPorId(clienteAutenticado);
                 preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
                 List<string> preferenciasPedido = pedidoProcessado.ObterPreferencias();
                 preferencias.AddRange(preferenciasPedido);
@@ -79,7 +83,7 @@ namespace MnhamMnham
             }
 
             // Obter localização !!
-            
+
             // PROVAVELMENTE MUITO PESADO!!!!
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
             foreach (int idEstabelecimento in estabelecimentos.ObterIdsEstabelecimento())
@@ -91,20 +95,20 @@ namespace MnhamMnham
                     {
                         int nPreferencias = a.QuantasPreferenciasContem(preferencias);
                         Estabelecimento e = estabelecimentos.ObterEstabelecimento(idEstabelecimento);
-                        AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
-                        listaAEs.Add(ae);
+                        // AlimentoEstabelecimento ae = new AlimentoEstabelecimento(e, a, nPreferencias);
+                        // listaAEs.Add(ae);
                     }
                 }
             }
 
-            listaAEs.sort();
+            listaAEs.Sort();
 
             return listaAEs;
         }
 
         private void RegistaPedidoHistorico(ref string termo)
-        {   
-            if(clienteAutenticado != 0)
+        {
+            if (clienteAutenticado != 0)
             {
                 //cliente
                 Pedido pedido = new Pedido(termo, clienteAutenticado);
@@ -171,7 +175,9 @@ namespace MnhamMnham
         {
             throw new System.Exception("Not implemented");
         }
-        public void AssociaFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref Image photo)
+
+
+        public void AssociaFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref byte[] photo)
         {
             throw new System.Exception("Not implemented");
         }
@@ -191,7 +197,7 @@ namespace MnhamMnham
         public void RemovePreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
         {
             Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
-            clientes.RemoverPreferencia(clienteAutenticado, preferencia);   
+            clientes.RemoverPreferencia(clienteAutenticado, preferencia);
         }
 
         public void RemoveNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)

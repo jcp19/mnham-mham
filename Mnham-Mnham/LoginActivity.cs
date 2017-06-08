@@ -43,7 +43,7 @@ namespace Mnham_Mnham
                     var intent = new Intent(this, typeof(RelativeActivity));
                     intent.PutExtra("user_email", email);
                     StartActivity(intent);
-                    bool login = IniciarSessaoCliente(email, password);
+                    bool login = m.IniciarSessaoCliente(email, password);
                     Toast loginM = Toast.MakeText(this, login? "success" : "Login Failed", ToastLength.Short);
                     loginM.Show();
                     this.Finish();

@@ -1,38 +1,38 @@
 using System;
 
-public class Preferencia
+namespace Mnham_Mnham
 {
-    private string designacaoIngrediente;
-    private string designacaoAlimento;
-
-    public string DesignacaoIngrediente { get; }
-    public string DesignacaoAlimento { get; }
-
-    private Preferencia() { }
-
-    public Preferencia(string designacaoIngrediente)
+    public class Preferencia
     {
-        this(designacaoIngrediente, "");
-    }
+        private string designacaoIngrediente;
+        private string designacaoAlimento;
 
-    public Preferencia(string designacaoIngrediente, string designacaoAlimento)
-    {
-        this.designacaoIngrediente = designacaoIngrediente;
-        this.designacaoAlimento = designacaoAlimento;
-    }
+        public string DesignacaoIngrediente { get; }
+        public string DesignacaoAlimento { get; }
 
-    public override bool Equals(object obj)
-    {
-        if (obj == null || obj.GetType() != Preferencia)
-            return false;
+        private Preferencia() { }
 
-        Preferencia pref = obj as Preferencia;
-        if (obj != null)
+        public Preferencia(string designacaoIngrediente) : this(designacaoIngrediente, "")
         {
-            return designacaoIngrediente.Equals(pref.designacaoIngrediente)
-                && designacaoAlimento.Equals(pref.designacaoAlimento);
+
         }
-        else
-            throw new ArgumentException("O objeto passado como argumento não é uma Preferencia.");
+
+        public Preferencia(string designacaoIngrediente, string designacaoAlimento)
+        {
+            this.designacaoIngrediente = designacaoIngrediente;
+            this.designacaoAlimento = designacaoAlimento;
+        }
+
+        public override bool Equals(object obj)
+        {
+            Preferencia pref = obj as Preferencia;
+            if (obj != null)
+            {
+                return designacaoIngrediente.Equals(pref.designacaoIngrediente)
+                    && designacaoAlimento.Equals(pref.designacaoAlimento);
+            }
+            else
+                throw new ArgumentException("O objeto passado como argumento não é uma Preferencia.");
+        }
     }
 }

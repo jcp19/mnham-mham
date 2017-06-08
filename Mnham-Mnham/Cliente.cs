@@ -1,95 +1,101 @@
 using System;
 using System.Collections.Generic;
 
-public class Cliente
+namespace Mnham_Mnham
 {
-    private int id;
-    private char genero;
-    private string email;
-    private string nome;
-    private string palavraPasse;
-    private ISet<Preferencia> preferencias;
-    private ISet<Preferencia> naoPreferencias;
-
-    public Cliente(int id, char genero, string email, string nome)
+    public class Cliente
     {
-        if (genero != 'M' && genero != 'F')
-            throw new ArgumentException("O género tem de ser 'M' ou 'F'.");
+        private int id;
+        private char genero;
+        private string email;
+        private string nome;
+        private string palavraPasse;
+        private ISet<Preferencia> preferencias;
+        private ISet<Preferencia> naoPreferencias;
 
-        this.id = id;
-        this.genero = genero;
-        this.email = email;
-        this.nome = nome;
-        this.preferencias = new HashSet<Preferencia>();
-        this.naoPreferencias = new HashSet<Preferencia>();
-    }
+        public string Email { get { return email; } }
+        public string PalavraPasse { get { return palavraPasse; } }
 
-    public List<string> ObterNaoPreferencias(string nomeAlimento)
-    {
-        List<string> naoPrefsAlimento = new List<string>();
-
-        foreach (var naoPref in naoPreferencias)
+        public Cliente(int id, char genero, string email, string nome)
         {
-            if (nomeAlimento.Contains(naoPref.DesignacaoAlimento))
-            {
-                naoPrefsAlimento.Add(naoPref.DesignacaoIngrediente);
-            }
+            if (genero != 'M' && genero != 'F')
+                throw new ArgumentException("O género tem de ser 'M' ou 'F'.");
+
+            this.id = id;
+            this.genero = genero;
+            this.email = email;
+            this.nome = nome;
+            this.preferencias = new HashSet<Preferencia>();
+            this.naoPreferencias = new HashSet<Preferencia>();
         }
-        return naoPrefsAlimento;
-    }
 
-    public List<string> ObterPreferencias(string nomeAlimento)
-    {
-        List<string> prefsAlimento = new List<string>();
-
-        foreach (var pref in preferencias)
+        public List<string> ObterNaoPreferencias(string nomeAlimento)
         {
-            if (nomeAlimento.Contains(pref.DesignacaoAlimento))
+            List<string> naoPrefsAlimento = new List<string>();
+
+            foreach (var naoPref in naoPreferencias)
             {
-                prefsAlimento.Add(pref.DesignacaoIngrediente);
+                if (nomeAlimento.Contains(naoPref.DesignacaoAlimento))
+                {
+                    naoPrefsAlimento.Add(naoPref.DesignacaoIngrediente);
+                }
             }
+            return naoPrefsAlimento;
         }
-        return prefsAlimento;
-    }
 
-    public bool RegistarPreferenciaGeral(String designacaoIngrediente)
-    {
-        return preferencias.Add(new Preferencia(designacaoIngrediente));
-    }
+        public List<string> ObterPreferencias(string nomeAlimento)
+        {
+            List<string> prefsAlimento = new List<string>();
 
-    public bool RegistarPreferenciaAlimento(string designacaoIngrediente, string designacaoAlimento)
-    {
-        return preferencias.Add(new Preferencia(designacaoIngrediente, designacaoAlimento));
-    }
+            foreach (var pref in preferencias)
+            {
+                if (nomeAlimento.Contains(pref.DesignacaoAlimento))
+                {
+                    prefsAlimento.Add(pref.DesignacaoIngrediente);
+                }
+            }
+            return prefsAlimento;
+        }
 
-    public bool RegistarNaoPreferenciaGeral(String designacaoPreferencia)
-    {
-        return naoPreferencias.Add(new Preferencia(designacaoPreferencia));
-    }
+        public bool RegistarPreferenciaGeral(String designacaoIngrediente)
+        {
+            return preferencias.Add(new Preferencia(designacaoIngrediente));
+        }
 
-    public bool RegistarNaoPreferenciaAlimento(string designacaoPreferencia, string designacaoAlimento)
-    {
-        return naoPreferencias.Add(new Preferencia(designacaoPreferencia, designacaoAlimento));
-    }
+        public bool RegistarPreferenciaAlimento(string designacaoIngrediente, string designacaoAlimento)
+        {
+            return preferencias.Add(new Preferencia(designacaoIngrediente, designacaoAlimento));
+        }
 
-    public bool RemovePreferenciaGeral(string designacaoIngrediente)
-    {
-        // O método Remove recebe uma Preferencia, logo é preciso criar uma igual à que se pretende remover.
-        return preferencias.Remove(new Preferencia(designacaoIngrediente));
-    }
+        public bool RegistarNaoPreferenciaGeral(String designacaoPreferencia)
+        {
+            return naoPreferencias.Add(new Preferencia(designacaoPreferencia));
+        }
 
-    public bool RemovePreferencia(string designacaoIngrediente, string designacaoAlimento)
-    {
-        return preferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
-    }
+        public bool RegistarNaoPreferenciaAlimento(string designacaoPreferencia, string designacaoAlimento)
+        {
+            return naoPreferencias.Add(new Preferencia(designacaoPreferencia, designacaoAlimento));
+        }
 
-    public bool RemoverNaoPreferenciaGeral(string designacaoIngrediente)
-    {
-        return naoPreferencias.Remove(new Preferencia(designacaoIngrediente));
-    }
+        public bool RemovePreferenciaGeral(string designacaoIngrediente)
+        {
+            // O método Remove recebe uma Preferencia, logo é preciso criar uma igual à que se pretende remover.
+            return preferencias.Remove(new Preferencia(designacaoIngrediente));
+        }
 
-    public bool RemoveNaoPreferencia(string designacaoIngrediente, string designacaoAlimento)
-    {
-        return naoPreferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
+        public bool RemovePreferencia(string designacaoIngrediente, string designacaoAlimento)
+        {
+            return preferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
+        }
+
+        public bool RemoverNaoPreferenciaGeral(string designacaoIngrediente)
+        {
+            return naoPreferencias.Remove(new Preferencia(designacaoIngrediente));
+        }
+
+        public bool RemoveNaoPreferencia(string designacaoIngrediente, string designacaoAlimento)
+        {
+            return naoPreferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
+        }
     }
 }

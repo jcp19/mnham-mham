@@ -16,7 +16,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -82,8 +82,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alimento.cs" />
+    <Compile Include="AlimentoDAO.cs" />
+    <Compile Include="AlimentoEstabelecimento.cs" />
+    <Compile Include="Classificacao.cs" />
+    <Compile Include="Cliente.cs" />
+    <Compile Include="ClienteDAO.cs" />
+    <Compile Include="DAO.cs" />
+    <Compile Include="Estabelecimento.cs" />
+    <Compile Include="EstabelecimentoDAO.cs" />
     <Compile Include="LoginActivity.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MnhamMnham.cs" />
+    <Compile Include="Pedido.cs" />
+    <Compile Include="PedidoDAO.cs" />
+    <Compile Include="PedidoProcessado.cs" />
+    <Compile Include="Preferencia.cs" />
+    <Compile Include="Proprietario.cs" />
     <Compile Include="RegistoClienteActivity.cs" />
     <Compile Include="RegistoPropActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
