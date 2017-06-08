@@ -16,8 +16,10 @@ namespace Mnham_Mnham
         public int Id { get { return id; } }
         public string Email { get { return email; } }
         public string PalavraPasse { get { return palavraPasse; } }
+        public string Nome { get { return nome; } }
+        public char Genero { get { return genero; } }
 
-        public Cliente(int id, char genero, string email, string nome)
+        public Cliente(int id, char genero, string email, string nome, string palavraPasse)
         {
             if (genero != 'M' && genero != 'F')
                 throw new ArgumentException("O género tem de ser 'M' ou 'F'.");
@@ -28,6 +30,12 @@ namespace Mnham_Mnham
             this.nome = nome;
             this.preferencias = new HashSet<Preferencia>();
             this.naoPreferencias = new HashSet<Preferencia>();
+            this.palavraPasse = palavraPasse;
+        }
+
+        public Cliente(char genero, string email, string nome, string palavraPasse) : this(-1, genero, email, nome, palavraPasse)
+        {
+
         }
 
         public List<string> ObterNaoPreferencias(string nomeAlimento)

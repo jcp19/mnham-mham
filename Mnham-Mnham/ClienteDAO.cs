@@ -27,10 +27,31 @@ namespace Mnham_Mnham
         {
         }
 
-        internal Cliente ObterPorEmail(string email)
+        public Cliente ObterPorEmail(string email)
         {
-            // basta obter a password e o id
-            throw new NotImplementedException();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente WHERE email = @email", base.sqlCon);
+            cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+            cmd.Parameters["@email"].Value = email;
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            bool contains = false;
+
+            try
+            {
+                contains = reader.Read();
+            }
+            finally
+            {
+                reader.Close();
+            }
+
+            Cliente c = null;
+            if (contains)
+            {
+                c = new Cliente(Convert.ToInt32(reader["id"]), Convert.ToChar(reader["genero"]), email, reader["nome"].ToString(), reader["palavra_passe"].ToString());
+            }
+
+            return c;
         }
 
         public bool Contains(string email, string password)
@@ -56,21 +77,74 @@ namespace Mnham_Mnham
             return contains;
         }
 
-        internal bool ContemEmail(string email)
+        public bool ContemEmail(string email)
         {
-            throw new NotImplementedException();
+            Cliente c = ObterPorEmail(email);
+            return c != null;
         }
 
-        internal void AdicionarCliente(Cliente cliente)
+        public Cliente ObterPorId(int id)
         {
-            throw new NotImplementedException();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente WHERE id = @id", base.sqlCon);
+            cmd.Parameters.Add("@id", SqlDbType.NVarChar, 50);
+            cmd.Parameters["@id"].Value = id;
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            bool contains = false;
+
+            try
+            {
+                contains = reader.Read();
+            }
+            finally
+            {
+                reader.Close();
+            }
+
+            Cliente c = null;
+            if (contains)
+            {
+                c = new Cliente(id, Convert.ToChar(reader["genero"]), reader["email"].ToString(), reader["nome"].ToString(), reader["palavra_passe"].ToString());
+            }
+
+            return c;
         }
 
-        internal Cliente ObterPorId(int clienteAutenticado)
+        public bool AdicionarCliente(Cliente cliente)
+        // ideia: passar cliente como ref e atualizar o seu id
         {
-            throw new NotImplementedException();
-        }
+            // ignora o id do cliente e cria um novo
+            bool adicionou = true;
+            SqlCommand cmd = new SqlCommand("INSERT INTO Cliente(genero,email,nome,palavra_passe) VALUES (@genero, @email, @nome, @palavra_passe);", base.sqlCon);
+            cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
+            cmd.Parameters["@genero"].Value = cliente.Genero;
 
+            cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+            cmd.Parameters["@email"].Value = cliente.Email;
+
+            cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
+            cmd.Parameters["@nome"].Value = cliente.Nome;
+
+            cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 32);
+            cmd.Parameters["@palavra_passe"].Value = cliente.PalavraPasse;
+
+            try
+            {
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException)
+            {
+                // se ja existe um cliente registado com o mesmo email ou 
+                // ha algum problema no acesso à BD
+                adicionou = false;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+            return adicionou;
+        }
         internal void AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
             preferencias.AdicionarPreferencia(clienteAutenticado, preferencia);
