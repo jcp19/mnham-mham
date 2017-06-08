@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <LinearLayout
+      android:id="@+id/mapLayout"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="220dp" />
+  </LinearLayout>
+  <RelativeLayout
+      android:id="@+id/perfilLayout"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:padding="8dp">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/picAlimentoResImageView"
+        android:scaleType="centerCrop"
+        android:paddingBottom="8dp"
+        android:paddingRight="8dp"
+        android:src="@drawable/profile3"
+        android:background="@drawable/rounded_image" />
+  </RelativeLayout>
+</LinearLayout>
