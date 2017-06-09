@@ -23,7 +23,7 @@ namespace Mnham_Mnham
         {
         }
         
-        public ClienteDAO(string queryString) : base(queryString)
+        public ClienteDAO(string connectionString) : base(connectionString)
         {
         }
 
@@ -63,6 +63,7 @@ namespace Mnham_Mnham
 
             cmd.Parameters.Add("@pp", SqlDbType.Char, 32);
             cmd.Parameters["@pp"].Value = password;
+
             SqlDataReader reader = cmd.ExecuteReader();
             bool contains = false;
 

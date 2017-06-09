@@ -2,9 +2,12 @@
 
 namespace Mnham_Mnham
 {
-    internal class PreferenciaDAO
+    class PreferenciaDAO : DAO
     {
-        internal bool AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
+        public PreferenciaDAO() : base() { }
+        public PreferenciaDAO(string connectionString) : base(connectionString) { }
+
+        public bool AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
             throw new NotImplementedException();
         }

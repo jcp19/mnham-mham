@@ -2,8 +2,17 @@
 
 namespace Mnham_Mnham
 {
-    internal class NaoPreferenciaDAO
+    class NaoPreferenciaDAO : DAO
     {
+        public NaoPreferenciaDAO() : base()
+        {
+
+        }
+        public NaoPreferenciaDAO(string connectionString) : base(connectionString)
+        {
+
+        }
+
         internal bool AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
             throw new NotImplementedException();

@@ -3,8 +3,18 @@ using System.Collections.Generic;
 
 namespace Mnham_Mnham
 {
-    internal class ClassificacaoEstabelecimentoDAO
+    class ClassificacaoEstabelecimentoDAO : DAO
     {
+        public ClassificacaoEstabelecimentoDAO() : base()
+        {
+
+        }
+
+        public ClassificacaoEstabelecimentoDAO(string connectionString) : base(connectionString)
+        {
+            
+        }
+
         internal bool ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
         {
             throw new NotImplementedException();

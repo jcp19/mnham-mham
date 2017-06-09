@@ -1,54 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    internal class EstabelecimentoDAO : DAO
+    class EstabelecimentoDAO : DAO
     {
         private AlimentoDAO alimentos;
         private ClassificacaoEstabelecimentoDAO classificacoes;
 
-        internal Estabelecimento ObterEstabelecimento(int idEstabelecimento)
+        public EstabelecimentoDAO() : base()
         {
-            throw new NotImplementedException();
+            alimentos = new AlimentoDAO();
+            classificacoes = new ClassificacaoEstabelecimentoDAO();
         }
 
-        internal Alimento ObterAlimento(int idAlimento)
+        public EstabelecimentoDAO(string connectionString) : base(connectionString)
+        {
+            alimentos = new AlimentoDAO(connectionString);
+            classificacoes = new ClassificacaoEstabelecimentoDAO(connectionString);
+        }
+
+        public Estabelecimento ObterEstabelecimento(int idEstabelecimento)
+        {
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Estabelecimento WHERE id = @id AND ativo != 0", base.sqlCon);
+            cmd.Parameters.Add("@id", SqlDbType.Int);
+            cmd.Parameters["@id"].Value = idEstabelecimento;
+
+            var reader = cmd.ExecuteReader();
+
+            Estabelecimento e = null;
+
+            if (reader.Read())
+            {
+                e = new Estabelecimento( Convert.ToInt32(reader["id"]), reader["nome"].ToString(), reader["contacto_tel"].ToString(), reader["coords"].ToString(), reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+            }
+
+            return e;
+        }
+
+        public Alimento ObterAlimento(int idAlimento)
         {
             return alimentos.ObterAlimento(idAlimento);
         }
 
-        internal bool ClassificarAlimento(int idAlimento, Classificacao cla)
+        public bool ClassificarAlimento(int idAlimento, Classificacao cla)
         {
             return alimentos.ClassificarAlimento(idAlimento, cla);
         }
 
-        internal bool ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
+        public bool ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
         {
             return classificacoes.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
 
-        internal bool RemoverClassificacaoEstabelecimento(int idEstabelecimento, int clienteAutenticado)
+        public bool RemoverClassificacaoEstabelecimento(int idEstabelecimento, int clienteAutenticado)
         {
             return classificacoes.RemoverClassificacaoEstabelecimento(idEstabelecimento, clienteAutenticado);
         }
 
-        internal bool RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
+        public bool RemoverClassificacaoAlimento(int idAlimento, int clienteAutenticado)
         {
             return alimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        internal IEnumerable<Alimento> ObterAlimentos(string nomeAlimento)
+        public List<Alimento> ObterAlimentos(string nomeAlimento)
         {
             return alimentos.ObterAlimentos(nomeAlimento);
         }
 
-        internal List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
+        public List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
             return alimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
         }
 
-        internal List<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
+        public List<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
         {
             return classificacoes.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }

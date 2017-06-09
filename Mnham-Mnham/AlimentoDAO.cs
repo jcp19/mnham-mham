@@ -17,47 +17,57 @@ namespace Mnham_Mnham
     class AlimentoDAO : DAO
     {
         ClassificacaoAlimentoDAO classificacoes;
-/*
-        public List<Alimento> ObterIngredientesAlimentos(int idEstabelecimento, string v)
-        {
-            // construir lista de alimentos que na designação contenham v
-            SqlCommand cmd = new SqlCommand("Select id from Alimento WHERE id_estabelecimento = @id_est AND CHARINDEX(@v,designacao) > 0", base.sqlCon);
-            cmd.Parameters["@v"].Value = v;
-            cmd.Parameters["@id_est"].Value = idEstabelecimento;
-            var reader = cmd.ExecuteReader();
-            List<Alimento> ret = new List<Alimento>();
-
-            List<int> idsAlimentos = new List<int>();
-
-            while (reader.Read())
-            {
-                idsAlimentos.Add(Convert.ToInt32(reader["id"]));
-            }
-
-            foreach(var i in idsAlimentos)
-            {
-                SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", base.sqlCon);
-                cmd2.Parameters["@id"].Value = i;
-                var reader2 = cmd2.ExecuteReader();
-                ISet<string> ing = new HashSet<string>();
-
-                while (reader2.Read())
+        /*
+                public List<Alimento> ObterIngredientesAlimentos(int idEstabelecimento, string v)
                 {
-                    ing.Add(reader2["designacao"].ToString());
+                    // construir lista de alimentos que na designação contenham v
+                    SqlCommand cmd = new SqlCommand("Select id from Alimento WHERE id_estabelecimento = @id_est AND CHARINDEX(@v,designacao) > 0", base.sqlCon);
+                    cmd.Parameters["@v"].Value = v;
+                    cmd.Parameters["@id_est"].Value = idEstabelecimento;
+                    var reader = cmd.ExecuteReader();
+                    List<Alimento> ret = new List<Alimento>();
+
+                    List<int> idsAlimentos = new List<int>();
+
+                    while (reader.Read())
+                    {
+                        idsAlimentos.Add(Convert.ToInt32(reader["id"]));
+                    }
+
+                    foreach(var i in idsAlimentos)
+                    {
+                        SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", base.sqlCon);
+                        cmd2.Parameters["@id"].Value = i;
+                        var reader2 = cmd2.ExecuteReader();
+                        ISet<string> ing = new HashSet<string>();
+
+                        while (reader2.Read())
+                        {
+                            ing.Add(reader2["designacao"].ToString());
+                        }
+
+                        // apenas se obtem id e ingredientes
+                        ret.Add(new Alimento(i, null, null, ing, null));
+                    }
+
+                    return ret;
                 }
+                */
 
-                // apenas se obtem id e ingredientes
-                ret.Add(new Alimento(i, null, null, ing, null));
-            }
-
-            return ret;
+        public AlimentoDAO() : base()
+        {
+            classificacoes = new ClassificacaoAlimentoDAO();
         }
-        */
+
+        public AlimentoDAO(string connectionString) : base(connectionString)
+        {
+            classificacoes = new ClassificacaoAlimentoDAO(connectionString);
+        }
 
         public Alimento ObterAlimento(int idAlimento)
         {
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Alimento WHERE id = @id AND removido == 0", base.sqlCon);
-            cmd.Parameters.Add("@id", SqlDbType.Int, 50);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Alimento WHERE id = @id AND removido = 0", base.sqlCon);
+            cmd.Parameters.Add("@id", SqlDbType.Int);
             cmd.Parameters["@id"].Value = idAlimento;
             Alimento a = null;
 
@@ -76,6 +86,7 @@ namespace Mnham_Mnham
             if(contains)
             {
                 SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", base.sqlCon);
+                cmd2.Parameters.Add("@id", SqlDbType.Int);
                 cmd2.Parameters["@id"].Value = idAlimento;
                 SqlDataReader reader2 = cmd2.ExecuteReader();
                 ISet<String> ingredientes = new HashSet<String>();
@@ -105,8 +116,11 @@ namespace Mnham_Mnham
         {
             // construir lista de alimentos que na designação contenham nomeAlimento
             SqlCommand cmd = new SqlCommand("Select id from Alimento WHERE CHARINDEX(@v,designacao) > 0", base.sqlCon);
+            cmd.Parameters.Add("@v", SqlDbType.NVarChar, 150);
             cmd.Parameters["@v"].Value = nomeAlimento;
+
             var reader = cmd.ExecuteReader();
+
             List<Alimento> ret = new List<Alimento>();
 
             List<int> idsAlimentos = new List<int>();
@@ -119,7 +133,9 @@ namespace Mnham_Mnham
             foreach (var i in idsAlimentos)
             {
                 SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", base.sqlCon);
+                cmd2.Parameters.Add("@id", SqlDbType.Int);
                 cmd2.Parameters["@id"].Value = i;
+
                 var reader2 = cmd2.ExecuteReader();
                 ISet<string> ing = new HashSet<string>();
 
