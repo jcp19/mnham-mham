@@ -1,3 +1,4 @@
+using Android.Locations;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +9,8 @@ namespace Mnham_Mnham
         private int id;
         private string nome;
         private string contactoTel;
-        private string coords;
+        //private string coords;
+        private Location coords;
         private string horario;
         private string tipo;
         private string descricao;
@@ -31,7 +33,7 @@ namespace Mnham_Mnham
         public int Id { get; }
         public string Nome { get; }
         public string ContactoTel { get; }
-        public string Coords { get; }
+        public Location Coords { get; }
         public string Horario { get; }
         public string Tipo { get; }
         public string Descricao { get; }
@@ -75,12 +77,14 @@ namespace Mnham_Mnham
 
         private Estabelecimento() { }
 
-        public Estabelecimento(int id, string nome, string contactoTel, string coords, string horario, bool permanFechado)
+        public Estabelecimento(int id, string nome, string contactoTel, double latitude, double longitude, string horario, bool permanFechado)
         {
             this.id = id;
             this.nome = nome;
             this.contactoTel = contactoTel;
-            this.coords = coords;
+            this.coords = new Location("");
+            this.coords.Latitude = latitude;
+            this.coords.Longitude = longitude;
             this.horario = horario;
             this.permanFechado = permanFechado;
             this.alimentos = new Dictionary<int, Alimento>();

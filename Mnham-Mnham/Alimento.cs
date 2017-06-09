@@ -42,7 +42,8 @@ namespace Mnham_Mnham
             }
         }
         public int IdEstabelecimento { get; internal set; }
-        public int ClassificacaoMedia { get; internal set; }
+        public float ClassificacaoMedia { get; internal set; }
+        public IList<Classificacao> Classificacoes { get; internal set; }
 
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }

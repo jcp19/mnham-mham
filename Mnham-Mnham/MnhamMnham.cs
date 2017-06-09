@@ -1,3 +1,4 @@
+using Android.Locations;
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +14,7 @@ namespace Mnham_Mnham
             estabelecimentos = new EstabelecimentoDAO();
             clientes = new ClienteDAO();
             pedidos = new PedidoDAO();
+            proprietarios = new ProprietarioDAO();
         }
 
         // REGISTO E AUTENTICACAO
@@ -161,7 +163,7 @@ namespace Mnham_Mnham
 
         // PEDIDOS E CONSULTAS
 
-        public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo)
+        public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo, Location localizacao)
         {
             RegistaPedidoHistorico(ref termo);
             PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
@@ -189,8 +191,6 @@ namespace Mnham_Mnham
                 naoPreferencias = pedidoProcessado.ObterNaoPreferencias();
             }
 
-            // Obter localização !!
-
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
             Dictionary<int, Estabelecimento> estabsObtidos = new Dictionary<int, Estabelecimento>();
             foreach (Alimento a in estabelecimentos.ObterAlimentos(pedidoProcessado.NomeAlimento))
@@ -206,7 +206,8 @@ namespace Mnham_Mnham
                         estab = estabelecimentos.ObterEstabelecimento(idEstab);
                         estabsObtidos.Add(idEstab, estab);
                     }
-                    AlimentoEstabelecimento ae = new AlimentoEstabelecimento(nPreferencias, estab, alim);
+                    float distancia = localizacao.DistanceTo(estab.Coords);
+                    AlimentoEstabelecimento ae = new AlimentoEstabelecimento(nPreferencias, distancia, estab, alim);
                     listaAEs.Add(ae);
                 }
             }
@@ -546,9 +547,8 @@ namespace Mnham_Mnham
                 }
                 else
                 {
-                    return 0;
                     // Ordenar crescentemente
-                    //return x.Distancia.CompareTo(y.Distancia);
+                    return x.Distancia.CompareTo(y.Distancia);
                 }
             }
         }

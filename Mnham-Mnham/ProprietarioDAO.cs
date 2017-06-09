@@ -19,47 +19,47 @@ namespace Mnham_Mnham
 
         internal bool RemoverAlimento(int idAlimento)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.RemoverAlimento(idAlimento);
         }
 
-        internal void EditarDados(Proprietario proprietario)
+        internal bool EditarDados(Proprietario proprietario)
         {
             throw new NotImplementedException();
         }
 
-        internal Proprietario ObterPorId(int clienteAutenticado)
+        internal Proprietario ObterPorId(int proprietarioAutenticado)
         {
             throw new NotImplementedException();
         }
 
-        internal List<Estabelecimento> ConsultarEstabelecimentos(int clienteAutenticado)
+        internal List<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.ConsultarEstabelecimentos(proprietarioAutenticado);
         }
 
         internal List<Alimento> ConsultarAlimentos(int idEstabelecimento)
         {
-            throw new NotImplementedException();
+            return ConsultarAlimentos(idEstabelecimento);
         }
 
-        internal void RegistarAlimento(int idEstabelecimento, Alimento alim)
+        internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.RegistarAlimento(idEstabelecimento, alim);
         }
 
-        internal void EditarFotoAlimento(int idAlimento, byte[] foto)
+        internal bool EditarFotoAlimento(int idAlimento, byte[] foto)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.EditarFotoAlimento(idAlimento, foto);
         }
 
-        internal void AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.AdicionarIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
 
-        internal void RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        internal bool RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
-            throw new NotImplementedException();
+            return estabelecimentos.RemoverIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
     }
 }

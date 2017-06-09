@@ -5,14 +5,16 @@ namespace Mnham_Mnham
     public class AlimentoEstabelecimento : IComparable, IComparable<AlimentoEstabelecimento>
     {
         private int numeroPreferenciasVerificadas;
+        private float distancia;
         private Estabelecimento estabelecimento;
         private Alimento alimento;
 
         public int NumeroPreferenciasVerificadas { get; }
         public Estabelecimento Estabelecimento { get; }
         public Alimento Alimento { get; }
+        public float Distancia { get; internal set; }
 
-        public AlimentoEstabelecimento(int numeroPreferenciasVerificadas, Estabelecimento estabelecimento, Alimento alimento)
+        public AlimentoEstabelecimento(int numeroPreferenciasVerificadas, float distancia, Estabelecimento estabelecimento, Alimento alimento)
         {
             this.numeroPreferenciasVerificadas = numeroPreferenciasVerificadas;
             this.estabelecimento = estabelecimento;
@@ -61,6 +63,10 @@ namespace Mnham_Mnham
                 if (res == 0)
                 {
                     res = this.estabelecimento.CompareTo(ae.estabelecimento);
+                    if(res == 0)
+                    {
+                        res = this.distancia.CompareTo(ae.Distancia);
+                    }
                 }
             }
             return res;

@@ -38,6 +38,36 @@ namespace Mnham_Mnham
             }
         }
 
+        internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
+        {
+            return alimentos.RegistarAlimento(idEstabelecimento, alim);
+        }
+
+        internal bool EditarFotoAlimento(int idAlimento, byte[] foto)
+        {
+            return alimentos.EditarFotoAlimento(idAlimento, foto);
+        }
+
+        internal List<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        {
+            return alimentos.AdicionarIngredientesAlimento(idAlimento, designacaoIngredientes);
+        }
+
+        internal bool RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        {
+            return alimentos.RemoverIngredientesAlimento(idAlimento, designacaoIngredientes);
+        }
+
+        internal bool RemoverAlimento(int idAlimento)
+        {
+            return alimentos.RemoverAlimento(idAlimento);
+        }
+
         public Alimento ObterAlimento(int idAlimento)
         {
             return alimentos.ObterAlimento(idAlimento);
