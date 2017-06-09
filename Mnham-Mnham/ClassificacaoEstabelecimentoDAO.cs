@@ -39,6 +39,40 @@ namespace Mnham_Mnham
             return inseriu;
         }
 
+        internal IList<Classificacao> ClassificacoesEstabelecimento(int idEstabelecimento, SqlConnection sqlCon)
+        {
+            IList<Classificacao> l = new List<Classificacao>();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e", sqlCon);
+            cmd.Parameters.Add("@id_e", SqlDbType.Int);
+            cmd.Parameters["@id_e"].Value = idEstabelecimento;
+
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int avaliacao = Convert.ToInt32(reader["valor"]);
+                string comentario = reader["comentario"].ToString();
+                int idCliente = Convert.ToInt32(reader["id_cliente"]);
+                DateTime data = Convert.ToDateTime(reader["data"]);
+
+                l.Add(new Classificacao(avaliacao, comentario, idCliente, data));
+            }
+            reader.Close();
+            return l;
+        }
+
+        internal float ClassificacaoMedia(int idEstabelecimento, SqlConnection sqlCon)
+        {
+            SqlCommand cmd = new SqlCommand("SELECT AVG(valor) AS a FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e", sqlCon);
+            cmd.Parameters.Add("@id_e", SqlDbType.Int);
+            cmd.Parameters["@id_e"].Value = idEstabelecimento;
+
+            var reader = cmd.ExecuteReader();
+
+            reader.Read();
+
+            return (float)(reader["a"] == null ? 0.0 : Convert.ToDouble(reader["a"]));
+        }
+
         public void RemoverClassificacaoEstabelecimento(int idEstabelecimento, int clienteAutenticado)
         {
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))

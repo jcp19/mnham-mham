@@ -211,6 +211,7 @@
     <Compile Include="DAO.cs" />
     <Compile Include="Estabelecimento.cs" />
     <Compile Include="EstabelecimentoDAO.cs" />
+    <Compile Include="IngredienteDAO.cs" />
     <Compile Include="LoginActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MnhamMnham.cs" />

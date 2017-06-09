@@ -120,7 +120,7 @@ namespace Mnham_Mnham
             {
                 int avaliacao = Convert.ToInt32(reader["valor"]);
                 string comentario = reader["comentario"].ToString();
-                int idCliente = Convert.ToInt32(reader["id_alimento"]);
+                int idCliente = Convert.ToInt32(reader["id_cliente"]);
                 DateTime data = Convert.ToDateTime(reader["data"]);
 
                 l.Add(new Classificacao(avaliacao, comentario, idCliente, data));
