@@ -29,12 +29,13 @@ namespace Mnham_Mnham
                 cmd.Connection.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                 bool existe = reader.Read();
-                reader.Close();
+
 
                 if (existe)
                 {
                     c = new Cliente(Convert.ToInt32(reader["id"]), Convert.ToChar(reader["genero"]), email, reader["nome"].ToString(), reader["palavra_passe"].ToString());
                 }
+                reader.Close();
             }
             return c;
         }
