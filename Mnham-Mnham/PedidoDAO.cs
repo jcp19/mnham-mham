@@ -3,15 +3,9 @@ using System.Collections.Generic;
 
 namespace Mnham_Mnham
 {
-    class PedidoDAO : DAO
+    class PedidoDAO
     {
-        public PedidoDAO() : base()
-        {
-
-        }
-
-        public PedidoDAO(string connectionString) : base(connectionString) { }
-
+       
         internal bool AdicionarPedido(Pedido pedido)
         {
             throw new NotImplementedException();
