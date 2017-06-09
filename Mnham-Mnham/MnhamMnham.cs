@@ -15,6 +15,37 @@ namespace Mnham_Mnham
             pedidos = new PedidoDAO();
         }
 
+        // REGISTO E AUTENTICACAO
+
+        public int IniciarSessao(string email, string palavraPasse)
+        {
+            Cliente cliente = clientes.ObterPorEmail(email);
+            if (cliente != null)
+            {
+                if (palavraPasse.Equals(cliente.PalavraPasse))
+                {
+                    this.clienteAutenticado = cliente.Id;
+                    this.utilizadorEProprietario = false;
+
+                    return 1;
+                }
+            }
+            Proprietario proprietario = proprietarios.ObterPorEmail(email);
+            if (proprietario != null)
+            {
+                if (palavraPasse.Equals(proprietario.PalavraPasse))
+                {
+                    this.clienteAutenticado = proprietario.Id;
+                    this.utilizadorEProprietario = true;
+
+                    return 2;
+                }
+            }
+            return 0;
+        }
+
+        // Clientes
+
         public bool IniciarSessaoCliente(string email, string palavraPasse)
         {
             Cliente cliente = clientes.ObterPorEmail(email);
@@ -23,6 +54,7 @@ namespace Mnham_Mnham
                 if (palavraPasse.Equals(cliente.PalavraPasse))
                 {
                     this.clienteAutenticado = cliente.Id;
+                    this.utilizadorEProprietario = false;
 
                     return true;
                 }
@@ -30,29 +62,104 @@ namespace Mnham_Mnham
             return false;
         }
 
-        public void IniciarSessaoProprietario(string email, string palavraPasse)
-        {
-            //
-        }
-
         public bool RegistarCliente(Cliente cliente)
         {
-            string email = cliente.Email;
-            if (clientes.ContemEmail(email))
-            {
-                return false;
-            }
-            else
-            {
-                clientes.AdicionarCliente(cliente);
-            }
-            return true;
+            //retorna falso se email já existe
+            return clientes.AdicionarCliente(cliente);
         }
 
-        public void RegistarProprietario()
+        // Proprietarios
+
+        public bool IniciarSessaoProprietario(string email, string palavraPasse)
         {
-            throw new System.Exception("Not implemented");
+            Proprietario proprietario = proprietarios.ObterPorEmail(email);
+            if (proprietario != null)
+            {
+                if (palavraPasse.Equals(proprietario.PalavraPasse))
+                {
+                    this.clienteAutenticado = proprietario.Id;
+                    this.utilizadorEProprietario = true;
+
+                    return true;
+                }
+            }
+            return false;
         }
+
+        public bool RegistarProprietario(Proprietario proprietario)
+        {
+            //retorna falso se email já existe
+            return proprietarios.AdicionarProprietario(proprietario);
+        }
+
+        // GESTAO DE CONTA
+
+        public void TerminarSessao()
+        {
+            this.clienteAutenticado = 0;
+        }
+
+        // Clientes
+
+        public void EditarDados(Cliente cliente)
+        {
+            cliente.DefinirId(this.clienteAutenticado);
+            clientes.EditarDados(cliente);
+        }
+
+        public Cliente ConsultarDadosCliente()
+        {
+            return clientes.ObterPorId(clienteAutenticado);
+        }
+
+        // Proprietarios
+
+        public void EditarDados(Proprietario proprietario)
+        {
+            proprietario.DefinirId(this.clienteAutenticado);
+            proprietarios.EditarDados(proprietario);
+        }
+        
+        public Proprietario ConsultarDadosProprietario()
+        {
+            return proprietarios.ObterPorId(clienteAutenticado);
+        }
+
+        // PREFERENCIAS E NAO PREFERENCIAS
+
+        public void RegistarPreferencia(ref Preferencia pref)
+        {
+            clientes.AdicionarPreferencia(clienteAutenticado, pref);
+        }
+
+        public void RegistarNaoPreferencia(ref Preferencia pref)
+        {
+            clientes.AdicionarNaoPreferencia(clienteAutenticado, pref);
+        }
+
+        public List<Preferencia> ConsultarPreferencias()
+        {
+            return clientes.ConsultarPreferencias(clienteAutenticado);
+        }
+
+        public List<Preferencia> ConsultarNaoPreferencias()
+        {
+            return clientes.ConsultarNaoPreferencias(clienteAutenticado);
+        }
+
+        public void RemoverPreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
+        {
+            Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
+            clientes.RemoverPreferencia(clienteAutenticado, preferencia);
+        }
+
+        public void RemoverNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
+        {
+            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
+            clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
+        }
+
+        // PEDIDOS E CONSULTAS
 
         public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo)
         {
@@ -124,46 +231,13 @@ namespace Mnham_Mnham
             }
         }
 
-        /*public void RegistarPreferenciaGeral(ref String designacaoPreferencia)
-        {
-            Preferencia preferencia = new Preferencia(designacaoPreferencia);
-            clientes.AdicionarPreferencia(clienteAutenticado, preferencia);
-        }
-
-        public void RegistarPreferenciaAlimento(ref string designacaoPreferencia, ref string designacaoAlimento)
-        {
-            Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
-            clientes.AdicionarPreferencia(clienteAutenticado, preferencia);
-        }
-
-        public void RegistarNaoPreferenciaGeral(ref String designacaoNaoPreferencia)
-        {
-            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia);
-            clientes.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
-        }
-
-        public void RegistarNaoPreferenciaAlimento(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
-        {
-            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
-            clientes.AdicionarNaoPreferencia(clienteAutenticado, naoPreferencia);
-        }*/
-
-        public void RegistarPreferencia(ref Preferencia pref)
-        {
-            clientes.AdicionarPreferencia(clienteAutenticado, pref);
-        }
-
-        public void RegistarNaoPreferencia(ref Preferencia pref)
-        {
-            clientes.AdicionarNaoPreferencia(clienteAutenticado, pref);
-        }
-
         public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento)
         {
             Alimento a =  estabelecimentos.ObterAlimento(idAlimento);
             Estabelecimento e = estabelecimentos.ObterEstabelecimento(a.IdEstabelecimento);
             return new AlimentoEstabelecimento(e, a);
         }
+
         public Estabelecimento ConsultarEstabelecimento(ref int idEstabelecimento)
         {
             return estabelecimentos.ObterEstabelecimento(idEstabelecimento);
@@ -173,6 +247,33 @@ namespace Mnham_Mnham
         {
             return pedidos.ObterPedidos(clienteAutenticado);
         }
+
+        public SortedSet<Tendencia> ObterTendencias()
+        {
+            Dictionary<string, Tendencia> aux = new Dictionary<string, Tendencia>();
+            foreach (string s in pedidos.ObterPedidosUltimaSemana())
+            {
+                Tendencia t;
+                if (aux.TryGetValue(s, out t))
+                {
+                    t.inc();
+                }
+                else
+                {
+                    t = new Tendencia(s);
+                    aux.Add(s, t);
+                }
+            }
+            SortedSet<Tendencia> tendencias = new SortedSet<Tendencia>();
+            foreach (Tendencia t in aux.Values)
+            {
+                tendencias.Add(t);
+            }
+            //Alterar para retornar as 5 mais frequentes!!
+            return tendencias;
+        }
+
+        // CLASSIFICACOES E PARTILHA
 
         public void ClassificarAlimento(ref int idAlimento, ref int classificacao)
         {
@@ -184,66 +285,6 @@ namespace Mnham_Mnham
         {
             Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
             estabelecimentos.ClassificarAlimento(idAlimento, cla);
-        }
-
-        public int RegistarAlimento(ref int idEstabelecimento, ref string nomeAlimento, ref float preco)
-        {
-            throw new System.Exception("Not implemented");
-        }
-        public void AssociarFotoAlimento(ref int idEstabelecimento, ref int idAlimento, ref byte[] photo)
-        {
-            throw new System.Exception("Not implemented");
-        }
-        public void AssociarIngredienteAlimento(ref int idEstabelecimento, ref int idAlimento, ref string designacaoIngrediente)
-        {
-            throw new System.Exception("Not implemented");
-        }
-
-        public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento)
-        {
-            estabelecimentos.RemoverClassificacaoAlimento(idEstabelecimento, clienteAutenticado);
-        }
-    
-        public void RemoverAlimento(ref int idEstabelecimento, ref int idAlimento)
-        {
-            throw new System.Exception("Not implemented");
-        }
-
-        public void RemoverPreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
-        {
-            Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
-            clientes.RemoverPreferencia(clienteAutenticado, preferencia);
-        }
-
-        public void RemoverNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
-        {
-            Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
-            clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
-        }
-
-        public SortedSet<Tendencia> ObterTendencias()
-        {
-            Dictionary<string, Tendencia> aux = new Dictionary<string, Tendencia>();
-            foreach(string s in pedidos.ObterPedidosUltimaSemana())
-            {
-                Tendencia t;
-                if(aux.TryGetValue(s, out t))
-                {
-                    t.inc();
-                }
-                else
-                {
-                    t = new Tendencia(s);
-                    aux.Add(s, t);
-                }
-            }
-            SortedSet<Tendencia> tendencias = new SortedSet<Tendencia>();
-            foreach(Tendencia t in aux.Values)
-            {
-                tendencias.Add(t);
-            }
-            //Alterar para retornar as 5 mais frequentes!!
-            return tendencias;
         }
 
         public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao)
@@ -258,11 +299,6 @@ namespace Mnham_Mnham
             estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
 
-        public void RemoverClassificacaoAlimento(ref int idAlimento)
-        {
-            estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
-        }
-
         public List<Classificacao> ConsultarClassificacoesAlimentos()
         {
             return estabelecimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
@@ -273,40 +309,278 @@ namespace Mnham_Mnham
             return estabelecimentos.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }
 
-        public List<Preferencia> ConsultarPreferencias()
+        public void RemoverClassificacaoAlimento(ref int idAlimento)
         {
-            return clientes.ConsultarPreferencias(clienteAutenticado);
+            estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        public List<Preferencia> ConsultarNaoPreferencias()
+        public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento)
         {
-            return clientes.ConsultarNaoPreferencias(clienteAutenticado);
+            estabelecimentos.RemoverClassificacaoAlimento(idEstabelecimento, clienteAutenticado);
         }
 
-        public void EditarDados(Cliente cliente)
+        // GESTAO DE ESTABELECIMENTO
+
+        public void RegistarAlimento(ref int idEstabelecimento, Alimento alim)
         {
-            cliente.DefinirId(this.clienteAutenticado);
-            clientes.EditarDados(cliente);
+            proprietarios.RegistarAlimento(idEstabelecimento, alim);
         }
 
-        public Cliente ConsultarDados()
+        public void EditarFotoAlimento(ref int idAlimento, ref byte[] foto)
         {
-            return clientes.ObterPorId(clienteAutenticado);
+            proprietarios.EditarFotoAlimento(idAlimento, foto);
+        }
+
+        public void AdicionarIngredientesAlimento(ref int idAlimento, ref List<string> designacaoIngredientes)
+        {
+            proprietarios.AdicionarIngredientesAlimento(idAlimento, designacaoIngredientes);
+        }
+
+        public void RemoverIngredientesAlimento(ref int idAlimento, ref List<string> designacaoIngredientes)
+        {
+            proprietarios.RemoverIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
         
-        public void TerminarSessao()
+        public void RemoverAlimento(ref int idAlimento)
         {
-            this.clienteAutenticado = 0;
+            proprietarios.RemoverAlimento(idAlimento);
+        }
+        
+        public List<Estabelecimento> ConsultarEstabelecimentos()
+        {
+            return proprietarios.ConsultarEstabelecimentos(clienteAutenticado);
         }
 
-        /* mudar para DAOs */
-        private Dictionary<int, Proprietario> proprietarios;
-        //private Dictionary<int, Estabelecimento> estabelecimentos;
-        //private Dictionary<int, List<Pedido>> pedidos;
-        //private Dictionary<string, Cliente> clientes;
+        public List<Alimento> ConsultarAlimentos(int idEstabelecimento)
+        {
+            return proprietarios.ConsultarAlimentos(idEstabelecimento);
+        }
 
+        private ProprietarioDAO proprietarios;
         private ClienteDAO clientes;
         private EstabelecimentoDAO estabelecimentos;
         private PedidoDAO pedidos;
+
+
+        // FILTROS
+
+        public List<AlimentoEstabelecimento> OrdenarCusto (List<AlimentoEstabelecimento> listaAEs, bool decrescente)
+        {
+            listaAEs.Sort(new ComparadorCusto());
+            if (decrescente)
+            {
+                listaAEs.Reverse();
+            }
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> OrdenarDistancia (List<AlimentoEstabelecimento> listaAEs, bool decrescente)
+        {
+            listaAEs.Sort(new ComparadorDistancia());
+            if (decrescente)
+            {
+                listaAEs.Reverse();
+            }
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> OrdenarClassificacaoAlimento (List<AlimentoEstabelecimento> listaAEs, bool crescente)
+        {
+            listaAEs.Sort(new ComparadorClassificaoAlimento());
+            if (crescente)
+            {
+                listaAEs.Reverse();
+            }
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> OrdenarClassificacaoEstabelecimento(List<AlimentoEstabelecimento> listaAEs, bool crescente)
+        {
+            listaAEs.Sort(new ComparadorClassificaoEstabelecimento());
+            if (crescente)
+            {
+                listaAEs.Reverse();
+            }
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> OrdenarOmissao (List<AlimentoEstabelecimento> listaAEs)
+        {
+            listaAEs.Sort();
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> FiltrarPreco (List<AlimentoEstabelecimento> listaAEs, float preco)
+        {
+            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            foreach(AlimentoEstabelecimento ae in listaAEs)
+            {
+                if(ae.Alimento.Preco <= preco)
+                {
+                    listaFiltrada.Add(ae);
+                }
+            }
+            return listaFiltrada;
+        }
+
+        public List<AlimentoEstabelecimento> FiltrarDistancia (List<AlimentoEstabelecimento> listaAEs, float distancia)
+        {
+            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            foreach (AlimentoEstabelecimento ae in listaAEs)
+            {
+                //if(ae.Distancia <= distancia)
+                {
+                    listaFiltrada.Add(ae);
+                }
+            }
+            return listaFiltrada;
+        }
+
+        public List<AlimentoEstabelecimento> FiltrarClassificacaoAlimento (List<AlimentoEstabelecimento> listaAEs, int classificacao)
+        {
+            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            foreach (AlimentoEstabelecimento ae in listaAEs)
+            {
+                if(ae.Alimento.ClassificacaoMedia >= classificacao)
+                {
+                    listaFiltrada.Add(ae);
+                }
+            }
+            return listaFiltrada;
+        }
+
+        public List<AlimentoEstabelecimento> FiltrarClassificacaoEstabelecimento (List<AlimentoEstabelecimento> listaAEs, int classificacao)
+        {
+            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            foreach (AlimentoEstabelecimento ae in listaAEs)
+            {
+                if (ae.Estabelecimento.ClassificacaoMedia >= classificacao)
+                {
+                    listaFiltrada.Add(ae);
+                }
+            }
+            return listaFiltrada;
+        }
+    }
+
+    internal class ComparadorClassificaoEstabelecimento : IComparer<AlimentoEstabelecimento>
+    {
+        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    // Ordenar decrescentemente
+                    return y.Estabelecimento.ClassificacaoMedia.CompareTo(x.Estabelecimento.ClassificacaoMedia);
+                }
+            }
+        }
+    }
+
+    internal class ComparadorClassificaoAlimento : IComparer<AlimentoEstabelecimento>
+    {
+        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    // Ordenar decrescentemente
+                    return y.Alimento.ClassificacaoMedia.CompareTo(x.Alimento.ClassificacaoMedia);
+                }
+            }
+        }
+    }
+
+    internal class ComparadorDistancia : IComparer<AlimentoEstabelecimento>
+    {
+        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                    // Ordenar crescentemente
+                    //return x.Distancia.CompareTo(y.Distancia);
+                }
+            }
+        }
+    }
+
+    internal class ComparadorCusto : IComparer<AlimentoEstabelecimento>
+    {
+        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    // Ordenar crescentemente
+                    return x.Alimento.Preco.CompareTo(y.Alimento.Preco);
+                }
+            }
+        }
     }
 }

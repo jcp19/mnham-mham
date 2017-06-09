@@ -17,6 +17,7 @@ namespace Mnham_Mnham
         public char Genero { get; }
         public string Email { get; set; }
         public string Nome { get; set; }
+        public string PalavraPasse { get; set; }
         public string ContactoTel { get; set; }
 
         private Proprietario() { }
@@ -34,6 +35,11 @@ namespace Mnham_Mnham
             this.nome = nome;
             this.palavraPasse = palavraPasse;
             this.contactoTel = contactoTel;
+        }
+
+        internal void DefinirId(int clienteAutenticado)
+        {
+            throw new NotImplementedException();
         }
     }
 }

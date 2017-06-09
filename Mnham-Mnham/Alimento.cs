@@ -9,9 +9,10 @@ namespace Mnham_Mnham
         private string designacao;
         private float? preco;
         private ISet<string> ingredientes;
-        private IDictionary<int, Classificacao> classificacoes;
+        private List<Classificacao> classificacoes;
         private byte[] foto;
         private int idEstabelecimento;
+        private float classificacaoMedia;
 
         public int Id { get; }
         public string Designacao { get; set; }
@@ -41,6 +42,7 @@ namespace Mnham_Mnham
             }
         }
         public int IdEstabelecimento { get; internal set; }
+        public int ClassificacaoMedia { get; internal set; }
 
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }
@@ -54,13 +56,15 @@ namespace Mnham_Mnham
             this.designacao = designacao;
             this.preco = preco;
             this.ingredientes = (ingredientes == null) ? new HashSet<string>() : new HashSet<string>(ingredientes);
-            this.classificacoes = new Dictionary<int, Classificacao>();
+            this.classificacoes = new List<Classificacao>();
 
             if (foto != null)
             {
                 this.foto = new byte[foto.Length];
                 Array.Copy(foto, this.foto, foto.Length);
             }
+
+            this.classificacaoMedia = ObterAvaliacaoMedia();
         }
 
         public Alimento(Alimento original)
@@ -72,15 +76,15 @@ namespace Mnham_Mnham
 
             if (original.classificacoes != null)
             {
-                classificacoes = new Dictionary<int, Classificacao>(original.classificacoes.Count);
-                foreach (KeyValuePair<int, Classificacao> entrada in original.classificacoes)
-                    classificacoes.Add(entrada.Key, entrada.Value.Clone());
+                classificacoes = new List<Classificacao>(original.classificacoes);
             }
             if (original.foto != null)
             {
                 this.foto = new byte[original.foto.Length];
                 Array.Copy(original.foto, this.foto, original.foto.Length);
             }
+
+            this.classificacaoMedia = original.ObterAvaliacaoMedia();
         }
 
         public bool ContemNaoPreferencias(List<string> naoPreferencias)
@@ -137,17 +141,17 @@ namespace Mnham_Mnham
             classificacoes[idCliente] = new Classificacao(avaliacao, idCliente);
         }
 
-        public bool RemoverClassificacaoAlimento(int idCliente)
+        /*public bool RemoverClassificacaoAlimento(int idCliente)
         {
             return classificacoes.Remove(idCliente);
-        }
+        }*/
 
         public float ObterAvaliacaoMedia()
         {
             int total = 0;
             float soma = 0.0f;
 
-            foreach (var classificacao in classificacoes.Values)
+            foreach (var classificacao in classificacoes)
             {
                 soma += classificacao.Avaliacao;
                 ++total;

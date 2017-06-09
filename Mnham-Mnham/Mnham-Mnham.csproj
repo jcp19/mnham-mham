@@ -103,6 +103,7 @@
     <Compile Include="Preferencia.cs" />
     <Compile Include="PreferenciaDAO.cs" />
     <Compile Include="Proprietario.cs" />
+    <Compile Include="ProprietarioDAO.cs" />
     <Compile Include="RegistoClienteActivity.cs" />
     <Compile Include="RegistoPropActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

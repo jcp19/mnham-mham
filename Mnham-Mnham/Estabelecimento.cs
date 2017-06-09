@@ -24,8 +24,9 @@ namespace Mnham_Mnham
         private bool? permanFechado;
         private string morada;
         private IDictionary<int, Alimento> alimentos;
-        private IDictionary<int, Classificacao> classificacoes;
+        private List<Classificacao> classificacoes;
         private byte[] foto;
+        private float classificacaoMedia;
 
         public int Id { get; }
         public string Nome { get; }
@@ -70,6 +71,8 @@ namespace Mnham_Mnham
             }
         }
 
+        public int ClassificacaoMedia { get; internal set; }
+
         private Estabelecimento() { }
 
         public Estabelecimento(int id, string nome, string contactoTel, string coords, string horario, bool permanFechado)
@@ -81,7 +84,7 @@ namespace Mnham_Mnham
             this.horario = horario;
             this.permanFechado = permanFechado;
             this.alimentos = new Dictionary<int, Alimento>();
-            this.classificacoes = new Dictionary<int, Classificacao>();
+            this.classificacoes = new List<Classificacao>();
         }
 
         public IList<Alimento> ObtemAlimentos(string nomeAlimento)
@@ -115,15 +118,15 @@ namespace Mnham_Mnham
             a.AdicionaIngrediente(designacaoIngrediente);
         }
 
-        public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
+        /*public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
         {
             return alimentos[idAlimento].RemoverClassificacaoAlimento(idCliente);
-        }
+        }*/
 
-        public bool RemoverClassificacaoEstabelecimento(int idAutor)
+        /*public bool RemoverClassificacaoEstabelecimento(int idAutor)
         {
             return classificacoes.Remove(idAutor);
-        }
+        }*/
 
         public bool RemoveAlimento(int idAlimento)
         {
@@ -155,7 +158,7 @@ namespace Mnham_Mnham
             int total = 0;
             float soma = 0.0f;
 
-            foreach (var classificacao in classificacoes.Values)
+            foreach (var classificacao in classificacoes)
             {
                 soma += classificacao.Avaliacao;
                 ++total;
