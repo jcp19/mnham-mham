@@ -31,7 +31,14 @@ namespace Mnham_Mnham
 
                 if (reader.Read())
                 {
-                    e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(), reader["contacto_tel"].ToString(), reader["coords"].ToString(), reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+                    char[] delim = { ' ' };
+                    string[] coords = reader["coords"].ToString().Split(delim);
+                    float lat = float.Parse(coords[0]);
+                    float lon = float.Parse(coords[1]);
+                    e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(), reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+
+                    e.Classificacoes = classificacoes.ClassificacoesEstabelecimento(idEstabelecimento, sqlCon);
+                    e.ClassificacaoMedia = classificacoes.ClassificacaoMedia(idEstabelecimento, sqlCon);
                 }
 
                 return e;
@@ -48,9 +55,39 @@ namespace Mnham_Mnham
             return alimentos.EditarFotoAlimento(idAlimento, foto);
         }
 
-        internal List<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
+        internal IList<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
         {
-            throw new NotImplementedException();
+            IList<Estabelecimento> l = new List<Estabelecimento>();
+
+            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Estabelecimento WHERE id_proprietario = @id_p", sqlCon);
+
+                cmd.Parameters.Add("@id_p", SqlDbType.Int);
+                cmd.Parameters["@id_p"].Value = proprietarioAutenticado;
+
+                cmd.Connection.Open();
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int idEstabelecimento = Convert.ToInt32(reader["id"]);
+
+                    char[] delim = { ' ' };
+                    string[] coords = reader["coords"].ToString().Split(delim);
+                    float lat = float.Parse(coords[0]);
+                    float lon = float.Parse(coords[1]);
+                    Estabelecimento e = new Estabelecimento(idEstabelecimento, reader["nome"].ToString(), reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+
+                    
+                    e.Classificacoes = classificacoes.ClassificacoesEstabelecimento(idEstabelecimento, sqlCon);
+                    e.ClassificacaoMedia = classificacoes.ClassificacaoMedia(idEstabelecimento, sqlCon);
+
+                    l.Add(e);
+                }
+                reader.Close();
+            }
+            return l;
         }
 
         internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)

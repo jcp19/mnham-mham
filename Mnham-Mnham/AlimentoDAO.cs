@@ -8,6 +8,7 @@ namespace Mnham_Mnham
     class AlimentoDAO
     {
         ClassificacaoAlimentoDAO classificacoes;
+        IngredienteDAO ingredientes;
 
         public AlimentoDAO()
         {
@@ -37,20 +38,9 @@ namespace Mnham_Mnham
                     byte[] foto = (byte[])reader["foto"];
                     reader.Close();
 
-                    SqlCommand cmd2 = new SqlCommand("SELECT Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
-                    cmd2.Parameters.Add("@id", SqlDbType.Int);
-                    cmd2.Parameters["@id"].Value = idAlimento;
-
-                    SqlDataReader reader2 = cmd2.ExecuteReader();
-                    ISet<string> ingredientes = new HashSet<string>();
-
-                    while (reader2.Read())
-                    {
-                        ingredientes.Add(reader2["designacao"].ToString());
-                    }
-                    reader2.Close();
-
-                    a = new Alimento(idAlimento, designacao, preco, ingredientes, foto);
+                    ISet<string> ings = ingredientes.ObterIngredientes(idAlimento, sqlCon);
+                    
+                    a = new Alimento(idAlimento, designacao, preco, ings, foto);
                     a.Classificacoes = classificacoes.ClassificacaoAlimento(idAlimento,sqlCon);
                     a.ClassificacaoMedia = classificacoes.ObterClassificacaoMedia(idAlimento, sqlCon);
                 }
@@ -62,29 +52,106 @@ namespace Mnham_Mnham
             }
         }
 
+        // POR FAZER!!!
         internal bool RemoverAlimento(int idAlimento)
         {
             throw new NotImplementedException();
         }
 
+        // POR FAZER !!!!
         internal bool RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
             throw new NotImplementedException();
         }
 
+
+        // CONFIRMAR SE ESTA BEM!!! (INCOMPLETO)
         internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
-            throw new NotImplementedException();
+            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                bool adicionou = true;
+
+                foreach(string ingr in designacaoIngredientes)
+                {
+                    int idIngrediente = ingredientes.AdicionarIngrediente(ingr, sqlCon);
+
+                    SqlCommand cmd = new SqlCommand("INSERT INTO IngredienteAlimento(id_alimento,id_ingrediente) VALUES (@id_a, @id_i);", sqlCon);
+                    //cmd.Parameters.Add("@id_a", SqlDbType.Char, 1);
+                    cmd.Parameters["@id_a"].Value = idAlimento;
+
+                    //cmd.Parameters.Add("@id_i", SqlDbType.Char, 1);
+                    cmd.Parameters["@id_i"].Value = idIngrediente;
+                    
+                    cmd.Connection.Open();
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException)
+                    {
+                        // ha algum problema no acesso à BD
+                        adicionou = false;
+                    }
+                    finally
+                    {
+                        cmd.Connection.Close();
+                    }
+                }
+
+                return adicionou;
+            }
         }
 
+        // POR FAZER!!!
         internal bool EditarFotoAlimento(int idAlimento, byte[] foto)
         {
             throw new NotImplementedException();
         }
 
+        // CONFIRMAR SE ESTA BEM!!! (INCOMPLETO)
         internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
-            throw new NotImplementedException();
+            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                // ignora o id do cliente e cria um novo
+                bool adicionou = true;
+
+                SqlCommand cmd = new SqlCommand("INSERT INTO Alimento(designacao,preco,removido,id_estabelecimento,foto) VALUES (@desig, @preco, @rem, @id_e, @foto);", sqlCon);
+                cmd.Parameters.Add("@designacao", SqlDbType.NVarChar, 150);
+                cmd.Parameters["@designacao"].Value = alim.Designacao;
+
+                //cmd.Parameters.Add("@preco", SqlDbType.NVarChar, 50);
+                cmd.Parameters["@preco"].Value = alim.Preco;
+
+                //cmd.Parameters.Add("@rem", SqlDbType.NVarChar, 75);
+                cmd.Parameters["@rem"].Value = 0;
+
+                //cmd.Parameters.Add("@id_e", SqlDbType.Char, 32);
+                cmd.Parameters["@id_e"].Value = idEstabelecimento;
+
+                //cmd.Parameters.Add("@foto", SqlDbType.Char, 19);
+                cmd.Parameters["@foto"].Value = alim.Foto;
+
+                cmd.Connection.Open();
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException)
+                {
+                    // se ja existe um proprietario registado com o mesmo email ou 
+                    // ha algum problema no acesso à BD
+                    adicionou = false;
+                }
+                finally
+                {
+                    cmd.Connection.Close();
+                }
+                return adicionou;
+            }
         }
 
         public bool ClassificarAlimento(int idAlimento, Classificacao cla)
@@ -118,21 +185,11 @@ namespace Mnham_Mnham
                 }
                 reader.Close();
 
-                ISet<string> ing = new HashSet<string>(); // conjunto de ingredientes
+                ISet<string> ing; // conjunto de ingredientes
                 foreach (var i in idsAlimentos)
                 {
-                    SqlCommand cmd2 = new SqlCommand("SELECT Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
-                    cmd2.Parameters.Add("@id", SqlDbType.Int);
-                    cmd2.Parameters["@id"].Value = i;
-
-                    var reader2 = cmd2.ExecuteReader();
-
-                    while (reader2.Read())
-                    {
-                        ing.Add(reader2["designacao"].ToString());
-                    }
-                    reader2.Close();
-
+                    ing = ingredientes.ObterIngredientes(i, sqlCon);
+                    
                     // apenas se obtém id e ingredientes.
                     ret.Add(new Alimento(i, null, null, ing, null));
                     ing.Clear();

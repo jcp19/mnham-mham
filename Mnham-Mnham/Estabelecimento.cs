@@ -73,7 +73,8 @@ namespace Mnham_Mnham
             }
         }
 
-        public int ClassificacaoMedia { get; internal set; }
+        public float ClassificacaoMedia { get; internal set; }
+        public object Classificacoes { get; internal set; }
 
         private Estabelecimento() { }
 

@@ -347,7 +347,7 @@ namespace Mnham_Mnham
             proprietarios.RemoverAlimento(idAlimento);
         }
         
-        public List<Estabelecimento> ConsultarEstabelecimentos()
+        public IList<Estabelecimento> ConsultarEstabelecimentos()
         {
             return proprietarios.ConsultarEstabelecimentos(clienteAutenticado);
         }
