@@ -14,9 +14,9 @@ namespace Mnham_Mnham
         private int idEstabelecimento;
         private float classificacaoMedia;
 
-        public int Id { get; }
-        public string Designacao { get; set; }
-        public float Preco { get; set; }
+        public int Id { get { return id; } }
+        public string Designacao { get { return designacao; } set { designacao = value; } }
+        public float? Preco { get { return preco; } set { preco = value; } }
         public byte[] Foto
         {
             get
@@ -41,9 +41,9 @@ namespace Mnham_Mnham
                     foto = null;
             }
         }
-        public int IdEstabelecimento { get; internal set; }
-        public float ClassificacaoMedia { get; internal set; }
-        public IList<Classificacao> Classificacoes { get; internal set; }
+        public int IdEstabelecimento { get { return idEstabelecimento; } }
+        public float ClassificacaoMedia { get { return classificacaoMedia; } set { classificacaoMedia = value; } }
+        public IList<Classificacao> Classificacoes { get { return classificacoes; } }
 
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }

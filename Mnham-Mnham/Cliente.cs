@@ -38,6 +38,11 @@ namespace Mnham_Mnham
 
         }
 
+        public string ObterPass()
+        {
+            return palavraPasse;
+        }
+
         public List<string> ObterNaoPreferencias(string nomeAlimento)
         {
             List<string> naoPrefsAlimento = new List<string>();

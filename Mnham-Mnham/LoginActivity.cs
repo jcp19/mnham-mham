@@ -1,27 +1,26 @@
-using System;
-
 using Android.App;
 using Android.Content;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using Android.OS;
-using System.Collections.Generic;
 using Android.Content.PM;
 using Android.Graphics;
+
+using System;
 
 namespace Mnham_Mnham
 {
     [Activity(Label = "Mnham.Droid", Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
-    public class MainActivity : Activity
+    public class LoginActivity : Activity
     {
-        MnhamMnham m = new MnhamMnham();
+        private EditText emailEditText;
+        private EditText passwordEditText;
+        private Button confirmButton;
+        private Button cancelButton;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
-            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.LoginLayout);
 
             TextView loginTextView = FindViewById<TextView>(Resource.Id.loginTextView);
@@ -30,36 +29,56 @@ namespace Mnham_Mnham
             if (tf != null)
                 loginTextView.SetTypeface(tf, TypefaceStyle.Normal);
 
-            EditText emailEditText = FindViewById<EditText>(Resource.Id.emailLoginEditText);
-            EditText passwordEditText = FindViewById<EditText>(Resource.Id.passwordLoginEditText);
+            emailEditText = FindViewById<EditText>(Resource.Id.emailLoginEditText);
+            passwordEditText = FindViewById<EditText>(Resource.Id.passwordLoginEditText);
 
-            Button confirmButton = FindViewById<Button>(Resource.Id.confirmLoginButton);
-            confirmButton.Click += delegate
-            {
-                string email = emailEditText.Text;
-                string password = passwordEditText.Text;
-                if (!email.Equals("") && !password.Equals(""))
-                {
-                    var intent = new Intent(this, typeof(RelativeActivity));
-                    intent.PutExtra("user_email", email);
-                    StartActivity(intent);
-                    bool login = m.IniciarSessaoCliente(email, password);
-                    Toast loginM = Toast.MakeText(this, login? "Login Successful" : "Login Failed", ToastLength.Short);
-                    loginM.Show();
-                    this.Finish();
-                }
-                else
-                {
-                    Toast errorMessage = Toast.MakeText(this, "Login Failed", ToastLength.Short);
-                    errorMessage.Show();
-                }
-            };
+            confirmButton = FindViewById<Button>(Resource.Id.confirmLoginButton);
+            confirmButton.Click += HandlerLogin;
 
-            Button cancelButton = FindViewById<Button>(Resource.Id.cancelLoginButton);
+            cancelButton = FindViewById<Button>(Resource.Id.cancelLoginButton);
             cancelButton.Click += delegate
             {
                 Finish();
             };
+        }
+
+        private void HandlerLogin(object sender, EventArgs e)
+        {
+            string email = emailEditText.Text;
+            string palavraPasse = passwordEditText.Text;
+
+            if (!email.Equals("") && !palavraPasse.Equals(""))
+            {
+                Intent intent;
+                int res = MainActivity.Facade.IniciarSessao(email, palavraPasse);
+
+                switch (res)
+                {
+                    case 0:
+                        Toast.MakeText(this, "Pelo menos uma das credenciais introduzidas é inválida.", ToastLength.Short).Show();
+                        break;
+                    case 1:
+                        intent = new Intent(this, typeof(MainActivity));
+                        intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                        intent.PutExtra("user_email", email);
+
+                        Toast.MakeText(this, "Login bem sucedido.", ToastLength.Short).Show();
+                        StartActivity(intent);
+                        break;
+                    /* case 2:
+                        msgLogin = "Login bem sucedido.";
+                        intent = new Intent(this, typeof(MainActivity));
+                        intent.PutExtra("user_email", email);
+                        StartActivity(intent);
+                        break;
+                     */
+                }
+            }
+            else
+            {
+                Toast toastErro = Toast.MakeText(this, "Por favor, preencha todos os campos.", ToastLength.Short);
+                toastErro.Show();
+            }
         }
     }
 }

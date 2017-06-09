@@ -7,8 +7,8 @@ namespace Mnham_Mnham
         private string designacaoIngrediente;
         private string designacaoAlimento;
 
-        public string DesignacaoIngrediente { get; }
-        public string DesignacaoAlimento { get; }
+        public string DesignacaoIngrediente { get { return designacaoIngrediente; } }
+        public string DesignacaoAlimento { get { return designacaoAlimento; } }
 
         private Preferencia() { }
 

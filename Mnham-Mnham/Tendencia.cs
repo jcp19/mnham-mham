@@ -2,12 +2,12 @@
 
 namespace Mnham_Mnham
 {
-    public class Tendencia
+    public class Tendencia : IComparable
     {
         private string pedido;
         private int repeticoes;
 
-        public float Repeticoes { get; private set; }
+        public int Repeticoes { get { return repeticoes; } set { repeticoes = value; } }
 
         public Tendencia(string s)
         {

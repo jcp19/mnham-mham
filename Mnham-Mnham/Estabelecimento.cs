@@ -30,24 +30,24 @@ namespace Mnham_Mnham
         private byte[] foto;
         private float classificacaoMedia;
 
-        public int Id { get; }
-        public string Nome { get; }
-        public string ContactoTel { get; }
-        public Location Coords { get; }
-        public string Horario { get; }
-        public string Tipo { get; }
-        public string Descricao { get; }
-        public bool? AceitaReservas { get; }
-        public bool? TemMb { get; set; }
-        public bool? TemTakeaway { get; set; }
-        public bool? TemServMesa { get; set; }
-        public bool? TemEsplanada { get; set; }
-        public bool? TemParqueEstac { get; set; }
-        public bool? TemTv { get; set; }
-        public bool? TemWifi { get; set; }
-        public bool? TemZonaFum { get; set; }
-        public bool? PermanFechado { get; set; }
-        public string Morada { get; }
+        public int Id { get { return id; } }
+        public string Nome { get { return nome; } }
+        public string ContactoTel { get { return contactoTel; } }
+        public Location Coords { get { return coords; } }
+        public string Horario { get { return horario; } }
+        public string Tipo { get { return tipo; } }
+        public string Descricao { get { return descricao; } }
+        public bool? AceitaReservas { get { return aceitaReservas; } }
+        public bool? TemMb { get { return temMb; } set { temMb = value; } }
+        public bool? TemTakeaway { get { return temTakeaway; } set { temTakeaway = value; } }
+        public bool? TemServMesa { get { return temServMesa; } set { temServMesa = value; } }
+        public bool? TemEsplanada { get { return temEsplanada; } set { temEsplanada = value; } }
+        public bool? TemParqueEstac { get { return temParqueEstac; } set { temParqueEstac = value; } }
+        public bool? TemTv { get { return temTv; } set { temTv = value; } }
+        public bool? TemWifi { get { return temWifi; } set { temWifi = value; } }
+        public bool? TemZonaFum { get { return temZonaFum; } set { temZonaFum = value; } }
+        public bool? PermanFechado { get { return permanFechado; } set { permanFechado = value; } }
+        public string Morada { get { return morada; } }
         public byte[] Foto
         {
             get

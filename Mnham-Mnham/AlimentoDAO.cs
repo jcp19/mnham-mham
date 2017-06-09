@@ -7,8 +7,8 @@ namespace Mnham_Mnham
 {
     class AlimentoDAO
     {
-        ClassificacaoAlimentoDAO classificacoes;
-        IngredienteDAO ingredientes;
+        private ClassificacaoAlimentoDAO classificacoes;
+        private IngredienteDAO ingredientes;
 
         public AlimentoDAO()
         {
@@ -41,7 +41,7 @@ namespace Mnham_Mnham
                     ISet<string> ings = ingredientes.ObterIngredientes(idAlimento, sqlCon);
                     
                     a = new Alimento(idAlimento, designacao, preco, ings, foto);
-                    a.Classificacoes = classificacoes.ClassificacaoAlimento(idAlimento,sqlCon);
+                    a.AdicionarClassificacoes(classificacoes.ClassificacaoAlimento(idAlimento,sqlCon));
                     a.ClassificacaoMedia = classificacoes.ObterClassificacaoMedia(idAlimento, sqlCon);
                 }
                 else

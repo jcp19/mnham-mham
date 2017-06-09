@@ -22,9 +22,11 @@ namespace Mnham_Mnham
         public int IniciarSessao(string email, string palavraPasse)
         {
             Cliente cliente = clientes.ObterPorEmail(email);
+
             if (cliente != null)
             {
-                if (palavraPasse.Equals(cliente.PalavraPasse))
+                Console.WriteLine("1. " + palavraPasse.Length + " 2. " + cliente.PalavraPasse.Length);
+                if (palavraPasse.Equals(cliente.PalavraPasse, StringComparison.Ordinal))
                 {
                     this.clienteAutenticado = cliente.Id;
                     this.utilizadorEProprietario = false;
@@ -32,7 +34,7 @@ namespace Mnham_Mnham
                     return 1;
                 }
             }
-            Proprietario proprietario = proprietarios.ObterPorEmail(email);
+            /*Proprietario proprietario = proprietarios.ObterPorEmail(email);
             if (proprietario != null)
             {
                 if (palavraPasse.Equals(proprietario.PalavraPasse))
@@ -42,7 +44,7 @@ namespace Mnham_Mnham
 
                     return 2;
                 }
-            }
+            }*/
             return 0;
         }
 
@@ -578,7 +580,7 @@ namespace Mnham_Mnham
                 else
                 {
                     // Ordenar crescentemente
-                    return x.Alimento.Preco.CompareTo(y.Alimento.Preco);
+                    return Nullable.Compare<float>(x.Alimento.Preco, y.Alimento.Preco);
                 }
             }
         }

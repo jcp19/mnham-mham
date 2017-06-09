@@ -5,9 +5,9 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    internal class ProprietarioDAO
+    class ProprietarioDAO
     {
-        EstabelecimentoDAO estabelecimentos;
+        private EstabelecimentoDAO estabelecimentos;
 
         internal Proprietario ObterPorEmail(string email)
         {

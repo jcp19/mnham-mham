@@ -8,9 +8,9 @@ namespace Mnham_Mnham
         private string termo;
         private int idCliente;
 
-        public DateTime Data { get; }
-        public string Termo { get; }
-        public int IdCliente { get; }
+        public DateTime Data { get { return data; } }
+        public string Termo { get { return termo; } }
+        public int IdCliente { get { return idCliente; } }
 
         private Pedido() { }
 

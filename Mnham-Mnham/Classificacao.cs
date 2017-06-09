@@ -9,10 +9,10 @@ namespace Mnham_Mnham
         private int idAutor;
         private DateTime data;
 
-        public int Avaliacao { get; }
-        public string Comentario { get; }
-        public int IdAutor { get; }
-        public DateTime Data { get; }
+        public int Avaliacao { get { return avaliacao; } }
+        public string Comentario { get { return comentario; } }
+        public int IdAutor { get { return idAutor; } }
+        public DateTime Data { get { return data; } }
 
         public const int AvaliacaoMin = 1;
         public const int AvaliacaoMax = 5;

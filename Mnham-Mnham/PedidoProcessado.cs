@@ -11,7 +11,7 @@ namespace Mnham_Mnham
         private IList<string> naoPreferencias;
 
         /** Propriedades. */
-        public string NomeAlimento { get; }
+        public string NomeAlimento { get { return nomeAlimento; } }
         public IList<string> Preferencias
         {
             get { return new List<string>(preferencias); }

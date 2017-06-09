@@ -13,12 +13,12 @@ namespace Mnham_Mnham
         private string contactoTel;
         private IList<Estabelecimento> estabelecimentos;
 
-        public int Id { get; }
-        public char Genero { get; }
-        public string Email { get; set; }
-        public string Nome { get; set; }
-        public string PalavraPasse { get; set; }
-        public string ContactoTel { get; set; }
+        public int Id { get { return id; } }
+        public char Genero { get { return genero; } }
+        public string Email { get { return email; } set { email = value; } }
+        public string Nome { get { return nome; } set { nome = value; } }
+        public string PalavraPasse { get { return palavraPasse; } set { palavraPasse = value; } }
+        public string ContactoTel { get { return contactoTel; } set { contactoTel = value; } }
 
         private Proprietario() { }
 
