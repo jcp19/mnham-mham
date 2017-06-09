@@ -18,20 +18,22 @@ namespace Mnham_Mnham
     {
         // MUDAR IP, testar acesso à BD
         private static string my_ip = "";
-        private static string SQL_STRING = "Data Source=" + my_ip + ";Network Library=DBMSSOCN;Initial Catalog = mnham-mnham;"; // User ID = myUsername; Password=myPassword;";
+        public static string CONECTION_STRING = "Data Source=" + my_ip + ";Network Library=DBMSSOCN;Initial Catalog = mnham-mnham;"; // User ID = myUsername; Password=myPassword;";
             
         /* "Data Source=DESKTOP-3SNVUJ2;Initial Catalog=mnham-mnham;Integrated Security=True"; */
         protected SqlConnection sqlCon;
 
+        /*
         public DAO()
         {
             sqlCon = new SqlConnection(SQL_STRING);
         }
 
-        public DAO(string queryString)
+        public DAO(string connectionString)
         {
-            sqlCon = new SqlConnection(queryString);
+            sqlCon = new SqlConnection(connectionString);
         }
+        */
 
     }
 }
