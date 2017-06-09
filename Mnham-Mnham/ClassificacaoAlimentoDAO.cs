@@ -5,7 +5,8 @@ using System.Data;
 
 namespace Mnham_Mnham
 {
-    class ClassificacaoAlimentoDAO { 
+    class ClassificacaoAlimentoDAO {
+
         public bool ClassificarAlimento(int idAlimento, Classificacao cla)
         {
             bool inseriu = true;
@@ -54,9 +55,10 @@ namespace Mnham_Mnham
             }
         }
 
-        public List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
+        public IList<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
-            List<Classificacao> l = new List<Classificacao>();
+            IList<Classificacao> l = new List<Classificacao>();
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM ClassificacaoAlimento WHERE id_cliente = @id_c", sqlCon);
@@ -75,7 +77,6 @@ namespace Mnham_Mnham
 
                     l.Add(new Classificacao(avaliacao, comentario, clienteAutenticado, data));
                 }
-
             }
             return l;
         }

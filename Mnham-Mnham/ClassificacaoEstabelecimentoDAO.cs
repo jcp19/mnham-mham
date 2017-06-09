@@ -7,11 +7,6 @@ namespace Mnham_Mnham
 {
     class ClassificacaoEstabelecimentoDAO
     {
-        public ClassificacaoEstabelecimentoDAO()
-        {
-
-        }
-
         public bool ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
         {
             bool inseriu = true;
@@ -60,9 +55,10 @@ namespace Mnham_Mnham
             }
         }
 
-        public List<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
+        public IList<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
         {
-            List<Classificacao> l = new List<Classificacao>();
+            IList<Classificacao> l = new List<Classificacao>();
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM ClassificacaoEstabelecimento WHERE id_cliente = @id_c", sqlCon);
@@ -80,7 +76,6 @@ namespace Mnham_Mnham
                     DateTime data = Convert.ToDateTime(reader["data"]);
                     l.Add(new Classificacao(avaliacao, comentario, clienteAutenticado, data));
                 }
-
             }
             return l;
         }

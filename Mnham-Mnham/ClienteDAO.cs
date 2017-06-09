@@ -1,14 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -24,11 +15,11 @@ namespace Mnham_Mnham
             preferencias = new PreferenciaDAO();
             naoPreferencias = new NaoPreferenciaDAO();
         }
-        
 
         public Cliente ObterPorEmail(string email)
         {
             Cliente c = null;
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente WHERE email = @email", sqlCon);
@@ -37,11 +28,10 @@ namespace Mnham_Mnham
 
                 cmd.Connection.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                bool contains = reader.Read();
+                bool existe = reader.Read();
                 reader.Close();
-               
-                
-                if (contains)
+
+                if (existe)
                 {
                     c = new Cliente(Convert.ToInt32(reader["id"]), Convert.ToChar(reader["genero"]), email, reader["nome"].ToString(), reader["palavra_passe"].ToString());
                 }
@@ -122,7 +112,7 @@ namespace Mnham_Mnham
             {
                 // ignora o id do cliente e cria um novo
                 bool adicionou = true;
-                
+
                 SqlCommand cmd = new SqlCommand("INSERT INTO Cliente(genero,email,nome,palavra_passe) VALUES (@genero, @email, @nome, @palavra_passe);", sqlCon);
                 cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
                 cmd.Parameters["@genero"].Value = cliente.Genero;
@@ -175,12 +165,12 @@ namespace Mnham_Mnham
             return naoPreferencias.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
 
-        public List<Preferencia> ConsultarPreferencias(int clienteAutenticado)
+        public IList<Preferencia> ConsultarPreferencias(int clienteAutenticado)
         {
             return preferencias.ConsultarPreferencias(clienteAutenticado);
         }
 
-        public List<Preferencia> ConsultarNaoPreferencias(int clienteAutenticado)
+        public IList<Preferencia> ConsultarNaoPreferencias(int clienteAutenticado)
         {
             return naoPreferencias.ConsultarNaoPreferencias(clienteAutenticado);
         }

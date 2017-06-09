@@ -137,12 +137,12 @@ namespace Mnham_Mnham
             clientes.AdicionarNaoPreferencia(clienteAutenticado, pref);
         }
 
-        public List<Preferencia> ConsultarPreferencias()
+        public IList<Preferencia> ConsultarPreferencias()
         {
             return clientes.ConsultarPreferencias(clienteAutenticado);
         }
 
-        public List<Preferencia> ConsultarNaoPreferencias()
+        public IList<Preferencia> ConsultarNaoPreferencias()
         {
             return clientes.ConsultarNaoPreferencias(clienteAutenticado);
         }
@@ -243,7 +243,7 @@ namespace Mnham_Mnham
             return estabelecimentos.ObterEstabelecimento(idEstabelecimento);
         }
 
-        public List<Pedido> ConsultarHistorico()
+        public IList<Pedido> ConsultarHistorico()
         {
             return pedidos.ObterPedidos(clienteAutenticado);
         }
@@ -299,12 +299,12 @@ namespace Mnham_Mnham
             estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
 
-        public List<Classificacao> ConsultarClassificacoesAlimentos()
+        public IList<Classificacao> ConsultarClassificacoesAlimentos()
         {
             return estabelecimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
         }
 
-        public List<Classificacao> ConsultarClassificacoesEstabelecimentos()
+        public IList<Classificacao> ConsultarClassificacoesEstabelecimentos()
         {
             return estabelecimentos.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }

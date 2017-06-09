@@ -63,17 +63,17 @@ namespace Mnham_Mnham
             alimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        public List<Alimento> ObterAlimentos(string nomeAlimento)
+        public IList<Alimento> ObterAlimentos(string nomeAlimento)
         {
             return alimentos.ObterAlimentos(nomeAlimento);
         }
 
-        public List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
+        public IList<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
             return alimentos.ConsultarClassificacoesAlimentos(clienteAutenticado);
         }
 
-        public List<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
+        public IList<Classificacao> ConsultarClassificacoesEstabelecimentos(int clienteAutenticado)
         {
             return classificacoes.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }

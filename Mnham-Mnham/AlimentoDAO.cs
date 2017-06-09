@@ -1,14 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -63,36 +54,36 @@ namespace Mnham_Mnham
         {
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
+                bool encontrado = false;
+                Alimento a = null;
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Alimento WHERE id = @id AND removido = 0", sqlCon);
+
                 cmd.Parameters.Add("@id", SqlDbType.Int);
                 cmd.Parameters["@id"].Value = idAlimento;             
-                Alimento a = null;
-                bool contains = false;
 
                 cmd.Connection.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                  
-                contains = reader.Read();
+                encontrado = reader.Read();
 
-                if (contains)
+                if (encontrado)
                 {
                     string designacao = reader["designacao"].ToString();
                     float preco = (float)Convert.ToDecimal(reader["preco"]);
                     byte[] foto = (byte[])reader["foto"];
                     reader.Close();
 
-                    SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
+                    SqlCommand cmd2 = new SqlCommand("SELECT Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
                     cmd2.Parameters.Add("@id", SqlDbType.Int);
                     cmd2.Parameters["@id"].Value = idAlimento;
 
                     SqlDataReader reader2 = cmd2.ExecuteReader();
-                    ISet<String> ingredientes = new HashSet<String>();
+                    ISet<string> ingredientes = new HashSet<string>();
 
                     while (reader2.Read())
                     {
                         ingredientes.Add(reader2["designacao"].ToString());
                     }
-
                     reader2.Close();
 
                     a = new Alimento(idAlimento, designacao, preco, ingredientes, foto);
@@ -101,7 +92,6 @@ namespace Mnham_Mnham
                 {
                     reader.Close();
                 }
-
                 return a;
             }
         }
@@ -116,21 +106,20 @@ namespace Mnham_Mnham
             classificacoes.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        public List<Alimento> ObterAlimentos(string nomeAlimento)
+        public IList<Alimento> ObterAlimentos(string nomeAlimento)
         {
             // construir lista de alimentos que na designação contenham nomeAlimento
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("Select id from Alimento WHERE CHARINDEX(@v,designacao) > 0", sqlCon);
+                IList<int> idsAlimentos = new List<int>();
+                IList<Alimento> ret = new List<Alimento>();
+                SqlCommand cmd = new SqlCommand("SELECT id from Alimento WHERE CHARINDEX(@v,designacao) > 0", sqlCon);
+
                 cmd.Parameters.Add("@v", SqlDbType.NVarChar, 150);
                 cmd.Parameters["@v"].Value = nomeAlimento;
 
                 cmd.Connection.Open();
                 var reader = cmd.ExecuteReader();
-
-                List<Alimento> ret = new List<Alimento>();
-
-                List<int> idsAlimentos = new List<int>();
 
                 while (reader.Read())
                 {
@@ -138,14 +127,14 @@ namespace Mnham_Mnham
                 }
                 reader.Close();
 
+                ISet<string> ing = new HashSet<string>(); // conjunto de ingredientes
                 foreach (var i in idsAlimentos)
                 {
-                    SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
+                    SqlCommand cmd2 = new SqlCommand("SELECT Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", sqlCon);
                     cmd2.Parameters.Add("@id", SqlDbType.Int);
                     cmd2.Parameters["@id"].Value = i;
 
                     var reader2 = cmd2.ExecuteReader();
-                    ISet<string> ing = new HashSet<string>();
 
                     while (reader2.Read())
                     {
@@ -153,15 +142,15 @@ namespace Mnham_Mnham
                     }
                     reader2.Close();
 
-                    // apenas se obtem id e ingredientes
+                    // apenas se obtém id e ingredientes.
                     ret.Add(new Alimento(i, null, null, ing, null));
+                    ing.Clear();
                 }
-
                 return ret;
             }
         }
 
-        public List<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
+        public IList<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)
         {
             return classificacoes.ConsultarClassificacoesAlimentos(clienteAutenticado);
         }

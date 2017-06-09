@@ -34,5 +34,15 @@ namespace Mnham_Mnham
             else
                 throw new ArgumentException("O objeto passado como argumento não é uma Preferencia.");
         }
+
+        public override int GetHashCode()
+        {
+            int hash = (designacaoIngrediente == null) ? 0 : designacaoIngrediente.GetHashCode();
+
+            if (designacaoAlimento != null)
+                hash = 31 * hash + designacaoAlimento.GetHashCode();
+
+            return hash;
+        }
     }
 }

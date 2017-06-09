@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.SqlClient;
+using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
     class NaoPreferenciaDAO
     {
-        public void AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        public bool AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
+                bool inseriu;
                 SqlCommand cmd = new SqlCommand("INSERT INTO NaoPreferencia(id_cliente, designacao_ingrediente, desingacao_alimento) VALUES (@id_c, @d_ing, @d_al)", sqlCon);
 
                 cmd.Parameters.Add("@id_c", SqlDbType.Int);
@@ -25,16 +25,20 @@ namespace Mnham_Mnham
                 try
                 {
                     cmd.ExecuteNonQuery();
+                    inseriu = true;
                 }
                 catch (SqlException)
                 {
                     inseriu = false;
                 }
+                return inseriu;
             }
         }
 
-        public void RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
+        public bool RemoverNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {
+            bool removeu;
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("DELETE FROM NaoPreferencia WHERE id_cliente = @id_c AND designacao_ingrediente = @d_ing AND desingacao_alimento = @d_al", sqlCon);
@@ -47,16 +51,27 @@ namespace Mnham_Mnham
                 cmd.Parameters["@d_al"].Value = naoPreferencia.DesignacaoAlimento;
 
                 sqlCon.Open();
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    removeu = true;
+                }
+                catch (SqlException)
+                {
+                    removeu = false;
+                }
+                return removeu;
             }
         }
 
-        public List<Preferencia> ConsultarNaoPreferencias(int clienteAutenticado)
+        public IList<Preferencia> ConsultarNaoPreferencias(int clienteAutenticado)
         {
-            List<Preferencia> l = new List<Classificacao>();
+            IList<Preferencia> l = new List<Preferencia>();
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM NaoPreferencia WHERE id_cliente = @id_c", sqlCon);
+
                 cmd.Parameters.Add("@id_c", SqlDbType.Int);
                 cmd.Parameters["@id_c"].Value = clienteAutenticado;
 
@@ -68,7 +83,6 @@ namespace Mnham_Mnham
                     l.Add(new Preferencia( reader["designacao_ingrediente"].ToString(), reader["designacao_alimento"].ToString()));
                 }
                 reader.Close();
-
             }
             return l;
         }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
     class PedidoDAO
     {
-       
         public void AdicionarPedido(Pedido pedido)
         {
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
@@ -16,7 +17,7 @@ namespace Mnham_Mnham
                 cmd.Parameters.Add("@termo", SqlDbType.NVarChar, 150);
                 cmd.Parameters.Add("@data", SqlDbType.DateTime);
 
-                cmd.Parameters["@id_c"].Value = clienteAutenticado;
+                cmd.Parameters["@id_c"].Value = pedido.IdCliente;
                 cmd.Parameters["@termo"].Value = pedido.Termo;
                 cmd.Parameters["@data"].Value = pedido.Data;
 
@@ -26,9 +27,10 @@ namespace Mnham_Mnham
             }
         }
 
-        internal List<Pedido> ObterPedidos(int clienteAutenticado)
+        internal IList<Pedido> ObterPedidos(int clienteAutenticado)
         {
-            List<Pedido> l = new List<Classificacao>();
+            IList<Pedido> l = new List<Pedido>();
+
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Pedido WHERE id_cliente = @id_c", sqlCon);
