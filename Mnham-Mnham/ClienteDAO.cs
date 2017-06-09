@@ -49,7 +49,7 @@ namespace Mnham_Mnham
                 cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
                 cmd.Parameters["@email"].Value = email;
 
-                cmd.Parameters.Add("@pp", SqlDbType.VarChar, 32);
+                cmd.Parameters.Add("@pp", SqlDbType.VarChar);
                 cmd.Parameters["@pp"].Value = password;
 
                 cmd.Connection.Open();
