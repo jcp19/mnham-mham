@@ -129,7 +129,7 @@ namespace Mnham_Mnham
             return l;
         }
 
-        public float ObterClassificacaoMedia(int id_alimento, SqlConnection sqlCon)
+        public float ObterClassificacaoMedia(int idAlimento, SqlConnection sqlCon)
             // recebe uma conexao aberta
         {
             SqlCommand cmd = new SqlCommand("SELECT AVG(valor) AS a FROM ClassificacaoAlimento WHERE id_alimento = @id_a", sqlCon);
@@ -140,7 +140,7 @@ namespace Mnham_Mnham
 
             reader.Read();
 
-            return reader["a"] == null ? 0.0 : Convert.ToFloat(reader["a"]);         
+            return (float) (reader["a"] == null ? 0.0 : Convert.ToDouble(reader["a"]));
         }
            
     }
