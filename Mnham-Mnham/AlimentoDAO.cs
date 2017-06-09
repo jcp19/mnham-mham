@@ -62,6 +62,31 @@ namespace Mnham_Mnham
             }
         }
 
+        internal bool RemoverAlimento(int idAlimento)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool EditarFotoAlimento(int idAlimento, byte[] foto)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool ClassificarAlimento(int idAlimento, Classificacao cla)
         {
             return classificacoes.ClassificarAlimento(idAlimento, cla);
