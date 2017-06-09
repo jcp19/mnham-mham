@@ -8,42 +8,6 @@ namespace Mnham_Mnham
     class AlimentoDAO
     {
         ClassificacaoAlimentoDAO classificacoes;
-        /*
-                public List<Alimento> ObterIngredientesAlimentos(int idEstabelecimento, string v)
-                {
-                    // construir lista de alimentos que na designação contenham v
-                    SqlCommand cmd = new SqlCommand("Select id from Alimento WHERE id_estabelecimento = @id_est AND CHARINDEX(@v,designacao) > 0", base.sqlCon);
-                    cmd.Parameters["@v"].Value = v;
-                    cmd.Parameters["@id_est"].Value = idEstabelecimento;
-                    var reader = cmd.ExecuteReader();
-                    List<Alimento> ret = new List<Alimento>();
-
-                    List<int> idsAlimentos = new List<int>();
-
-                    while (reader.Read())
-                    {
-                        idsAlimentos.Add(Convert.ToInt32(reader["id"]));
-                    }
-
-                    foreach(var i in idsAlimentos)
-                    {
-                        SqlCommand cmd2 = new SqlCommand("select Ingrediente.designacao FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id WHERE Ingrediente.id = @id", base.sqlCon);
-                        cmd2.Parameters["@id"].Value = i;
-                        var reader2 = cmd2.ExecuteReader();
-                        ISet<string> ing = new HashSet<string>();
-
-                        while (reader2.Read())
-                        {
-                            ing.Add(reader2["designacao"].ToString());
-                        }
-
-                        // apenas se obtem id e ingredientes
-                        ret.Add(new Alimento(i, null, null, ing, null));
-                    }
-
-                    return ret;
-                }
-                */
 
         public AlimentoDAO()
         {
@@ -87,6 +51,8 @@ namespace Mnham_Mnham
                     reader2.Close();
 
                     a = new Alimento(idAlimento, designacao, preco, ingredientes, foto);
+                    a.Classificacoes = classificacoes.ClassificacaoAlimento(idAlimento,sqlCon);
+                    a.ClassificacaoMedia = classificacoes.ObterClassificacaoMedia(idAlimento, sqlCon);
                 }
                 else
                 {
