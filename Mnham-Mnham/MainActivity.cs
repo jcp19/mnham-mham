@@ -13,18 +13,26 @@ using Mikepenz.MaterialDrawer.Utils;
 using Mikepenz.MaterialDrawer;
 using Mikepenz.MaterialDrawer.Models;
 using Mikepenz.MaterialDrawer.Models.Interfaces;
+
 using Android.Graphics;
+using Android.Speech;
+using Android.Locations;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
 
 namespace Mnham_Mnham
 {
     [Activity(Label = "Mnham Mnham", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
-    public class MainActivity: Activity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener
+    public class MainActivity : Activity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener
     {
-        public readonly static MnhamMnham Facade = new MnhamMnham();
+        public static readonly MnhamMnham Facade = new MnhamMnham();
+        public static IGeolocator loc;
 
         private AccountHeader headerResultado;
         private Drawer result;
         private DrawerBuilder drawerBuilder;
+        private ImageButton botaoPesquisa;
+        private ImageButton botaoVoz;
         private ProfileDrawerItem itemUtilizador;
         private SecondaryDrawerItem itemDefinicoes;
         private SecondaryDrawerItem itemSobre;
@@ -34,6 +42,11 @@ namespace Mnham_Mnham
         private PrimaryDrawerItem itemPrefs;
         private PrimaryDrawerItem itemNaoPrefs;
         private PrimaryDrawerItem itemTerminarSessao;
+        private EditText editTextAlim;
+        private TextView titulo;
+
+        private readonly int VOZ = 10;
+        private bool aGravar;
 
         const int PROFILE_SETTING = 1;
         const int PERFIL_NAO_AUTENTICADO = 2;
@@ -44,14 +57,16 @@ namespace Mnham_Mnham
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.Main);
-            EditText editTextAlim = (EditText)FindViewById(Resource.Id.editText1);
-            /* Make the drawable right clickable
-            editTextAlim.Click += (sender,e) =>
-            {
-                (sender as EditText).OnTouchEvent(e);
-            } */
+            editTextAlim = FindViewById<EditText>(Resource.Id.editText1);
+            botaoPesquisa = FindViewById<ImageButton>(Resource.Id.searchButton);
+            botaoVoz = FindViewById<ImageButton>(Resource.Id.voiceButton);
 
-            TextView titulo = FindViewById<TextView>(Resource.Id.textView1);
+            botaoPesquisa.Click += HandlerBotaoPesquisa;
+
+            aGravar = false;
+            botaoVoz.Click += HandlerBotaoVoz;
+
+            titulo = FindViewById<TextView>(Resource.Id.textView1);
             Typeface tf = null;
 
             tf = Typeface.CreateFromAsset(Application.Context.Assets, "fonts/yellowtail-regular.ttf");
@@ -90,6 +105,7 @@ namespace Mnham_Mnham
                 // Definir o perfil ativo
                 headerResultado.SetActiveProfile(itemUtilizador, false);
             }
+            InicializarLocalizacao();
         }
 
         // Inicializa o itemUtilizador e o headerResultado, localizados no cabeçalho do "drawer" lateral.
@@ -166,7 +182,7 @@ namespace Mnham_Mnham
         {
             itemPrefs = new PrimaryDrawerItem();
             itemPrefs.WithName("Preferências");
-            itemPrefs.WithIcon(GoogleMaterial.Icon.GmdPerson);
+            itemPrefs.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
             itemPrefs.WithIdentifier(3);
             itemPrefs.WithSelectable(true);
 
@@ -203,14 +219,14 @@ namespace Mnham_Mnham
                 switch (drawerItem.Identifier)
                 {
                     case 1: // Login
-                        Toast.MakeText(this, "Clique em Login", ToastLength.Short).Show();
+                        // Toast.MakeText(this, "Clique em Login", ToastLength.Short).Show();
 
                         StartActivity(typeof(LoginActivity));
                         break;
                     case 2: // Registo como cliente
                         if (drawerItem.Tag.Equals("RegCliente"))
                         {
-                            Toast.MakeText(this, "Clique em 'Registar Cliente'", ToastLength.Short).Show();
+                            // Toast.MakeText(this, "Clique em 'Registar Cliente'", ToastLength.Short).Show();
                             StartActivity(typeof(RegistoClienteActivity));
                         }
                         /* else
@@ -219,11 +235,11 @@ namespace Mnham_Mnham
                         }*/
                         break;
                     case 3: // Preferências
-                        Toast.MakeText(this, "Clique em 'Preferências'", ToastLength.Short).Show();
+                        // Toast.MakeText(this, "Clique em 'Preferências'", ToastLength.Short).Show();
                         StartActivity(typeof(RegistarPreferenciasActivity));
                         break;
                     case 4: // Não preferências
-                        Toast.MakeText(this, "Clique em 'Não Preferências'", ToastLength.Short).Show();
+                        // Toast.MakeText(this, "Clique em 'Não Preferências'", ToastLength.Short).Show();
                         StartActivity(typeof(RegistarPreferenciasActivity));
                         break;
                     case 5: // Terminar sessão
@@ -277,6 +293,80 @@ namespace Mnham_Mnham
             // Adicionar ao "bundle" os valores do cabeçalho da conta que precisam de ser guardados.
             outState = headerResultado.SaveInstanceState(outState);
             base.OnSaveInstanceState(outState);
+        }
+
+        public void HandlerBotaoPesquisa(object obj, EventArgs args)
+        {
+            string pedido = editTextAlim.Text;
+            Location localizacao = new Location("gps");
+
+            localizacao.Latitude = 41.5599;
+            localizacao.Longitude = 8.3966;
+            Facade.EfetuarPedido(pedido, localizacao);
+        }
+
+        public void HandlerBotaoVoz(object obj, EventArgs args)
+        {
+            Toast.MakeText(this, "Clique no botão de voz.", ToastLength.Short).Show();
+
+            string rec = Android.Content.PM.PackageManager.FeatureMicrophone;
+            if (rec != "android.hardware.microphone")
+            {
+                var alert = new AlertDialog.Builder(botaoVoz.Context);
+                alert.SetTitle("Não foi detetado qualquer microfone no seu dispositivo.");
+                alert.SetPositiveButton("OK", (sender, e) => { return; });
+                alert.Show();
+                return;
+            }
+
+            var intentVoz = new Intent(RecognizerIntent.ActionRecognizeSpeech);
+            intentVoz.PutExtra(RecognizerIntent.ExtraLanguageModel, RecognizerIntent.LanguageModelFreeForm);
+            intentVoz.PutExtra(RecognizerIntent.ExtraPrompt, Application.Context.GetString(Resource.String.mensagemFalarAgora));
+            intentVoz.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
+            intentVoz.PutExtra(RecognizerIntent.ExtraSpeechInputPossiblyCompleteSilenceLengthMillis, 1500);
+            intentVoz.PutExtra(RecognizerIntent.ExtraSpeechInputMinimumLengthMillis, 15000);
+            intentVoz.PutExtra(RecognizerIntent.ExtraMaxResults, 1);
+            intentVoz.PutExtra(RecognizerIntent.ExtraLanguage, "pt-pt");
+            StartActivityForResult(intentVoz, VOZ);
+        }
+
+        protected override void OnActivityResult(int codigoPedido, Result res, Intent pedido)
+        {
+            if (codigoPedido == VOZ)
+            {
+                if (res == Result.Ok)
+                {
+                    var listaRes = pedido.GetStringArrayListExtra(RecognizerIntent.ExtraResults);
+                    if (listaRes.Count != 0)
+                    {
+                        string textoPedido = editTextAlim.Text + listaRes[0];
+                        editTextAlim.Text = textoPedido;
+                        Location localizacao = new Location("gps");
+
+                        localizacao.Latitude = 41.5599;
+                        localizacao.Longitude = 8.3966;
+                        Facade.EfetuarPedido(editTextAlim.Text, localizacao);
+                    }
+                    else
+                    {
+                        editTextAlim.Text = "";
+                    }
+                }
+            }
+            base.OnActivityResult(codigoPedido, res, pedido);
+        }
+
+        public void InicializarLocalizacao()
+        {
+            try
+            {
+                loc = CrossGeolocator.Current;
+                loc.DesiredAccuracy = 100;
+            }
+            catch (Exception e)
+            {
+
+            }
         }
     }
 }

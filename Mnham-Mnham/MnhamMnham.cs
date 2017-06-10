@@ -164,7 +164,7 @@ namespace Mnham_Mnham
 
         // PEDIDOS E CONSULTAS
 
-        public IList<AlimentoEstabelecimento> EfetuarPedido(string termo, Location localizacao)
+        public List<AlimentoEstabelecimento> EfetuarPedido(string termo, Location localizacao)
         {
             RegistaPedidoHistorico(termo);
 
@@ -213,7 +213,6 @@ namespace Mnham_Mnham
                     listaAEs.Add(ae);
                 }
             }
-
             listaAEs.Sort();
 
             return listaAEs;

@@ -64,27 +64,30 @@ namespace Mnham_Mnham
                 this.foto = new byte[foto.Length];
                 Array.Copy(foto, this.foto, foto.Length);
             }
-
             this.classificacaoMedia = ObterAvaliacaoMedia();
+        }
+
+        public Alimento(string designacao, float? preco, ISet<string> ingredientes, byte[] foto) :
+            this(-1, designacao, preco, ingredientes, foto)
+        {
+
         }
 
         public Alimento(Alimento original)
         {
-            id = original.id;
-            designacao = original.designacao;
-            preco = original.preco;
-            ingredientes = (original.ingredientes == null) ? null : new HashSet<string>(original.ingredientes);
+            this.id = original.id;
+            this.designacao = original.designacao;
+            this.preco = original.preco;
+            this.ingredientes = (original.ingredientes == null) ? null : new HashSet<string>(original.ingredientes);
 
             if (original.classificacoes != null)
-            {
-                classificacoes = new List<Classificacao>(original.classificacoes);
-            }
+                this.classificacoes = new List<Classificacao>(original.classificacoes);
+            
             if (original.foto != null)
             {
                 this.foto = new byte[original.foto.Length];
-                Array.Copy(original.foto, this.foto, original.foto.Length);
+                Array.Copy(original.foto, foto, original.foto.Length);
             }
-
             this.classificacaoMedia = original.ObterAvaliacaoMedia();
         }
 

@@ -5,21 +5,21 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
+using System.Collections.Generic;
 
 namespace Mnham_Mnham
 {
     [Activity(Label = "ResultadosActivity", Theme = "@style/AppTheme")]
     public class ResultadosActivity : Activity
     {
-        RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-        ResultadosAdapter mAdapter;
+        private RecyclerView mRecyclerView;
+        private RecyclerView.LayoutManager mLayoutManager;
+        private ResultadosAdapter mAdapter;
+        private List<AlimentoEstabelecimento> resultados;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Create your application here
 
             // get list of results
             // from Intent, most certainly

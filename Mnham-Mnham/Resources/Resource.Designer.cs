@@ -4517,6 +4517,9 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f06004b
 			public const int material_drawer_open = 2131099723;
 			
+			// aapt resource value: 0x7f06005f
+			public const int mensagemFalarAgora = 2131099743;
+			
 			// aapt resource value: 0x7f06005c
 			public const int prompt1 = 2131099740;
 			
