@@ -5,7 +5,8 @@
     p1:layout_width="match_parent"
     p1:layout_height="match_parent"
     p1:id="@+id/relativeLayout1"
-    p1:theme="@style/AppTheme">
+    p1:theme="@style/AppTheme"
+    p1:elevation="5dp">
     <TextView
         p1:text="Mnham Mnham"
         p1:layout_height="wrap_content"
@@ -37,6 +38,25 @@
         p1:paddingTop="12dp"
         p1:background="@drawable/rounded_edittext"
         p1:inputType="text"
+        p1:elevation="5dp" />
+<!-- p1:drawableRight="@drawable/ic_magnify_grey600_24dp" -->
+    <ImageButton
+        p1:id="@+id/searchButton"
+        p1:layout_width="50dp"
+        p1:layout_height="50dp"
         p1:elevation="5dp"
-        p1:drawableRight="@drawable/ic_magnify_grey600_24dp" />
+        p1:src="@drawable/ic_magnify_grey600_24dp"
+        p1:layout_alignTop="@id/editText1"
+        p1:layout_alignBottom="@id/editText1"
+        p1:layout_alignRight="@id/editText1"
+        p1:background="@drawable/round_magnify" />
+    <ImageButton
+        p1:id="@+id/voiceButton"
+        p1:layout_width="60dp"
+        p1:layout_height="60dp"
+        p1:background="@drawable/roundVoiceButton"
+        p1:layout_below="@id/editText1"
+        p1:layout_centerHorizontal="true"
+        p1:layout_marginTop="50dp"
+        p1:src="@drawable/mic" />
 </RelativeLayout>

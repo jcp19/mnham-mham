@@ -200,6 +200,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RegistarPreferenciasActivity.cs" />
     <Compile Include="Alimento.cs" />
     <Compile Include="AlimentoDAO.cs" />
     <Compile Include="AlimentoEstabelecimento.cs" />
@@ -260,6 +261,11 @@
     <AndroidResource Include="Resources\layout\AlimentoPerfil.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\ComentarioCardView.axml" />
+    <AndroidResource Include="Resources\layout\ComentariosLayout.axml" />
+    <AndroidResource Include="Resources\layout\AdicionarPreferenciasLayout.axml" />
+    <AndroidResource Include="Resources\layout\PerfilEstabelecimento.axml" />
+    <AndroidResource Include="Resources\layout\RemoverPreferenciasLayout.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
@@ -297,6 +303,15 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\rounded_image.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\roundVoiceButton.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\round_magnify.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\mic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

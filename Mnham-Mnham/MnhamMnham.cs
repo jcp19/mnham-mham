@@ -25,8 +25,7 @@ namespace Mnham_Mnham
 
             if (cliente != null)
             {
-                Console.WriteLine("1. " + palavraPasse.Length + " 2. " + cliente.PalavraPasse.Length);
-                if (palavraPasse.Equals(cliente.PalavraPasse, StringComparison.Ordinal))
+                if (palavraPasse.Equals(cliente.PalavraPasse))
                 {
                     this.clienteAutenticado = cliente.Id;
                     this.utilizadorEProprietario = false;
@@ -131,12 +130,12 @@ namespace Mnham_Mnham
 
         // PREFERENCIAS E NAO PREFERENCIAS
 
-        public void RegistarPreferencia(ref Preferencia pref)
+        public void RegistarPreferencia(Preferencia pref)
         {
             clientes.AdicionarPreferencia(clienteAutenticado, pref);
         }
 
-        public void RegistarNaoPreferencia(ref Preferencia pref)
+        public void RegistarNaoPreferencia(Preferencia pref)
         {
             clientes.AdicionarNaoPreferencia(clienteAutenticado, pref);
         }
@@ -151,13 +150,13 @@ namespace Mnham_Mnham
             return clientes.ConsultarNaoPreferencias(clienteAutenticado);
         }
 
-        public void RemoverPreferencia(ref string designacaoPreferencia, ref string designacaoAlimento)
+        public void RemoverPreferencia(string designacaoPreferencia, string designacaoAlimento)
         {
             Preferencia preferencia = new Preferencia(designacaoPreferencia, designacaoAlimento);
             clientes.RemoverPreferencia(clienteAutenticado, preferencia);
         }
 
-        public void RemoverNaoPreferencia(ref string designacaoNaoPreferencia, ref string designacaoAlimento)
+        public void RemoverNaoPreferencia(string designacaoNaoPreferencia, string designacaoAlimento)
         {
             Preferencia naoPreferencia = new Preferencia(designacaoNaoPreferencia, designacaoAlimento);
             clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
@@ -165,14 +164,15 @@ namespace Mnham_Mnham
 
         // PEDIDOS E CONSULTAS
 
-        public List<AlimentoEstabelecimento> EfetuarPedido(ref string termo, Location localizacao)
+        public IList<AlimentoEstabelecimento> EfetuarPedido(string termo, Location localizacao)
         {
-            RegistaPedidoHistorico(ref termo);
+            RegistaPedidoHistorico(termo);
+
             PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
             Cliente cliente;
 
-            List<string> preferencias;
-            List<string> naoPreferencias;
+            List<string> preferencias = new List<string>();
+            List<string> naoPreferencias = new List<string>();
 
             if (clienteAutenticado != 0)
             {
@@ -219,7 +219,7 @@ namespace Mnham_Mnham
             return listaAEs;
         }
 
-        private void RegistaPedidoHistorico(ref string termo)
+        private void RegistaPedidoHistorico(string termo)
         {
             if (clienteAutenticado != 0)
             {
@@ -234,14 +234,14 @@ namespace Mnham_Mnham
             }
         }
 
-        public AlimentoEstabelecimento ConsultarAlimento(ref int idAlimento)
+        public AlimentoEstabelecimento ConsultarAlimento(int idAlimento)
         {
             Alimento a =  estabelecimentos.ObterAlimento(idAlimento);
             Estabelecimento e = estabelecimentos.ObterEstabelecimento(a.IdEstabelecimento);
             return new AlimentoEstabelecimento(e, a);
         }
 
-        public Estabelecimento ConsultarEstabelecimento(ref int idEstabelecimento)
+        public Estabelecimento ConsultarEstabelecimento(int idEstabelecimento)
         {
             return estabelecimentos.ObterEstabelecimento(idEstabelecimento);
         }
@@ -278,25 +278,25 @@ namespace Mnham_Mnham
 
         // CLASSIFICACOES E PARTILHA
 
-        public void ClassificarAlimento(ref int idAlimento, ref int classificacao)
+        public void ClassificarAlimento(int idAlimento, int classificacao)
         {
             Classificacao cla = new Classificacao(classificacao, clienteAutenticado);
             estabelecimentos.ClassificarAlimento(idAlimento, cla);
         }
 
-        public void ClassificarAlimento(ref int idAlimento, ref int classificacao, ref string comentario)
+        public void ClassificarAlimento(int idAlimento, int classificacao, string comentario)
         {
             Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
             estabelecimentos.ClassificarAlimento(idAlimento, cla);
         }
 
-        public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao)
+        public void ClassificarEstabelecimento(int idEstabelecimento, int classificacao)
         {
             Classificacao cla = new Classificacao(classificacao, clienteAutenticado);
             estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
         }
 
-        public void ClassificarEstabelecimento(ref int idEstabelecimento, ref int classificacao, ref string comentario)
+        public void ClassificarEstabelecimento(int idEstabelecimento, int classificacao, string comentario)
         {
             Classificacao cla = new Classificacao(classificacao, comentario, clienteAutenticado);
             estabelecimentos.ClassificarEstabelecimento(idEstabelecimento, cla);
@@ -312,39 +312,39 @@ namespace Mnham_Mnham
             return estabelecimentos.ConsultarClassificacoesEstabelecimentos(clienteAutenticado);
         }
 
-        public void RemoverClassificacaoAlimento(ref int idAlimento)
+        public void RemoverClassificacaoAlimento(int idAlimento)
         {
             estabelecimentos.RemoverClassificacaoAlimento(idAlimento, clienteAutenticado);
         }
 
-        public void RemoverClassificacaoEstabelecimento(ref int idEstabelecimento)
+        public void RemoverClassificacaoEstabelecimento(int idEstabelecimento)
         {
             estabelecimentos.RemoverClassificacaoAlimento(idEstabelecimento, clienteAutenticado);
         }
 
         // GESTAO DE ESTABELECIMENTO
 
-        public void RegistarAlimento(ref int idEstabelecimento, Alimento alim)
+        public void RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
             proprietarios.RegistarAlimento(idEstabelecimento, alim);
         }
 
-        public void EditarFotoAlimento(ref int idAlimento, ref byte[] foto)
+        public void EditarFotoAlimento(int idAlimento, byte[] foto)
         {
             proprietarios.EditarFotoAlimento(idAlimento, foto);
         }
 
-        public void AdicionarIngredientesAlimento(ref int idAlimento, ref List<string> designacaoIngredientes)
+        public void AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
             proprietarios.AdicionarIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
 
-        public void RemoverIngredientesAlimento(ref int idAlimento, ref List<string> designacaoIngredientes)
+        public void RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
         {
             proprietarios.RemoverIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
         
-        public void RemoverAlimento(ref int idAlimento)
+        public void RemoverAlimento(int idAlimento)
         {
             proprietarios.RemoverAlimento(idAlimento);
         }

@@ -60,7 +60,7 @@ namespace Mnham_Mnham
                     case 1:
                         intent = new Intent(this, typeof(MainActivity));
                         intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
-                        intent.PutExtra("user_email", email);
+                        intent.PutExtra("utilizador_email", email);
 
                         Toast.MakeText(this, "Login bem sucedido.", ToastLength.Short).Show();
                         StartActivity(intent);

@@ -124,7 +124,7 @@ namespace Mnham_Mnham
                 cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
                 cmd.Parameters["@nome"].Value = cliente.Nome;
 
-                cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 32);
+                cmd.Parameters.Add("@palavra_passe", SqlDbType.VarChar);
                 cmd.Parameters["@palavra_passe"].Value = cliente.PalavraPasse;
 
                 cmd.Connection.Open();

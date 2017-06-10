@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="hello">Hello World, Click Me!</string>
   <string name="app_name">Mnham Mnham</string>
   <string name="login">Login</string>
   <string name="registoCliente">Registar Cliente</string>
   <string name="genero_prompt">Género</string>
+  <string name="prompt1">Adicionar a</string>
+  <string name="prompt2">Remover de</string>
   <string name="registoProprietario">Registar Proprietário</string>
   <string-array name="generos">
     <item>Masculino</item>
     <item>Feminino</item>
   </string-array>
+  <string-array name="adicionara">
+    <item>Todos</item>
+    <item>Alimento</item>
+  </string-array>
 </resources>
-

@@ -13,7 +13,7 @@ using Mikepenz.MaterialDrawer.Utils;
 using Mikepenz.MaterialDrawer;
 using Mikepenz.MaterialDrawer.Models;
 using Mikepenz.MaterialDrawer.Models.Interfaces;
-using Android.Runtime;
+using Android.Graphics;
 
 namespace Mnham_Mnham
 {
@@ -51,6 +51,12 @@ namespace Mnham_Mnham
                 (sender as EditText).OnTouchEvent(e);
             } */
 
+            TextView titulo = FindViewById<TextView>(Resource.Id.textView1);
+            Typeface tf = null;
+
+            tf = Typeface.CreateFromAsset(Application.Context.Assets, "fonts/yellowtail-regular.ttf");
+            if (tf != null)
+                titulo.SetTypeface(tf, TypefaceStyle.Normal);
             string email = Intent.GetStringExtra("utilizador_email") ?? "";
             InicializarCabecalho(email, savedInstanceState);
             // Inicializa items que estão sempre lá.
@@ -90,7 +96,7 @@ namespace Mnham_Mnham
         private void InicializarCabecalho(string email, Bundle savedInstanceState)
         {
             itemUtilizador = new ProfileDrawerItem();
-            itemUtilizador.WithName(email.Equals("") ? "Não Autenticado" : "Nome");
+            itemUtilizador.WithName(email.Equals("") ? "Não Autenticado" : "Email");
             itemUtilizador.WithIcon(Resource.Drawable.profile3);
             itemUtilizador.WithIdentifier(email.Equals("") ? PERFIL_NAO_AUTENTICADO : AUTENTICADO);
             if (!email.Equals(""))
@@ -194,7 +200,6 @@ namespace Mnham_Mnham
             // Esses dois items não contêm um "drawerItem"
             if (drawerItem != null)
             {
-                Toast msg;
                 switch (drawerItem.Identifier)
                 {
                     case 1: // Login
@@ -215,24 +220,26 @@ namespace Mnham_Mnham
                         break;
                     case 3: // Preferências
                         Toast.MakeText(this, "Clique em 'Preferências'", ToastLength.Short).Show();
+                        StartActivity(typeof(RegistarPreferenciasActivity));
                         break;
                     case 4: // Não preferências
                         Toast.MakeText(this, "Clique em 'Não Preferências'", ToastLength.Short).Show();
+                        StartActivity(typeof(RegistarPreferenciasActivity));
                         break;
                     case 5: // Terminar sessão
                         /* Sobre ActivityFlags: https://developer.xamarin.com/api/type/Android.Content.ActivityFlags/ */
-                        Toast.MakeText(this, "Clique em 'Terminar Sessão'", ToastLength.Short).Show();
-
                         Facade.TerminarSessao();
+                        Toast.MakeText(this, "Sessão terminada com sucesso.", ToastLength.Short).Show();
+
                         var intent = new Intent(this, typeof(MainActivity));
                         intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
                         StartActivity(intent);
                         break;
-                    case 6: // Definições
-                        Toast.MakeText(this, "Clique em 'Definições'", ToastLength.Short).Show();
-                        break;
-                    case 7: // Sobre
+                    case 6: // Sobre
                         Toast.MakeText(this, "Clique em 'Sobre'", ToastLength.Short).Show();
+                        break;
+                    case 7: // Definições
+                        Toast.MakeText(this, "Clique em 'Definições'", ToastLength.Short).Show();
                         break;
                 }
                 drawerItem.WithSetSelected(false);
@@ -273,4 +280,3 @@ namespace Mnham_Mnham
         }
     }
 }
-
