@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+    <TextView
+        android:text="Remover Preferências"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="35dp"
+        android:id="@+id/remPrefTitleTextView"
+        android:gravity="center"
+        android:textColor="@color/title_color"
+        android:layout_alignParentLeft="true"
+        android:shadowColor="#ff778774"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:layout_margin="35dp" />
+    <Spinner
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:prompt="@string/prompt2"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:id="@+id/remPrefSpinner"
+        android:padding="10dp"
+        android:backgroundTint="#ff6d6d6d"
+        android:layout_below="@id/remPrefTitleTextView" />
+    <CheckBox
+        android:id="@+id/remPrefCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Não preferência"
+        android:layout_below="@id/remPrefSpinner"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginLeft="35dp" />
+    <EditText
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remPrefCheckBox"
+        android:id="@+id/remPrefEditText"
+        android:padding="12dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="35dp"
+        android:backgroundTint="#ff000000" />
+    <Button
+        android:id="@+id/confirmarRemPredButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remPrefEditText"
+        android:text="Confirmar"
+        android:layout_marginTop="50dp" />
+</RelativeLayout>

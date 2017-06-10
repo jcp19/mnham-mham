@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardCornerRadius="5dp"
+        android:id="@+id/comentarioCardView">
+        <RelativeLayout
+            android:id="@+id/cardComentRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/picPerfilComentarioImageView"
+                android:scaleType="centerCrop"
+                android:paddingBottom="8dp"
+                android:paddingRight="8dp"
+                android:src="@drawable/profile3" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Nome"
+                android:id="@+id/nomePerfilComentarioTextView"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@id/picPerfilComentarioImageView"
+                android:layout_marginBottom="15dp" />
+            <RatingBar
+                android:layout_below="@id/nomePerfilComentarioTextView"
+                android:layout_toRightOf="@id/picPerfilComentarioImageView"
+                android:id="@+id/ratingPerfilComentarioRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:isIndicator="true"
+                android:layout_marginBottom="15dp"
+                style="@style/customRatingBar"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:translationX="35dp" />
+        <!-- Use lighter Text color here  -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="Comentario"
+                android:id="@+id/textoPerfilComentarioTextView"
+                android:layout_gravity="center"
+                android:layout_below="@id/picPerfilComentarioImageView"
+                android:layout_marginBottom="8dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

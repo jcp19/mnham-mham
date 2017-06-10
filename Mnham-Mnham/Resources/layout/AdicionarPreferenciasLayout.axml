@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+    <TextView
+        android:text="Adicionar Preferências"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="35dp"
+        android:id="@+id/addPrefTitleTextView"
+        android:gravity="center"
+        android:textColor="@color/title_color"
+        android:layout_alignParentLeft="true"
+        android:shadowColor="#ff778774"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:layout_margin="35dp" />
+    <Spinner
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:prompt="@string/prompt1"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:id="@+id/addPrefSpinner"
+        android:padding="10dp"
+        android:backgroundTint="#ff6d6d6d"
+        android:layout_below="@id/addPrefTitleTextView" />
+    <CheckBox
+        android:id="@+id/addPrefCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Não preferência"
+        android:layout_below="@id/addPrefSpinner"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginLeft="35dp" />
+    <EditText
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addPrefCheckBox"
+        android:id="@+id/alimentoAddPrefEditText"
+        android:hint="Alimento"
+        android:padding="12dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="35dp"
+        android:backgroundTint="#ff000000" />
+    <EditText
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alimentoAddPrefEditText"
+        android:id="@+id/prefsAddPrefEditText"
+        android:hint="Preferencia1;Preferencia2;..."
+        android:padding="12dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="#ff000000" />
+    <Button
+        android:id="@+id/confirmarAddPrefButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/prefsAddPrefEditText"
+        android:text="Confirmar"
+        android:layout_marginTop="50dp" />
+</RelativeLayout>

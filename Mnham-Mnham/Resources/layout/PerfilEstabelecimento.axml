@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/mapLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/restauranteImageView"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+    </LinearLayout>
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="4dp"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardCornerRadius="5dp"
+            android:id="@+id/restauranteCardView">
+            <RelativeLayout
+                android:id="@+id/perfilRestLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="8dp">
+                <TextView
+                    android:id="@+id/nomeRestPerfilTextView"
+                    android:text="Nome Restaurante"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#333333"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_centerHorizontal="true" />
+                <RatingBar
+                    android:layout_below="@id/nomeRestPerfilTextView"
+                    android:id="@+id/ratingRestPerfilRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1.0"
+                    android:isIndicator="true"
+                    android:layout_marginBottom="8dp"
+                    style="@style/customRatingBar"
+                    android:layout_centerHorizontal="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rua do Restaurante"
+                    android:id="@+id/ruaRestPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:layout_below="@id/ratingRestPerfilRatingBar"
+                    android:layout_centerHorizontal="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contacto"
+                    android:id="@+id/contactoRestPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:layout_below="@id/ruaRestPerfilTextView"
+                    android:layout_centerHorizontal="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Descrição"
+                    android:id="@+id/descricaoRestPerfilTextView"
+                    android:layout_below="@id/contactoRestPerfilTextView"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/horarioRestPerfilButton"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="65dp"
+            android:text="Horário"
+            android:layout_marginRight="10dp" />
+        <Button
+            android:id="@+id/comentariosRestPerfilButton"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Comentários"
+            android:layout_alignBaseline="@id/horarioRestPerfilButton"
+            android:layout_toRightOf="@id/horarioRestPerfilButton"
+            android:layout_marginRight="30dp" />
+        <Button
+            android:id="@+id/partilhaRestPerfilButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Partilhar"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+</LinearLayout>
