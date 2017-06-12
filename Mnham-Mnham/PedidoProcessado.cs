@@ -37,7 +37,7 @@ namespace Mnham_Mnham
             this.preferencias = new List<string>();
             this.naoPreferencias = new List<string>();
 
-            System.Text.StringBuilder palavra = new System.Text.StringBuilder();
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
             int contexto = Contexto.NomeAlimento;
 
             for (int i = 0; i < palavras.Length; i++)
@@ -45,28 +45,28 @@ namespace Mnham_Mnham
                 switch (palavras[i])
                 {
                     case "com":
-                        GuardarPalavra(palavra.ToString(), contexto);
-                        palavra.Clear();
+                        GuardarPalavra(sb.ToString(), contexto);
+                        sb.Clear();
                         contexto = Contexto.Preferencias;
                         break;
                     case "sem":
-                        GuardarPalavra(palavra.ToString(), contexto);
-                        palavra.Clear();
+                        GuardarPalavra(sb.ToString(), contexto);
+                        sb.Clear();
                         contexto = Contexto.NaoPreferencias;
                         break;
                     case ",":
                     case "e":
-                        GuardarPalavra(palavra.ToString(), contexto);
-                        palavra.Clear();
+                        GuardarPalavra(sb.ToString(), contexto);
+                        sb.Clear();
                         break;
                     default:
-                        palavra.Append(palavra[i]);
-                        palavra.Append(" ");
+                        sb.Append(palavras[i]);
+                        sb.Append(" ");
                         break;
                 }
             }
-            if (palavra.Length > 0)
-                GuardarPalavra(palavra.ToString(), contexto);
+            if (sb.Length > 0)
+                GuardarPalavra(sb.ToString(), contexto);
         }
 
         internal List<string> ObterPreferencias()

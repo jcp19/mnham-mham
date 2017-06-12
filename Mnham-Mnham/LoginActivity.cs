@@ -1,11 +1,11 @@
+using System;
+
 using Android.App;
 using Android.Content;
-using Android.Widget;
-using Android.OS;
 using Android.Content.PM;
 using Android.Graphics;
-
-using System;
+using Android.OS;
+using Android.Widget;
 
 namespace Mnham_Mnham
 {
@@ -14,34 +14,12 @@ namespace Mnham_Mnham
     {
         private EditText emailEditText;
         private EditText passwordEditText;
-        private Button confirmButton;
-        private Button cancelButton;
+        private Button botaoConfirmar;
+        private Button botaoCancelar;
 
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
-
-            SetContentView(Resource.Layout.LoginLayout);
-
-            TextView loginTextView = FindViewById<TextView>(Resource.Id.loginTextView);
-            Typeface tf = null;
-            tf = Typeface.CreateFromAsset(Application.Context.Assets, "fonts/yellowtail-regular.ttf");
-            if (tf != null)
-                loginTextView.SetTypeface(tf, TypefaceStyle.Normal);
-
-            emailEditText = FindViewById<EditText>(Resource.Id.emailLoginEditText);
-            passwordEditText = FindViewById<EditText>(Resource.Id.passwordLoginEditText);
-
-            confirmButton = FindViewById<Button>(Resource.Id.confirmLoginButton);
-            confirmButton.Click += HandlerLogin;
-
-            cancelButton = FindViewById<Button>(Resource.Id.cancelLoginButton);
-            cancelButton.Click += delegate
-            {
-                Finish();
-            };
-        }
-
+        //=====================================================================
+        // HANDLERS
+        //=====================================================================
         private void HandlerLogin(object sender, EventArgs e)
         {
             string email = emailEditText.Text;
@@ -75,10 +53,32 @@ namespace Mnham_Mnham
                 }
             }
             else
+                Toast.MakeText(this, "Por favor, preencha todos os campos.", ToastLength.Short).Show();
+        }
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+
+            SetContentView(Resource.Layout.LoginLayout);
+
+            TextView loginTextView = FindViewById<TextView>(Resource.Id.loginTextView);
+            Typeface tf = null;
+            tf = Typeface.CreateFromAsset(Application.Context.Assets, "fonts/yellowtail-regular.ttf");
+            if (tf != null)
+                loginTextView.SetTypeface(tf, TypefaceStyle.Normal);
+
+            emailEditText = FindViewById<EditText>(Resource.Id.emailLoginEditText);
+            passwordEditText = FindViewById<EditText>(Resource.Id.passwordLoginEditText);
+
+            botaoConfirmar = FindViewById<Button>(Resource.Id.botaoConfirmarLogin);
+            botaoConfirmar.Click += HandlerLogin;
+
+            botaoCancelar = FindViewById<Button>(Resource.Id.botaoCancelarLogin);
+            botaoCancelar.Click += delegate
             {
-                Toast toastErro = Toast.MakeText(this, "Por favor, preencha todos os campos.", ToastLength.Short);
-                toastErro.Show();
-            }
+                Finish();
+            };
         }
     }
 }

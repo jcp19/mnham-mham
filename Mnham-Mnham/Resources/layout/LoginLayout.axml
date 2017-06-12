@@ -45,7 +45,7 @@
         p1:layout_marginRight="35dp"
         p1:backgroundTint="#ff000000" />
     <Button
-        p1:id="@+id/confirmLoginButton"
+        p1:id="@+id/botaoConfirmarLogin"
         p1:layout_width="wrap_content"
         p1:layout_height="wrap_content"
         p1:layout_below="@id/passwordLoginEditText"
@@ -54,13 +54,13 @@
         p1:gravity="center"
         p1:layout_marginTop="35dp" />
     <Button
-        p1:id="@+id/cancelLoginButton"
+        p1:id="@+id/botaoCancelarLogin"
         p1:layout_width="wrap_content"
         p1:layout_height="wrap_content"
         p1:layout_below="@id/passwordLoginEditText"
         p1:text="Voltar"
         p1:gravity="center"
         p1:layout_marginTop="35dp"
-        p1:layout_toLeftOf="@id/confirmLoginButton"
+        p1:layout_toLeftOf="@id/botaoConfirmarLogin"
         p1:layout_marginRight="15dp" />
 </RelativeLayout>

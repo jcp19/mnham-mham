@@ -3344,14 +3344,23 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f09002e
 			public const int beginning = 2131296302;
 			
+			// aapt resource value: 0x7f090099
+			public const int botaoCancelarLogin = 2131296409;
+			
+			// aapt resource value: 0x7f090098
+			public const int botaoConfirmarLogin = 2131296408;
+			
+			// aapt resource value: 0x7f09009c
+			public const int botaoPesquisa = 2131296412;
+			
+			// aapt resource value: 0x7f09009d
+			public const int botaoVoz = 2131296413;
+			
 			// aapt resource value: 0x7f090036
 			public const int bottom = 2131296310;
 			
 			// aapt resource value: 0x7f090042
 			public const int buttonPanel = 2131296322;
-			
-			// aapt resource value: 0x7f090099
-			public const int cancelLoginButton = 2131296409;
 			
 			// aapt resource value: 0x7f0900df
 			public const int cancelRegClienteButton = 2131296479;
@@ -3394,9 +3403,6 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f0900d6
 			public const int comentariosRestPerfilButton = 2131296470;
-			
-			// aapt resource value: 0x7f090098
-			public const int confirmLoginButton = 2131296408;
 			
 			// aapt resource value: 0x7f0900de
 			public const int confirmRegClienteButton = 2131296478;
@@ -3459,7 +3465,7 @@ namespace Mnham_Mnham
 			public const int distanciaAlimentoResTextView = 2131296374;
 			
 			// aapt resource value: 0x7f09009b
-			public const int editText1 = 2131296411;
+			public const int editTextPesquisa = 2131296411;
 			
 			// aapt resource value: 0x7f09005d
 			public const int edit_query = 2131296349;
@@ -3830,9 +3836,6 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f090047
 			public const int scrollView = 2131296327;
 			
-			// aapt resource value: 0x7f09009c
-			public const int searchButton = 2131296412;
-			
 			// aapt resource value: 0x7f09005f
 			public const int search_badge = 2131296351;
 			
@@ -3924,7 +3927,7 @@ namespace Mnham_Mnham
 			public const int textSpacerNoTitle = 2131296328;
 			
 			// aapt resource value: 0x7f09009a
-			public const int textView1 = 2131296410;
+			public const int textViewTitulo = 2131296410;
 			
 			// aapt resource value: 0x7f09008f
 			public const int textoPerfilComentarioTextView = 2131296399;
@@ -3952,9 +3955,6 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f090026
 			public const int useLogo = 2131296294;
-			
-			// aapt resource value: 0x7f09009d
-			public const int voiceButton = 2131296413;
 			
 			// aapt resource value: 0x7f09001b
 			public const int wide = 2131296283;

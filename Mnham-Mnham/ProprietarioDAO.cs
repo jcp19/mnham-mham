@@ -5,9 +5,14 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class ProprietarioDAO
+    public class ProprietarioDAO
     {
         private EstabelecimentoDAO estabelecimentos;
+
+        public ProprietarioDAO()
+        {
+            estabelecimentos = new EstabelecimentoDAO();
+        }
 
         internal Proprietario ObterPorEmail(string email)
         {
@@ -37,7 +42,7 @@ namespace Mnham_Mnham
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 // ignora o id do proprietario e cria um novo
-                bool adicionou = true;
+                bool adicionou = false;
 
                 SqlCommand cmd = new SqlCommand("INSERT INTO Proprietario(email,palavra_passe,nome,contacto_tel,genero) VALUES (@email, @palavra_passe, @nome, @contacto_tel, @genero);", sqlCon);
                 cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
@@ -49,7 +54,7 @@ namespace Mnham_Mnham
                 cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
                 cmd.Parameters["@nome"].Value = proprietario.Nome;
 
-                cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 32);
+                cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 30);
                 cmd.Parameters["@palavra_passe"].Value = proprietario.PalavraPasse;
 
                 cmd.Parameters.Add("@contacto_tel", SqlDbType.Char, 19);
