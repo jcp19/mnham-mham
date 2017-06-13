@@ -6,7 +6,7 @@ namespace Mnham_Mnham
 {
     public class Estabelecimento : IComparable, IComparable<Estabelecimento>
     {
-        private int id;
+        private readonly int id;
         private string nome;
         private string contactoTel;
         //private string coords;
@@ -73,8 +73,8 @@ namespace Mnham_Mnham
             }
         }
 
-        public float ClassificacaoMedia { get; internal set; }
-        public object Classificacoes { get; internal set; }
+        public float ClassificacaoMedia { get { return classificacaoMedia; } set { classificacaoMedia = value; } }
+        public object Classificacoes { get { return classificacoes; } }
 
         private Estabelecimento() { }
 
@@ -123,6 +123,14 @@ namespace Mnham_Mnham
             a.AdicionaIngrediente(designacaoIngrediente);
         }
 
+        public void AdicionarClassificacoes(IEnumerable<Classificacao> classificacoes)
+        {
+            foreach (var c in classificacoes)
+            {
+                this.classificacoes[c.IdAutor] = c.Clone();
+            }
+        }
+
         /*public bool RemoverClassificacaoAlimento(int idAlimento, int idCliente)
         {
             return alimentos[idAlimento].RemoverClassificacaoAlimento(idCliente);
@@ -148,7 +156,7 @@ namespace Mnham_Mnham
             alimentos[idAlimento].ClassificarAlimento(idCliente, avaliacao);
         }
 
-        public void ClassificareEstabelecimento(int idCliente, int avaliacao, string comentario)
+        public void ClassificarEstabelecimento(int idCliente, int avaliacao, string comentario)
         {
             classificacoes[idCliente] = new Classificacao(avaliacao, comentario, idCliente);
         }
@@ -160,15 +168,14 @@ namespace Mnham_Mnham
 
         public float ObterAvaliacaoMedia()
         {
-            int total = 0;
-            float soma = 0.0f;
+            int total = 0, soma = 0;
 
             foreach (var classificacao in classificacoes)
             {
                 soma += classificacao.Avaliacao;
                 ++total;
             }
-            return soma / total;
+            return soma / (float)total;
         }
 
         public int CompareTo(Estabelecimento estabelecimento)

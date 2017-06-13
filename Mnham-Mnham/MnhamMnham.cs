@@ -6,8 +6,14 @@ namespace Mnham_Mnham
 {
     public class MnhamMnham
     {
+        // Dados do utilizador autenticado
         private int clienteAutenticado;
         private bool utilizadorEProprietario;
+        // DAOs
+        private ProprietarioDAO proprietarios;
+        private ClienteDAO clientes;
+        private EstabelecimentoDAO estabelecimentos;
+        private PedidoDAO pedidos;
 
         public MnhamMnham()
         {
@@ -17,7 +23,9 @@ namespace Mnham_Mnham
             proprietarios = new ProprietarioDAO();
         }
 
-        // REGISTO E AUTENTICACAO
+        //=====================================================================
+        // REGISTO E AUTENTICAÇÃO
+        //=====================================================================
 
         public int IniciarSessao(string email, string palavraPasse)
         {
@@ -48,10 +56,10 @@ namespace Mnham_Mnham
         }
 
         // Clientes
-
         public bool IniciarSessaoCliente(string email, string palavraPasse)
         {
             Cliente cliente = clientes.ObterPorEmail(email);
+
             if (cliente != null)
             {
                 if (palavraPasse.Equals(cliente.PalavraPasse))
@@ -67,12 +75,11 @@ namespace Mnham_Mnham
 
         public bool RegistarCliente(Cliente cliente)
         {
-            //retorna falso se email já existe
+            // Retorna falso se email já existe.
             return clientes.AdicionarCliente(cliente);
         }
 
-        // Proprietarios
-
+        // Proprietários
         public bool IniciarSessaoProprietario(string email, string palavraPasse)
         {
             Proprietario proprietario = proprietarios.ObterPorEmail(email);
@@ -91,11 +98,13 @@ namespace Mnham_Mnham
 
         public bool RegistarProprietario(Proprietario proprietario)
         {
-            //retorna falso se email já existe
+            // Retorna falso se email já existe
             return proprietarios.AdicionarProprietario(proprietario);
         }
 
-        // GESTAO DE CONTA
+        //=====================================================================
+        // GESTÃO DE CONTA
+        //=====================================================================
 
         public void TerminarSessao()
         {
@@ -106,7 +115,7 @@ namespace Mnham_Mnham
 
         public void EditarDados(Cliente cliente)
         {
-            cliente.DefinirId(this.clienteAutenticado);
+            cliente.Id = this.clienteAutenticado;
             clientes.EditarDados(cliente);
         }
 
@@ -119,16 +128,18 @@ namespace Mnham_Mnham
 
         public void EditarDados(Proprietario proprietario)
         {
-            proprietario.DefinirId(this.clienteAutenticado);
+            proprietario.Id = this.clienteAutenticado;
             proprietarios.EditarDados(proprietario);
         }
-        
+
         public Proprietario ConsultarDadosProprietario()
         {
             return proprietarios.ObterPorId(clienteAutenticado);
         }
 
-        // PREFERENCIAS E NAO PREFERENCIAS
+        //=====================================================================
+        // PREFERÊNCIAS E NÃO PREFERÊNCIAS
+        //=====================================================================
 
         public void RegistarPreferencia(Preferencia pref)
         {
@@ -162,47 +173,56 @@ namespace Mnham_Mnham
             clientes.RemoverNaoPreferencia(clienteAutenticado, naoPreferencia);
         }
 
+        //=====================================================================
         // PEDIDOS E CONSULTAS
+        //=====================================================================
 
         public List<AlimentoEstabelecimento> EfetuarPedido(string termo, Location localizacao)
         {
             RegistaPedidoHistorico(termo);
 
             PedidoProcessado pedidoProcessado = new PedidoProcessado(termo);
-            Cliente cliente;
+            ISet<string> preferencias = new HashSet<string>();
+            ISet<string> naoPreferencias = new HashSet<string>();
 
-            List<string> preferencias = new List<string>();
-            List<string> naoPreferencias = new List<string>();
-
+            //-----------------------------------------------------
+            // Obtenção das Preferências e Não Preferências
+            //-----------------------------------------------------
             if (clienteAutenticado != 0)
             {
                 // cliente
-                cliente = clientes.ObterPorId(clienteAutenticado);
-                preferencias = cliente.ObterPreferencias(pedidoProcessado.ObterNomeAlimento());
-                List<string> preferenciasPedido = pedidoProcessado.ObterPreferencias();
-                preferencias.AddRange(preferenciasPedido);
+                Cliente cliente = clientes.ObterPorId(clienteAutenticado);
 
-                naoPreferencias = cliente.ObterNaoPreferencias(pedidoProcessado.ObterNomeAlimento());
-                List<string> naoPreferenciasPedido = pedidoProcessado.ObterNaoPreferencias();
-                naoPreferencias.AddRange(naoPreferenciasPedido);
+                preferencias = cliente.ObterPreferencias(pedidoProcessado.NomeAlimento);
+                ISet<string> preferenciasPedido = pedidoProcessado.Preferencias;
+                preferencias.UnionWith(preferenciasPedido);
+
+                naoPreferencias = cliente.ObterNaoPreferencias(pedidoProcessado.NomeAlimento);
+                ISet<string> naoPreferenciasPedido = pedidoProcessado.NaoPreferencias;
+                naoPreferencias.UnionWith(naoPreferenciasPedido);
             }
             else
             {
                 // utilizador não autenticado
-                preferencias = pedidoProcessado.ObterPreferencias();
-                naoPreferencias = pedidoProcessado.ObterNaoPreferencias();
+                preferencias = pedidoProcessado.Preferencias;
+                naoPreferencias = pedidoProcessado.NaoPreferencias;
             }
 
+            //----------------------------------------------------------------------------------------------------
+            // Obtenção dos Estabelecimentos e respetivos Alimentos que não contêm não preferências do utilizador
+            //----------------------------------------------------------------------------------------------------
             List<AlimentoEstabelecimento> listaAEs = new List<AlimentoEstabelecimento>();
-            Dictionary<int, Estabelecimento> estabsObtidos = new Dictionary<int, Estabelecimento>();
+            IDictionary<int, Estabelecimento> estabsObtidos = new Dictionary<int, Estabelecimento>();
             foreach (Alimento a in estabelecimentos.ObterAlimentos(pedidoProcessado.NomeAlimento))
             {
-                if(a.ContemNaoPreferencias(naoPreferencias) == false)
+                if (a.ContemNaoPreferencias(naoPreferencias) == false)
                 {
-                    int nPreferencias = a.QuantasPreferenciasContem(preferencias);
                     Alimento alim = estabelecimentos.ObterAlimento(a.Id);
+                    int nPreferencias = a.QuantasPreferenciasContem(preferencias);
+
                     int idEstab = alim.IdEstabelecimento;
                     Estabelecimento estab;
+
                     if (estabsObtidos.TryGetValue(idEstab, out estab) == false)
                     {
                         estab = estabelecimentos.ObterEstabelecimento(idEstab);
@@ -235,8 +255,9 @@ namespace Mnham_Mnham
 
         public AlimentoEstabelecimento ConsultarAlimento(int idAlimento)
         {
-            Alimento a =  estabelecimentos.ObterAlimento(idAlimento);
+            Alimento a = estabelecimentos.ObterAlimento(idAlimento);
             Estabelecimento e = estabelecimentos.ObterEstabelecimento(a.IdEstabelecimento);
+
             return new AlimentoEstabelecimento(e, a);
         }
 
@@ -275,7 +296,9 @@ namespace Mnham_Mnham
             return tendencias;
         }
 
-        // CLASSIFICACOES E PARTILHA
+        //=====================================================================
+        // CLASSIFICAÇÕES E PARTILHA
+        //=====================================================================
 
         public void ClassificarAlimento(int idAlimento, int classificacao)
         {
@@ -321,7 +344,9 @@ namespace Mnham_Mnham
             estabelecimentos.RemoverClassificacaoAlimento(idEstabelecimento, clienteAutenticado);
         }
 
-        // GESTAO DE ESTABELECIMENTO
+        //=====================================================================
+        // GESTÃO DE ESTABELECIMENTO
+        //=====================================================================
 
         public void RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
@@ -342,95 +367,87 @@ namespace Mnham_Mnham
         {
             proprietarios.RemoverIngredientesAlimento(idAlimento, designacaoIngredientes);
         }
-        
+
         public void RemoverAlimento(int idAlimento)
         {
             proprietarios.RemoverAlimento(idAlimento);
         }
-        
+
         public IList<Estabelecimento> ConsultarEstabelecimentos()
         {
             return proprietarios.ConsultarEstabelecimentos(clienteAutenticado);
         }
 
-        public List<Alimento> ConsultarAlimentos(int idEstabelecimento)
+        public IList<Alimento> ConsultarAlimentos(int idEstabelecimento)
         {
             return proprietarios.ConsultarAlimentos(idEstabelecimento);
         }
 
-        private ProprietarioDAO proprietarios;
-        private ClienteDAO clientes;
-        private EstabelecimentoDAO estabelecimentos;
-        private PedidoDAO pedidos;
+        //=====================================================================
+        // COMPARADORES, FILTROS E ORDENAÇÕES POR CRITÉRIO
+        //=====================================================================
 
-
-        // FILTROS
-
-        public List<AlimentoEstabelecimento> OrdenarCusto (List<AlimentoEstabelecimento> listaAEs, bool decrescente)
+        public List<AlimentoEstabelecimento> OrdenarPorCusto(List<AlimentoEstabelecimento> listaAEs, bool crescentemente)
         {
-            listaAEs.Sort(new ComparadorCusto());
+            var comparadorCusto = new ComparadorCusto();
+
+            if (crescentemente)
+                listaAEs.Sort(comparadorCusto);
+            else
+                listaAEs.Sort((ae1, ae2) => comparadorCusto.Compare(ae2, ae1));
+
+            return listaAEs;
+        }
+
+        public List<AlimentoEstabelecimento> OrdenarPorDistancia(List<AlimentoEstabelecimento> listaAEs, bool decrescente)
+        {
+            var comparadorDistancia = new ComparadorDistancia();
+
             if (decrescente)
-            {
-                listaAEs.Reverse();
-            }
+                listaAEs.Sort((ae1, ae2) => comparadorDistancia.Compare(ae2, ae1));
+            else
+                listaAEs.Sort(comparadorDistancia);
+
             return listaAEs;
         }
 
-        public List<AlimentoEstabelecimento> OrdenarDistancia (List<AlimentoEstabelecimento> listaAEs, bool decrescente)
+        public List<AlimentoEstabelecimento> OrdenarPorClassificacaoAlimento(List<AlimentoEstabelecimento> listaAEs, bool decrescente)
         {
-            listaAEs.Sort(new ComparadorDistancia());
+            var comparadorClassificacaoAlimento = new ComparadorClassificaoAlimento();
+
             if (decrescente)
-            {
-                listaAEs.Reverse();
-            }
+                listaAEs.Sort((ae1, ae2) => comparadorClassificacaoAlimento.Compare(ae2, ae1));
+            else
+                listaAEs.Sort(comparadorClassificacaoAlimento);
+
             return listaAEs;
         }
 
-        public List<AlimentoEstabelecimento> OrdenarClassificacaoAlimento (List<AlimentoEstabelecimento> listaAEs, bool crescente)
+        public List<AlimentoEstabelecimento> OrdenarClassificacaoEstabelecimento(List<AlimentoEstabelecimento> listaAEs, bool decrescente)
         {
-            listaAEs.Sort(new ComparadorClassificaoAlimento());
-            if (crescente)
-            {
-                listaAEs.Reverse();
-            }
+            var comparadorClassificacaoEstabelecimento = new ComparadorClassificaoEstabelecimento();
+
+            if (decrescente)
+                listaAEs.Sort((ae1, ae2) => comparadorClassificacaoEstabelecimento.Compare(ae2, ae1));
+            else
+                listaAEs.Sort(comparadorClassificacaoEstabelecimento);
+
             return listaAEs;
         }
 
-        public List<AlimentoEstabelecimento> OrdenarClassificacaoEstabelecimento(List<AlimentoEstabelecimento> listaAEs, bool crescente)
-        {
-            listaAEs.Sort(new ComparadorClassificaoEstabelecimento());
-            if (crescente)
-            {
-                listaAEs.Reverse();
-            }
-            return listaAEs;
-        }
-
-        public List<AlimentoEstabelecimento> OrdenarOmissao (List<AlimentoEstabelecimento> listaAEs)
+        public List<AlimentoEstabelecimento> OrdenarPorOmissao(List<AlimentoEstabelecimento> listaAEs)
         {
             listaAEs.Sort();
             return listaAEs;
         }
 
-        public List<AlimentoEstabelecimento> FiltrarPreco (List<AlimentoEstabelecimento> listaAEs, float preco)
+        public List<AlimentoEstabelecimento> FiltrarPorPreco(List<AlimentoEstabelecimento> listaAEs, float preco)
         {
-            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
-            foreach(AlimentoEstabelecimento ae in listaAEs)
-            {
-                if(ae.Alimento.Preco <= preco)
-                {
-                    listaFiltrada.Add(ae);
-                }
-            }
-            return listaFiltrada;
-        }
+            var listaFiltrada = new List<AlimentoEstabelecimento>();
 
-        public List<AlimentoEstabelecimento> FiltrarDistancia (List<AlimentoEstabelecimento> listaAEs, float distancia)
-        {
-            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
             foreach (AlimentoEstabelecimento ae in listaAEs)
             {
-                //if(ae.Distancia <= distancia)
+                if (ae.Alimento.Preco <= preco)
                 {
                     listaFiltrada.Add(ae);
                 }
@@ -438,12 +455,13 @@ namespace Mnham_Mnham
             return listaFiltrada;
         }
 
-        public List<AlimentoEstabelecimento> FiltrarClassificacaoAlimento (List<AlimentoEstabelecimento> listaAEs, int classificacao)
+        public List<AlimentoEstabelecimento> FiltrarPorDistancia(List<AlimentoEstabelecimento> listaAEs, float distancia)
         {
-            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            var listaFiltrada = new List<AlimentoEstabelecimento>();
+
             foreach (AlimentoEstabelecimento ae in listaAEs)
             {
-                if(ae.Alimento.ClassificacaoMedia >= classificacao)
+                if (ae.Distancia <= distancia)
                 {
                     listaFiltrada.Add(ae);
                 }
@@ -451,9 +469,24 @@ namespace Mnham_Mnham
             return listaFiltrada;
         }
 
-        public List<AlimentoEstabelecimento> FiltrarClassificacaoEstabelecimento (List<AlimentoEstabelecimento> listaAEs, int classificacao)
+        public List<AlimentoEstabelecimento> FiltrarPorClassificacaoAlimento(List<AlimentoEstabelecimento> listaAEs, int classificacao)
         {
-            List<AlimentoEstabelecimento> listaFiltrada = new List<AlimentoEstabelecimento>();
+            var listaFiltrada = new List<AlimentoEstabelecimento>();
+
+            foreach (AlimentoEstabelecimento ae in listaAEs)
+            {
+                if (ae.Alimento.ClassificacaoMedia >= classificacao)
+                {
+                    listaFiltrada.Add(ae);
+                }
+            }
+            return listaFiltrada;
+        }
+
+        public List<AlimentoEstabelecimento> FiltrarClassificacaoEstabelecimento(List<AlimentoEstabelecimento> listaAEs, int classificacao)
+        {
+            var listaFiltrada = new List<AlimentoEstabelecimento>();
+
             foreach (AlimentoEstabelecimento ae in listaAEs)
             {
                 if (ae.Estabelecimento.ClassificacaoMedia >= classificacao)
@@ -467,29 +500,20 @@ namespace Mnham_Mnham
 
     internal class ComparadorClassificaoEstabelecimento : IComparer<AlimentoEstabelecimento>
     {
-        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        public int Compare(AlimentoEstabelecimento ae1, AlimentoEstabelecimento ae2)
         {
-            if (x == null)
+            if (ae1 == null)
             {
-                if (y == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return -1;
-                }
+                return (ae2 == null) ? 0 : -1; // quando (ae2 != null), ae2 aparece primeiro numa ordenação decrescente.
             }
-            else
+            else // ae1 != null
             {
-                if (y == null)
-                {
+                if (ae2 == null)
                     return 1;
-                }
                 else
                 {
-                    // Ordenar decrescentemente
-                    return y.Estabelecimento.ClassificacaoMedia.CompareTo(x.Estabelecimento.ClassificacaoMedia);
+                    return ae1.Estabelecimento.ClassificacaoMedia
+                                              .CompareTo(ae2.Estabelecimento.ClassificacaoMedia);
                 }
             }
         }
@@ -497,29 +521,20 @@ namespace Mnham_Mnham
 
     internal class ComparadorClassificaoAlimento : IComparer<AlimentoEstabelecimento>
     {
-        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        public int Compare(AlimentoEstabelecimento ae1, AlimentoEstabelecimento ae2)
         {
-            if (x == null)
+            if (ae1 == null)
             {
-                if (y == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return -1;
-                }
+                return (ae2 == null) ? 0 : -1;
             }
-            else
+            else // ae1 != null
             {
-                if (y == null)
-                {
+                if (ae2 == null)
                     return 1;
-                }
                 else
                 {
-                    // Ordenar decrescentemente
-                    return y.Alimento.ClassificacaoMedia.CompareTo(x.Alimento.ClassificacaoMedia);
+                    return ae1.Alimento.ClassificacaoMedia
+                                       .CompareTo(ae2.Alimento.ClassificacaoMedia);
                 }
             }
         }
@@ -527,60 +542,36 @@ namespace Mnham_Mnham
 
     internal class ComparadorDistancia : IComparer<AlimentoEstabelecimento>
     {
-        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        public int Compare(AlimentoEstabelecimento ae1, AlimentoEstabelecimento ae2)
         {
-            if (x == null)
+            if (ae1 == null)
             {
-                if (y == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return -1;
-                }
+                return (ae2 == null) ? 0 : -1;
             }
-            else
+            else // ae1 != null
             {
-                if (y == null)
-                {
+                if (ae2 == null)
                     return 1;
-                }
                 else
-                {
-                    // Ordenar crescentemente
-                    return x.Distancia.CompareTo(y.Distancia);
-                }
+                    return ae1.Distancia.CompareTo(ae2.Distancia);
             }
         }
     }
 
     internal class ComparadorCusto : IComparer<AlimentoEstabelecimento>
     {
-        public int Compare(AlimentoEstabelecimento x, AlimentoEstabelecimento y)
+        public int Compare(AlimentoEstabelecimento ae1, AlimentoEstabelecimento ae2)
         {
-            if (x == null)
+            if (ae1 == null)
             {
-                if (y == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return -1;
-                }
+                return (ae2 == null) ? 0 : -1;
             }
-            else
+            else // ae1 != null
             {
-                if (y == null)
-                {
+                if (ae2 == null)
                     return 1;
-                }
                 else
-                {
-                    // Ordenar crescentemente
-                    return Nullable.Compare<float>(x.Alimento.Preco, y.Alimento.Preco);
-                }
+                    return Nullable.Compare<float>(ae1.Alimento.Preco, ae2.Alimento.Preco);
             }
         }
     }

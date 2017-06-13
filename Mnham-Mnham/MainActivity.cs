@@ -3,6 +3,7 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Database;
 using Android.Gms.Common;
 using Android.Gms.Common.Apis;
 using Android.Gms.Location;
@@ -23,18 +24,17 @@ namespace Mnham_Mnham
 {
     [Activity(Label = "Mnham Mnham", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
     public class MainActivity : Activity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener,
-        GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener
+        GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener
     {
         public static readonly MnhamMnham Facade = new MnhamMnham();
-
+        
+        // Widgets
         private AccountHeader cabecalhoDrawer;
         private Drawer drawer;
         private DrawerBuilder drawerBuilder;
         private EditText editTextPesquisa;
-        private GoogleApiClient clienteApiGoogle;
         private ImageButton botaoPesquisa;
         private ImageButton botaoVoz;
-        private LocationRequest locRequest;
         private PrimaryDrawerItem itemLogin;
         private PrimaryDrawerItem itemRegCliente;
         private PrimaryDrawerItem itemRegProprietario;
@@ -47,19 +47,27 @@ namespace Mnham_Mnham
         private TextView titulo;
 
         private bool aGravar;
+        private bool primeiraExecucao; // Permite apresentar as mensagens de erro do OnStart apenas na sua primeira execução
         private bool temMicrofone;
+        private bool temServicosGooglePlay;
 
         const int PROFILE_SETTING = 1;
         const int PERFIL_NAO_AUTENTICADO = 2;
         const int AUTENTICADO = 3;
         const int VOZ = 10;
 
+        // Variáveis e parâmetros usados para obter a localização.
+        private GoogleApiClient clienteApiGoogle;
+        private LocationRequest pedidoLoc;
+        private const long FastestInterval = 500;
+        private const long LocationUpdateInterval = 1000;
+        
         //=====================================================================
-        // MÉTODOS QUE AUXILIAM A INICIALIZAÇÃO DA ACTIVITY
+        // AUXILIARES NA INICIALIZAÇÃO DA ACTIVITY
         //=====================================================================
+
         private void InicializarTitulo()
         {
-            SetContentView(Resource.Layout.Main);
             titulo = FindViewById<TextView>(Resource.Id.textViewTitulo);
             Typeface tf = null;
 
@@ -92,7 +100,7 @@ namespace Mnham_Mnham
             }
         }
 
-        // Inicializa o itemUtilizador e o cabecalhoDrawer cabeçalho do "drawer" lateral (invocado no OnCreate).
+        // Inicializa o itemUtilizador e o cabecalhoDrawer cabeçalho do "drawer" lateral.
         private void InicializarCabecalho(string email, Bundle estadoGravado)
         {
             itemUtilizador = new ProfileDrawerItem();
@@ -112,7 +120,7 @@ namespace Mnham_Mnham
                 .Build();
         }
 
-        // Inicializa os items de definições e "sobre" (usado no OnCreate).
+        // Inicializa os items de definições e "sobre"
         private void InicializarDefinicoesESobre()
         {
             itemSobre = new SecondaryDrawerItem();
@@ -195,20 +203,31 @@ namespace Mnham_Mnham
         //=====================================================================
         // HANDLERS
         //=====================================================================
+
         public void HandlerBotaoPesquisa(object obj, EventArgs args)
         {
             string pedido = editTextPesquisa.Text;
             Location localizacao = ObterLocalizacao();
 
             if (localizacao != null)
-                Facade.EfetuarPedido(pedido, localizacao);
+            {
+                try
+                {
+                    Facade.EfetuarPedido(pedido, localizacao);
+                }
+                catch (SQLException)
+                {
+                    Toast.MakeText(this, "Não foi possível obter resultados.", ToastLength.Short).Show();
+                    Toast.MakeText(this, "Verifique se tem ligação à Internet.", ToastLength.Short).Show();
+                }
+            }
             else
-                Toast.MakeText(this, "Localização indisponível.", ToastLength.Short);
+                Toast.MakeText(this, "Localização indisponível. Não é possível prosseguir com o pedido.", ToastLength.Short).Show();
         }
 
         public void HandlerBotaoVoz(object obj, EventArgs args)
         {
-            Toast.MakeText(this, "Clique no botão de voz.", ToastLength.Short).Show();
+            // Toast.MakeText(this, "Clique no botão de voz.", ToastLength.Short).Show();
 
             aGravar = !aGravar;
             if (aGravar)
@@ -228,6 +247,7 @@ namespace Mnham_Mnham
         //=====================================================================
         // PROCESSAMENTO DO RESULTADO DE ATIVIDADES
         //=====================================================================
+
         protected override void OnActivityResult(int codigoPedido, Result codigoRes, Intent dados)
         {
             if (codigoPedido == VOZ)
@@ -244,37 +264,34 @@ namespace Mnham_Mnham
                         editTextPesquisa.Text = textoPedido;
                         Location localizacao = ObterLocalizacao();
 
+                        Console.WriteLine(localizacao?.ToString() ?? "NULL");
+
                         if (localizacao != null)
                             Facade.EfetuarPedido(editTextPesquisa.Text, localizacao);
                         else
-                            Toast.MakeText(this, "Localização indisponível. Não é possível prosseguir com o pedido.", ToastLength.Short);
+                            Toast.MakeText(this, "Localização indisponível. Não é possível prosseguir com o pedido.", ToastLength.Short).Show();
                     }
                     else
-                    {
                         editTextPesquisa.Text = "";
-                    }
                 }
             }
             base.OnActivityResult(codigoPedido, codigoRes, dados);
         }
 
-        private void InicializarClienteLocalizacao()
-        {
-
-        }
-
         //=====================================================================
         // CICLO DE VIDA DA ATIVIDADE
         //=====================================================================
+
         protected override void OnCreate(Bundle estadoGravado)
         {
             base.OnCreate(estadoGravado);
 
-            aGravar = false; // Não está a ser feito reconhecimento de voz.
+            SetContentView(Resource.Layout.Main);
 
+            aGravar = false;
             InicializarTitulo();
             InicializarBotaoPesquisa();
-            // Se o dispositivo tiver microfone, associa um "click handler" ao botão de voz, se não, desativa-o
+            // Se o dispositivo tem microfone, associa um "click handler" ao botão de voz, se não, desativa-o.
             InicializarBotaoVoz();
 
             string email = Intent.GetStringExtra("utilizador_email") ?? "";
@@ -283,7 +300,7 @@ namespace Mnham_Mnham
 
             drawerBuilder = new DrawerBuilder()
                 .WithActivity(this)
-                .WithAccountHeader(cabecalhoDrawer); // Adicionar o cabeçalho inicializado anteriormente.
+                .WithAccountHeader(cabecalhoDrawer); // Adicionar o cabeçalho inicializado.
 
             if (email.Equals("")) // Utilizador não autenticado
                 InicializarItemsLoginRegisto();
@@ -309,37 +326,36 @@ namespace Mnham_Mnham
                 cabecalhoDrawer.SetActiveProfile(itemUtilizador, false);
             }
 
-            if (ServicosGooglePlayEstaoDisponiveis())
+            temServicosGooglePlay = ServicosGooglePlayEstaoDisponiveis();
+            if (temServicosGooglePlay)
             {
                 // a MainActivity é o contexto implementa as interfaces IConnectionCallabacks e IOnConnectionFailedListener
-                GoogleApiClient clienteApiGoogle = new GoogleApiClient.Builder(this, this, this)
+                clienteApiGoogle = new GoogleApiClient.Builder(this, this, this)
                     .AddApi(LocationServices.API)
                     .Build();
+
+                pedidoLoc = new LocationRequest();
             }
+            primeiraExecucao = true;
         }
 
         protected override void OnStart()
         {
             base.OnStart();
 
-            if (temMicrofone == false)
+            if (primeiraExecucao)
             {
-                var alerta = new AlertDialog.Builder(botaoVoz.Context);
-                alerta.SetTitle("Não foi detetado qualquer microfone no seu dispositivo. Não será possível efetuar pedidos por voz.");
-                alerta.SetPositiveButton("OK", (sender, e) => { return; });
-                alerta.Create().Show();
+                if (temMicrofone == false)
+                {
+                    new AlertDialog.Builder(botaoVoz.Context)
+                        .SetTitle("Nenhum microfone detetado")
+                        .SetMessage("Não será possível efetuar pedidos por voz.")
+                        .SetPositiveButton("OK", (sender, e) => {})
+                        .Create().Show();
+                }
+                primeiraExecucao = false;
             }
-
-            /* if (clienteApiGoogle != null)
-                clienteApiGoogle.Connect(); */
-        }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-
-            if (clienteApiGoogle != null && clienteApiGoogle.IsConnected)
-                clienteApiGoogle.Disconnect();
+            clienteApiGoogle?.Connect();
         }
 
         protected override void OnResume()
@@ -348,7 +364,10 @@ namespace Mnham_Mnham
 
             if (clienteApiGoogle != null)
             {
-                clienteApiGoogle.Connect();
+                if (!clienteApiGoogle.IsConnected)
+                {
+                    clienteApiGoogle.Connect();
+                }
             }
             else if (ServicosGooglePlayEstaoDisponiveis())
             {
@@ -356,7 +375,19 @@ namespace Mnham_Mnham
                     .AddApi(LocationServices.API)
                     .Build();
 
+                pedidoLoc = new LocationRequest();
                 clienteApiGoogle.Connect();
+            }
+        }
+
+        protected override async void OnPause()
+        {
+            base.OnPause();
+
+            if (clienteApiGoogle != null && clienteApiGoogle.IsConnected)
+            {
+                await LocationServices.FusedLocationApi.RemoveLocationUpdates(clienteApiGoogle, this);
+                clienteApiGoogle.Disconnect();
             }
         }
 
@@ -372,6 +403,7 @@ namespace Mnham_Mnham
         //=====================================================================
         // MÉTODOS RELACIONADOS COM OS GOOGLE PLAY SERVICES
         //=====================================================================
+
         private bool ServicosGooglePlayEstaoDisponiveis()
         {
             GoogleApiAvailability disponibilidadeApiGoogle = GoogleApiAvailability.Instance;
@@ -387,7 +419,6 @@ namespace Mnham_Mnham
             if (clienteApiGoogle != null && clienteApiGoogle.IsConnected)
             {
                 loc = LocationServices.FusedLocationApi.GetLastLocation(clienteApiGoogle);
-                Console.WriteLine(loc.ToString());
             }
             else
                 loc = null;
@@ -395,9 +426,20 @@ namespace Mnham_Mnham
             return loc;
         }
 
-        public void OnConnected(Bundle connectionHint)
+        public async void OnConnected(Bundle connectionHint)
         {
             Toast.MakeText(this, "A ligação aos serviços do Google Play foi bem sucedida.", ToastLength.Short);
+
+            pedidoLoc.SetPriority(LocationRequest.PriorityHighAccuracy);
+            pedidoLoc.SetFastestInterval(FastestInterval);
+            pedidoLoc.SetInterval(LocationUpdateInterval);
+
+            await LocationServices.FusedLocationApi.RequestLocationUpdates(clienteApiGoogle, pedidoLoc, this);
+        }
+
+        public void OnLocationChanged(Location location)
+        {
+            
         }
 
         public void OnConnectionSuspended(int cause)
@@ -431,6 +473,7 @@ namespace Mnham_Mnham
         //=====================================================================
         // RESPOSTA A EVENTOS DO DRAWER
         //=====================================================================
+
         public bool OnItemClick(View view, int position, IDrawerItem drawerItem)
         {
             // Existem várias razões para o "drawerItem" ser nulo:

@@ -5,10 +5,10 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class AlimentoDAO
+    public class AlimentoDAO
     {
-        private IngredienteDAO ingredientes;
-        private ClassificacaoAlimentoDAO classificacoes;
+        private readonly IngredienteDAO ingredientes;
+        private readonly ClassificacaoAlimentoDAO classificacoes;
 
         public AlimentoDAO()
         {
@@ -18,89 +18,130 @@ namespace Mnham_Mnham
 
         public Alimento ObterAlimento(int idAlimento)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            Alimento a = null;
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                Alimento a = null;
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Alimento WHERE id = @id AND removido = 0", sqlCon);
-
-                cmd.Parameters.Add("@id", SqlDbType.Int);
-                cmd.Parameters["@id"].Value = idAlimento;
-
-                cmd.Connection.Open();
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool encontrado = reader.Read();
-
-                if (encontrado)
-                {
-                    string designacao = reader["designacao"].ToString();
-                    float? preco = (reader["preco"] == null) ? null : (float?)Convert.ToDecimal(reader["preco"]);
-                    byte[] foto = (reader["foto"] == null) ? null : (byte[])reader["foto"];
-
-                    reader.Close();
-                    ISet<string> ings = ingredientes.ObterIngredientes(idAlimento, sqlCon);
-
-                    a = new Alimento(idAlimento, designacao, preco, ings, foto);
-                    a.AdicionarClassificacoes(classificacoes.ClassificacaoAlimento(idAlimento, sqlCon));
-                    a.ClassificacaoMedia = classificacoes.ObterClassificacaoMedia(idAlimento, sqlCon);
-                }
-                else
-                    reader.Close();
-
-                return a;
-            }
-        }
-
-        // POR FAZER!!!
-        public bool RemoverAlimento(int idAlimento)
-        {
-            throw new NotImplementedException();
-        }
-
-        // POR FAZER !!!!
-        public bool RemoverIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        // CONFIRMAR SE ESTA BEM!!! (INCOMPLETO)
-        public bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacoesIngredientes)
-        {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
-            {
-                bool adicionou = false;
-                SqlCommand cmd = new SqlCommand("INSERT INTO IngredienteAlimento(id_alimento,id_ingrediente) VALUES (@id_a, @id_i);", sqlCon);
-                SqlTransaction transaccao;
-
-                cmd.Parameters.Add("@id_a", SqlDbType.Int);
-                cmd.Parameters.Add("@id_i", SqlDbType.Int);
+                string txtCmd = "SELECT * FROM Alimento WHERE id = @id AND removido = 0";
 
                 sqlCon.Open();
-                transaccao = sqlCon.BeginTransaction("AdicionarIngredientesAlimento");
-
-                cmd.Connection = sqlCon;
-                cmd.Transaction = transaccao;
-                try
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    foreach (string ingr in designacoesIngredientes)
+                    cmd.Parameters.Add("@id", SqlDbType.Int);
+                    cmd.Parameters["@id"].Value = idAlimento;
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        int idIngrediente = ingredientes.AdicionarIngrediente(ingr, sqlCon);
+                        bool encontrado = reader.Read();
 
-                        cmd.ExecuteNonQuery();
+                        if (encontrado)
+                        {
+                            string designacao = reader["designacao"].ToString();
+                            float? preco = (reader["preco"] == DBNull.Value) ? null : (float?)Convert.ToDouble(reader["preco"]);
+                            byte[] foto = (reader["foto"] == DBNull.Value) ? null : (byte[])reader["foto"];
+                            int idEstabelecimento = Convert.ToInt32(reader["id_estabelecimento"]);
+                            
+                            // fecha o reader associado à sqlCon para que IngredienteDAO possa associar-lhe outro reader.
+                            reader.Close(); 
+                            ISet<string> ings = ingredientes.ObterIngredientes(idAlimento, sqlCon);
 
-                        cmd.Parameters["@id_a"].Value = idAlimento;
-                        cmd.Parameters["@id_i"].Value = idIngrediente;
+                            a = new Alimento(idAlimento, designacao, preco, ings, foto, idEstabelecimento);
+                            a.AdicionarClassificacoes(classificacoes.ClassificacaoAlimento(idAlimento, sqlCon));
+                            a.ClassificacaoMedia = a.ObterAvaliacaoMedia();
+                        }
                     }
-                    transaccao.Commit();
-                    adicionou = true;
                 }
-                catch (Exception e)
+            }
+            return a;
+        }
+
+        // Marca como removido o alimento com o id passado argumento.
+        public bool RemoverAlimento(int idAlimento)
+        {
+            bool removido;
+
+            using (var sqlConn = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                string txtCmd = "UPDATE Alimento SET removido = 1 WHERE id = @id_a;";
+
+                using (var cmd = new SqlCommand(txtCmd, sqlConn))
                 {
-                    transaccao.Rollback();
-                    throw e;
+                    cmd.Parameters.Add("@id_a", SqlDbType.Int);
+                    cmd.Parameters["@id_a"].Value = idAlimento;
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        removido = true;
+                    }
+                    catch (SqlException)
+                    {
+                        removido = false;
+                    }
                 }
-                return adicionou;
+            }
+            return removido;
+        }
+
+        public bool RemoverIngredientesAlimento(int idAlimento, IList<string> designacaoIngredientes)
+        {
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                sqlCon.Open();
+                IList<int> idsIngrs = ingredientes.ObterIds(designacaoIngredientes, sqlCon);
+
+                if (idsIngrs.Count == 0)
+                    return false; // o alimento indicado não tem ingredientes para remover.
+
+                string inicioCmd = "DELETE FROM IngredienteAlimento" +
+                                   "WHERE id_alimento = @id_a AND id_ingrediente IN ";
+                string strListaIds = '(' + string.Join(",", idsIngrs) + ')';
+
+                using (var cmd = new SqlCommand(inicioCmd + strListaIds, sqlCon))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            return true;
+        }
+
+        // CONFIRMAR SE ESTA BEM!!! (INCOMPLETO)
+        public bool AdicionarIngredientesAlimento(int idAlimento, IList<string> designacoesIngredientes)
+        {
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                string txtCmd = "INSERT INTO IngredienteAlimento(id_alimento,id_ingrediente) VALUES (@id_a, @id_i);";
+
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    cmd.Parameters.Add("@id_a", SqlDbType.Int);
+                    cmd.Parameters.Add("@id_i", SqlDbType.Int);
+
+                    SqlTransaction transaccao = sqlCon.BeginTransaction("AdicionarIngredientesAlimento");
+
+                    cmd.Connection = sqlCon;
+                    cmd.Transaction = transaccao;
+                    try
+                    {   // Adiciona cada um dos ingredientes.
+                        foreach (string ingr in designacoesIngredientes)
+                        {
+                            int idIngrediente = ingredientes.AdicionarIngrediente(ingr, sqlCon);
+
+                            cmd.ExecuteNonQuery();
+
+                            cmd.Parameters["@id_a"].Value = idAlimento;
+                            cmd.Parameters["@id_i"].Value = idIngrediente;
+                        }
+                        transaccao.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaccao.Rollback();
+                        throw;
+                    }
+                }
+                return true;
             }
         }
 
@@ -113,37 +154,36 @@ namespace Mnham_Mnham
         // CONFIRMAR SE ESTA BEM!!! (INCOMPLETO)
         public bool RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
-            bool adicionou = false;
-
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 string txtCmd = @"INSERT INTO Alimento(designacao, preco, removido, id_estabelecimento, foto)
                                   VALUES(@desig, @preco, @removido, @id_estabelecimento, @foto);";
 
-                SqlCommand cmd = new SqlCommand(txtCmd, sqlCon);
-                cmd.Parameters.Add("@designacao", SqlDbType.NVarChar, 150);
-                cmd.Parameters["@designacao"].Value = alim.Designacao;
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    cmd.Parameters.Add("@designacao", SqlDbType.NVarChar, 150);
+                    cmd.Parameters["@designacao"].Value = alim.Designacao;
 
-                cmd.Parameters.Add("@preco", SqlDbType.Decimal, 10);
-                cmd.Parameters["@preco"].Value = alim.Preco;
-                cmd.Parameters["@preco"].Precision = 10;
-                cmd.Parameters["@preco"].Scale = 2;
+                    cmd.Parameters.Add("@preco", SqlDbType.Decimal, 10);
+                    cmd.Parameters["@preco"].Precision = 10;
+                    cmd.Parameters["@preco"].Scale = 2;
+                    cmd.Parameters["@preco"].Value = (alim.Preco.HasValue) ? (object)alim.Preco.Value : DBNull.Value;
 
-                cmd.Parameters.Add("@removido", SqlDbType.TinyInt);
-                cmd.Parameters["@removido"].Value = 0;
+                    cmd.Parameters.Add("@removido", SqlDbType.TinyInt);
+                    cmd.Parameters["@removido"].Value = 0;
 
-                cmd.Parameters.Add("@id_estabelecimento", SqlDbType.Int);
-                cmd.Parameters["@id_estabelecimento"].Value = idEstabelecimento;
+                    cmd.Parameters.Add("@id_estabelecimento", SqlDbType.Int);
+                    cmd.Parameters["@id_estabelecimento"].Value = idEstabelecimento;
 
-                // POR O TIPO CERTO --> cmd.Parameters.Add("@foto", SqlDbType.Char, 19);
-                cmd.Parameters["@foto"].Value = alim.Foto;
+                    cmd.Parameters.Add("@foto", SqlDbType.VarBinary, -1); // -1 corresponde a VarBinary(max)
+                    cmd.Parameters["@foto"].Value = (object)alim.Foto ?? DBNull.Value;
 
-                cmd.Connection.Open();
-                cmd.ExecuteNonQuery();
-                // Só chegamos aqui se o alimento for inserido com sucesso.
-                adicionou = true;
+                    cmd.ExecuteNonQuery();
+                }
             }
-            return adicionou;
+            // Só chegamos aqui se o alimento foi inserido com sucesso.
+            return true;
         }
 
         public bool ClassificarAlimento(int idAlimento, Classificacao cla)
@@ -159,35 +199,74 @@ namespace Mnham_Mnham
         /** Obtém a lista de alimentos que contêm 'nomeAlimento' na sua designação. */
         public IList<Alimento> ObterAlimentos(string nomeAlimento)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 IList<int> idsAlimentos = new List<int>();
-                SqlCommand cmd = new SqlCommand("SELECT id from Alimento WHERE CHARINDEX(@v,designacao) > 0", sqlCon);
+                string txtCmd = "SELECT id from Alimento WHERE CHARINDEX(@v,designacao) > 0";
 
-                cmd.Parameters.Add("@v", SqlDbType.NVarChar, 150);
-                cmd.Parameters["@v"].Value = nomeAlimento;
-
-                cmd.Connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    idsAlimentos.Add(Convert.ToInt32(reader["id"]));
-                }
-                reader.Close();
+                    cmd.Parameters.Add("@v", SqlDbType.NVarChar, 150);
+                    cmd.Parameters["@v"].Value = nomeAlimento;
 
-                IList<Alimento> alimentos = new List<Alimento>();
-                ISet<string> ing = new HashSet<string>(); // Guarda os ingredientes de um alimento diferente em cada iteração.
-                foreach (var id in idsAlimentos)
-                {
-                    ing = ingredientes.ObterIngredientes(id, sqlCon);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            idsAlimentos.Add(Convert.ToInt32(reader["id"]));
+                        }
+                    }
 
-                    // Apenas se obtém o id e os ingredientes.
-                    alimentos.Add(new Alimento(id, null, null, ing, null));
-                    ing.Clear();
+                    IList<Alimento> alimentos = new List<Alimento>();
+                    foreach (var id in idsAlimentos)
+                    {
+                        ISet<string> ing = ingredientes.ObterIngredientes(id, sqlCon);
+
+                        // Apenas se obtém o id e os ingredientes.
+                        alimentos.Add(new Alimento(id, null, null, ing, null, -1));
+                    }
+                    return alimentos;
                 }
-                return alimentos;
             }
+        }
+
+        public IList<Alimento> ObterAlimentos(int idEstabelecimento)
+        {
+            IList<Alimento> alimsEstabelecimento = new List<Alimento>();
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                var txtCmd = "SELECT * FROM alimento WHERE idEstabelecimento = @id_e AND removido = 0;";
+
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    cmd.Parameters.Add("@id_e", SqlDbType.Int);
+                    cmd.Parameters["@id_e"].Value = idEstabelecimento;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = Convert.ToInt32(reader["id"]);
+                            string designacao = reader["designacao"].ToString();
+                            float? preco = (reader["preco"] == DBNull.Value) ? null : (float?)Convert.ToDouble(reader["preco"]);
+                            byte[] foto = (reader["foto"] == DBNull.Value) ? null : (byte[])reader["foto"];
+
+                            alimsEstabelecimento.Add(new Alimento(id, designacao, preco, null, foto, idEstabelecimento));
+                        }
+                    }
+                }
+                // Para obter os ingredientes de um alimento, aproveitando uma conexão aberta, o IngredienteDAO precisa
+                // de poder associar exclusivamente um reader à conexão. Só neste ponto é que o reader inicial se encontra fechado.
+                foreach (var alimento in alimsEstabelecimento)
+                {
+                    ISet<string> ings = ingredientes.ObterIngredientes(alimento.Id, sqlCon);
+                    alimento.AdicionarIngredientes(ings);
+                }
+            }
+            return alimsEstabelecimento;
         }
 
         public IList<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)

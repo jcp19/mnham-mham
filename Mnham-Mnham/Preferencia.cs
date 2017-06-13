@@ -26,6 +26,7 @@ namespace Mnham_Mnham
         public override bool Equals(object obj)
         {
             Preferencia pref = obj as Preferencia;
+
             if (obj != null)
             {
                 return designacaoIngrediente.Equals(pref.designacaoIngrediente)

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class NaoPreferenciaDAO
+    public class NaoPreferenciaDAO
     {
         public bool AdicionarNaoPreferencia(int clienteAutenticado, Preferencia naoPreferencia)
         {

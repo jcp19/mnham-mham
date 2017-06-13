@@ -7,19 +7,13 @@ namespace Mnham_Mnham
     {
         /** Variáveis de instância. */
         private string nomeAlimento;
-        private IList<string> preferencias;
-        private IList<string> naoPreferencias;
+        private readonly ISet<string> preferencias;
+        private readonly ISet<string> naoPreferencias;
 
         /** Propriedades. */
         public string NomeAlimento { get { return nomeAlimento; } }
-        public IList<string> Preferencias
-        {
-            get { return new List<string>(preferencias); }
-        }
-        public IList<string> NaoPreferencias
-        {
-            get { return new List<string>(naoPreferencias); }
-        }
+        public ISet<string> Preferencias { get { return new HashSet<string>(preferencias); } }
+        public ISet<string> NaoPreferencias { get { return new HashSet<string>(naoPreferencias); } }
 
         /** Classe de constantes usadas para manter um registo do que está a ser processado. */
         private class Contexto
@@ -34,15 +28,15 @@ namespace Mnham_Mnham
             char[] delimitadores = { ' ' };
             string[] palavras = pedido.Split(delimitadores);
 
-            this.preferencias = new List<string>();
-            this.naoPreferencias = new List<string>();
+            this.preferencias = new HashSet<string>();
+            this.naoPreferencias = new HashSet<string>();
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             int contexto = Contexto.NomeAlimento;
 
-            for (int i = 0; i < palavras.Length; i++)
+            foreach (string pal in palavras)
             {
-                switch (palavras[i])
+                switch (pal)
                 {
                     case "com":
                         GuardarPalavra(sb.ToString(), contexto);
@@ -60,28 +54,13 @@ namespace Mnham_Mnham
                         sb.Clear();
                         break;
                     default:
-                        sb.Append(palavras[i]);
+                        sb.Append(pal);
                         sb.Append(" ");
                         break;
                 }
             }
             if (sb.Length > 0)
                 GuardarPalavra(sb.ToString(), contexto);
-        }
-
-        internal List<string> ObterPreferencias()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal List<string> ObterNaoPreferencias()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal string ObterNomeAlimento()
-        {
-            throw new NotImplementedException();
         }
 
         private void GuardarPalavra(string palavra, int contexto)

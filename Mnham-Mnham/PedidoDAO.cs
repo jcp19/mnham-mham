@@ -5,54 +5,80 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class PedidoDAO
+    public class PedidoDAO
     {
         public void AdicionarPedido(Pedido pedido)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("INSERT INTO Pedido(id_cliente, termo, data) VALUES (@id_c, @termo, @data)", sqlCon);
+                string txtCmd = "INSERT INTO Pedido(id_cliente, termo, data) VALUES (@id_c, @termo, @data)";
 
-                cmd.Parameters.Add("@id_c", SqlDbType.Int);
-                cmd.Parameters.Add("@termo", SqlDbType.NVarChar, 150);
-                cmd.Parameters.Add("@data", SqlDbType.DateTime);
-
-                cmd.Parameters["@id_c"].Value = pedido.IdCliente;
-                cmd.Parameters["@termo"].Value = pedido.Termo;
-                cmd.Parameters["@data"].Value = pedido.Data;
-
-                cmd.Connection.Open();
-                cmd.ExecuteNonQuery();
-                
-            }
-        }
-
-        internal IList<Pedido> ObterPedidos(int clienteAutenticado)
-        {
-            IList<Pedido> l = new List<Pedido>();
-
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
-            {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Pedido WHERE id_cliente = @id_c", sqlCon);
-                cmd.Parameters.Add("@id_c", SqlDbType.Int);
-                cmd.Parameters["@id_c"].Value = clienteAutenticado;
-
-                cmd.Connection.Open();
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    l.Add(new Pedido(Convert.ToDateTime(reader["data"]), reader["termo"].ToString(), clienteAutenticado));
+                    cmd.Parameters.Add("@id_c", SqlDbType.Int);
+                    cmd.Parameters.Add("@termo", SqlDbType.NVarChar, 150);
+                    cmd.Parameters.Add("@data", SqlDbType.DateTime);
+
+                    cmd.Parameters["@id_c"].Value = pedido.IdCliente;
+                    cmd.Parameters["@termo"].Value = pedido.Termo;
+                    cmd.Parameters["@data"].Value = pedido.Data;
+
+                    cmd.ExecuteNonQuery();
                 }
-                reader.Close();
             }
-            return l;
         }
 
-        // POR FAZER !!!
-        internal IEnumerable<string> ObterPedidosUltimaSemana()
+        public IList<Pedido> ObterPedidos(int clienteAutenticado)
         {
-            throw new NotImplementedException();
+            IList<Pedido> lPedidos = new List<Pedido>();
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                string txtCmd = "SELECT * FROM Pedido WHERE id_cliente = @id_c";
+
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    cmd.Parameters.Add("@id_c", SqlDbType.Int);
+                    cmd.Parameters["@id_c"].Value = clienteAutenticado;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DateTime data = Convert.ToDateTime(reader["data"]);
+                            string termo = reader["termo"].ToString();
+                            lPedidos.Add(new Pedido(data, termo, clienteAutenticado));
+                        }
+                    }
+                }
+            }
+            return lPedidos;
+        }
+
+        public IList<string> ObterPedidosUltimaSemana()
+        {
+            IList<string> pedidosUltimaSemana = new List<string>();
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            {
+                DateTime umaSemanaAtras = DateTime.Today.AddDays(-7);
+                string dataFormSql = umaSemanaAtras.ToString("yyyy-mm-dd hh-mm-ss");
+                string txtCmd = "SELECT termo FROM Pedido WHERE Pedido.data >= '" + dataFormSql + "\'";
+
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            pedidosUltimaSemana.Add(reader["termo"].ToString());
+                        }
+                    }
+                }
+            }
+            return pedidosUltimaSemana;
         }
     }
 }

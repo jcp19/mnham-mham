@@ -5,10 +5,10 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class EstabelecimentoDAO
+    public class EstabelecimentoDAO
     {
-        private AlimentoDAO alimentos;
-        private ClassificacaoEstabelecimentoDAO classificacoes;
+        private readonly AlimentoDAO alimentos;
+        private readonly ClassificacaoEstabelecimentoDAO classificacoes;
 
         public EstabelecimentoDAO()
         {
@@ -18,31 +18,40 @@ namespace Mnham_Mnham
 
         public Estabelecimento ObterEstabelecimento(int idEstabelecimento)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            Estabelecimento e = null;
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Estabelecimento WHERE id = @id AND ativo != 0", sqlCon);
-                cmd.Parameters.Add("@id", SqlDbType.Int);
-                cmd.Parameters["@id"].Value = idEstabelecimento;
+                string txtCmd = "SELECT * FROM Estabelecimento WHERE id = @id AND ativo != 0";
 
-                cmd.Connection.Open();
-                var reader = cmd.ExecuteReader();
-
-                Estabelecimento e = null;
-
-                if (reader.Read())
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    char[] delim = { ' ' };
-                    string[] coords = reader["coords"].ToString().Split(delim);
-                    float lat = float.Parse(coords[0]);
-                    float lon = float.Parse(coords[1]);
-                    e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(), reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+                    cmd.Parameters.Add("@id", SqlDbType.Int);
+                    cmd.Parameters["@id"].Value = idEstabelecimento;
 
-                    e.Classificacoes = classificacoes.ClassificacoesEstabelecimento(idEstabelecimento, sqlCon);
-                    e.ClassificacaoMedia = classificacoes.ClassificacaoMedia(idEstabelecimento, sqlCon);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            char[] delim = {' '};
+                            string[] coords = reader["coords"].ToString().Split(delim);
+                            double lat = double.Parse(coords[0]);
+                            double lon = double.Parse(coords[1]);
+
+                            e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(),
+                                reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(),
+                                !Convert.ToBoolean(reader["ativo"]));
+                        }
+                    }
                 }
-
-                return e;
+                if (e != null)
+                {
+                    e.AdicionarClassificacoes(classificacoes.ClassificacoesEstabelecimento(idEstabelecimento, sqlCon));
+                    e.ClassificacaoMedia = e.ObterAvaliacaoMedia();
+                }
             }
+            return e;
         }
 
         internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
@@ -57,37 +66,45 @@ namespace Mnham_Mnham
 
         internal IList<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
         {
-            IList<Estabelecimento> l = new List<Estabelecimento>();
+            IList<Estabelecimento> res = new List<Estabelecimento>();
 
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Estabelecimento WHERE id_proprietario = @id_p", sqlCon);
+                string txtCmd = "SELECT * FROM Estabelecimento WHERE id_proprietario = @id_p";
 
-                cmd.Parameters.Add("@id_p", SqlDbType.Int);
-                cmd.Parameters["@id_p"].Value = proprietarioAutenticado;
-
-                cmd.Connection.Open();
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    int idEstabelecimento = Convert.ToInt32(reader["id"]);
+                    cmd.Parameters.Add("@id_p", SqlDbType.Int);
+                    cmd.Parameters["@id_p"].Value = proprietarioAutenticado;
 
-                    char[] delim = { ' ' };
-                    string[] coords = reader["coords"].ToString().Split(delim);
-                    float lat = float.Parse(coords[0]);
-                    float lon = float.Parse(coords[1]);
-                    Estabelecimento e = new Estabelecimento(idEstabelecimento, reader["nome"].ToString(), reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int idEstabelecimento = Convert.ToInt32(reader["id"]);
 
-                    
-                    e.Classificacoes = classificacoes.ClassificacoesEstabelecimento(idEstabelecimento, sqlCon);
-                    e.ClassificacaoMedia = classificacoes.ClassificacaoMedia(idEstabelecimento, sqlCon);
+                            char[] delim = {' '};
+                            string[] coords = reader["coords"].ToString().Split(delim);
+                            double lat = double.Parse(coords[0]);
+                            double lon = double.Parse(coords[1]);
+                            Estabelecimento e = new Estabelecimento(idEstabelecimento, reader["nome"].ToString(),
+                                reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(),
+                                !Convert.ToBoolean(reader["ativo"]));
 
-                    l.Add(e);
+                            res.Add(e);
+                        }
+                    }
                 }
-                reader.Close();
+                foreach (Estabelecimento e in res)
+                {
+                    IList<Classificacao> classif = classificacoes.ClassificacoesEstabelecimento(e.Id, sqlCon);
+
+                    e.AdicionarClassificacoes(classif);
+                    e.ClassificacaoMedia = e.ObterAvaliacaoMedia();
+                }
             }
-            return l;
+            return res;
         }
 
         internal bool AdicionarIngredientesAlimento(int idAlimento, List<string> designacaoIngredientes)
@@ -133,6 +150,11 @@ namespace Mnham_Mnham
         public IList<Alimento> ObterAlimentos(string nomeAlimento)
         {
             return alimentos.ObterAlimentos(nomeAlimento);
+        }
+
+        public IList<Alimento> ConsultarAlimentos(int idEstabelecimento)
+        {
+            return alimentos.ObterAlimentos(idEstabelecimento);
         }
 
         public IList<Classificacao> ConsultarClassificacoesAlimentos(int clienteAutenticado)

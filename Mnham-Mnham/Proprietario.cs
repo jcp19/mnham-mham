@@ -13,7 +13,7 @@ namespace Mnham_Mnham
         private string contactoTel;
         private IList<Estabelecimento> estabelecimentos;
 
-        public int Id { get { return id; } }
+        public int Id { get { return id; } set { id = value; } }
         public char Genero { get { return genero; } }
         public string Email { get { return email; } set { email = value; } }
         public string Nome { get { return nome; } set { nome = value; } }
@@ -22,24 +22,22 @@ namespace Mnham_Mnham
 
         private Proprietario() { }
 
-        public Proprietario(int id, char genero, string email, string nome, string palavraPasse) : this(id, genero, email, nome, palavraPasse, null)
+        public Proprietario(int id, char genero, string email, string nome, string palavraPasse) :
+            this(id, genero, email, nome, palavraPasse, null)
         {
 
         }
 
         public Proprietario(int id, char genero, string email, string nome, string palavraPasse, string contactoTel)
         {
+            if (genero != 'M' && genero != 'F')
+                throw new ArgumentException("O género tem de ser 'M' ou 'F'.");
+
             this.id = id;
-            this.genero = genero;
             this.email = email;
             this.nome = nome;
             this.palavraPasse = palavraPasse;
             this.contactoTel = contactoTel;
-        }
-
-        internal void DefinirId(int clienteAutenticado)
-        {
-            throw new NotImplementedException();
         }
     }
 }

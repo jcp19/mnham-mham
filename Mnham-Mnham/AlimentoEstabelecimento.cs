@@ -4,10 +4,10 @@ namespace Mnham_Mnham
 {
     public class AlimentoEstabelecimento : IComparable, IComparable<AlimentoEstabelecimento>
     {
-        private int numeroPreferenciasVerificadas;
+        private readonly int numeroPreferenciasVerificadas;
+        private readonly Estabelecimento estabelecimento;
+        private readonly Alimento alimento;
         private float distancia;
-        private Estabelecimento estabelecimento;
-        private Alimento alimento;
 
         public int NumeroPreferenciasVerificadas { get { return numeroPreferenciasVerificadas; } }
         public Estabelecimento Estabelecimento { get { return estabelecimento; } }
@@ -17,14 +17,15 @@ namespace Mnham_Mnham
         public AlimentoEstabelecimento(int numeroPreferenciasVerificadas, float distancia, Estabelecimento estabelecimento, Alimento alimento)
         {
             this.numeroPreferenciasVerificadas = numeroPreferenciasVerificadas;
+            this.distancia = distancia;
             this.estabelecimento = estabelecimento;
             this.alimento = alimento;
         }
 
-        public AlimentoEstabelecimento(Estabelecimento e, Alimento a)
+        public AlimentoEstabelecimento(Estabelecimento estabelecimento, Alimento alimento)
         {
-            this.estabelecimento = e;
-            this.alimento = a;
+            this.estabelecimento = estabelecimento;
+            this.alimento = alimento;
         }
 
         public int CompareTo(AlimentoEstabelecimento ae)
@@ -32,14 +33,18 @@ namespace Mnham_Mnham
             if (ae == null)
                 return 1;
 
-            int res = this.numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
+            int res = numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
 
             if (res == 0) // em caso de empate do número de preferências.
             {
-                res = this.alimento.CompareTo(ae.alimento);
+                res = alimento.CompareTo(ae.alimento);
                 if (res == 0) // em caso de empate na comparação de alimentos.
                 {
-                    res = this.estabelecimento.CompareTo(ae.estabelecimento);
+                    res = estabelecimento.CompareTo(ae.estabelecimento);
+                    if (res == 0) // em caso de empate na comparação de estabelecimentos
+                    {
+                        res = distancia.CompareTo(ae.distancia);
+                    }
                 }
             }
             return res;
@@ -54,18 +59,17 @@ namespace Mnham_Mnham
             if (ae == null)
                 throw new ArgumentException("O alimento passado com argumento não é um AlimentoEstabelecimento");
 
-            // Chegamos aqui se (ae != null)
-            int res = this.numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
+            int res = numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
 
             if (res == 0)
             {
-                res = this.alimento.CompareTo(ae.alimento);
+                res = alimento.CompareTo(ae.alimento);
                 if (res == 0)
                 {
-                    res = this.estabelecimento.CompareTo(ae.estabelecimento);
-                    if(res == 0)
+                    res = estabelecimento.CompareTo(ae.estabelecimento);
+                    if (res == 0)
                     {
-                        res = this.distancia.CompareTo(ae.Distancia);
+                        res = distancia.CompareTo(ae.Distancia);
                     }
                 }
             }

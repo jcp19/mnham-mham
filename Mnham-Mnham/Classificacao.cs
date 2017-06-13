@@ -2,12 +2,12 @@ using System;
 
 namespace Mnham_Mnham
 {
-    public class Classificacao
+    public sealed class Classificacao
     {
-        private int avaliacao;
-        private string comentario;
-        private int idAutor;
-        private DateTime data;
+        private readonly int avaliacao;
+        private readonly string comentario;
+        private readonly int idAutor;
+        private readonly DateTime data;
 
         public int Avaliacao { get { return avaliacao; } }
         public string Comentario { get { return comentario; } }
@@ -28,7 +28,8 @@ namespace Mnham_Mnham
         {
             if ((avaliacao < Classificacao.AvaliacaoMin) || (avaliacao > Classificacao.AvaliacaoMax))
             {
-                string msgErro = string.Format("A classificação tem de ser um inteiro no intervalo [{0},{1}].", Classificacao.AvaliacaoMin, Classificacao.AvaliacaoMax);
+                string msgErro = string.Format("A classificação tem de ser um inteiro no intervalo [{0},{1}].",
+                                                Classificacao.AvaliacaoMin, Classificacao.AvaliacaoMax);
 
                 throw new ArgumentOutOfRangeException(msgErro);
             }

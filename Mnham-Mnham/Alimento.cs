@@ -5,15 +5,17 @@ namespace Mnham_Mnham
 {
     public class Alimento : IComparable, IComparable<Alimento>
     {
+        // Variáveis de instância
         private int id;
         private string designacao;
         private float? preco;
-        private ISet<string> ingredientes;
-        private List<Classificacao> classificacoes;
+        private readonly ISet<string> ingredientes;
         private byte[] foto;
         private int idEstabelecimento;
+        private readonly IList<Classificacao> classificacoes;
         private float classificacaoMedia;
 
+        // Propriedades
         public int Id { get { return id; } }
         public string Designacao { get { return designacao; } set { designacao = value; } }
         public float? Preco { get { return preco; } set { preco = value; } }
@@ -41,14 +43,14 @@ namespace Mnham_Mnham
                     foto = null;
             }
         }
-        public int IdEstabelecimento { get { return idEstabelecimento; } }
+        public int IdEstabelecimento { get { return idEstabelecimento; } set { idEstabelecimento = value; } }
         public float ClassificacaoMedia { get { return classificacaoMedia; } set { classificacaoMedia = value; } }
         public IList<Classificacao> Classificacoes { get { return classificacoes; } }
 
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }
 
-        public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, byte[] foto)
+        public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, byte[] foto, int idEstabelecimento)
         {
             if (preco != null && preco < 0.0f)
                 throw new ArgumentOutOfRangeException("O preço do alimento não pode ser negativo.");
@@ -58,17 +60,14 @@ namespace Mnham_Mnham
             this.preco = preco;
             this.ingredientes = (ingredientes == null) ? new HashSet<string>() : new HashSet<string>(ingredientes);
             this.classificacoes = new List<Classificacao>();
-
-            if (foto != null)
-            {
-                this.foto = new byte[foto.Length];
-                Array.Copy(foto, this.foto, foto.Length);
-            }
-            this.classificacaoMedia = ObterAvaliacaoMedia();
+            this.idEstabelecimento = -1; // id desconhecido
+            this.Foto = foto; // usa o setter
+            this.classificacaoMedia = 0.0f;
+            this.idEstabelecimento = idEstabelecimento;
         }
 
         public Alimento(string designacao, float? preco, ISet<string> ingredientes, byte[] foto) :
-            this(-1, designacao, preco, ingredientes, foto)
+            this(-1, designacao, preco, ingredientes, foto, -1)
         {
 
         }
@@ -82,16 +81,13 @@ namespace Mnham_Mnham
 
             if (original.classificacoes != null)
                 this.classificacoes = new List<Classificacao>(original.classificacoes);
-            
-            if (original.foto != null)
-            {
-                this.foto = new byte[original.foto.Length];
-                Array.Copy(original.foto, foto, original.foto.Length);
-            }
-            this.classificacaoMedia = original.ObterAvaliacaoMedia();
+
+            this.idEstabelecimento = original.idEstabelecimento;
+            this.Foto = original.foto; // usa o setter
+            this.classificacaoMedia = original.classificacaoMedia;
         }
 
-        public bool ContemNaoPreferencias(List<string> naoPreferencias)
+        public bool ContemNaoPreferencias(ISet<string> naoPreferencias)
         {
             foreach (string naoPref in naoPreferencias)
             {
@@ -104,7 +100,7 @@ namespace Mnham_Mnham
             return false;
         }
 
-        public int QuantasPreferenciasContem(List<string> preferencias)
+        public int QuantasPreferenciasContem(ISet<string> preferencias)
         {
             int n = 0;
 
@@ -112,7 +108,7 @@ namespace Mnham_Mnham
             {
                 foreach (string ingr in ingredientes)
                 {
-                    if (ingredientes.Contains(pref))
+                    if (ingr.Contains(pref))
                         n++;
                 }
             }
@@ -122,7 +118,9 @@ namespace Mnham_Mnham
         public void AdicionarClassificacoes(IEnumerable<Classificacao> classificacoes)
         {
             foreach (var c in classificacoes)
+            {
                 this.classificacoes[c.IdAutor] = c.Clone();
+            }
         }
 
         public void AdicionarIngrediente(string designacaoIngrediente)
@@ -133,6 +131,12 @@ namespace Mnham_Mnham
         public void AdicionaIngrediente(string designacaoIngrediente)
         {
             ingredientes.Add(designacaoIngrediente);
+        }
+
+        public void AdicionarIngredientes(IEnumerable<string> ingredientes)
+        {
+            foreach (var ingr in ingredientes)
+                this.ingredientes.Add(ingr);
         }
 
         public void ClassificarAlimento(int idCliente, int avaliacao, string comentario)
@@ -152,15 +156,14 @@ namespace Mnham_Mnham
 
         public float ObterAvaliacaoMedia()
         {
-            int total = 0;
-            float soma = 0.0f;
+            int total = 0, soma = 0;
 
             foreach (var classificacao in classificacoes)
             {
                 soma += classificacao.Avaliacao;
                 ++total;
             }
-            return soma / total;
+            return soma / (float)total;
         }
 
         public Alimento Clone()
@@ -173,8 +176,8 @@ namespace Mnham_Mnham
             if (alimento == null)
                 return 1;
 
-            float aval1 = this.ObterAvaliacaoMedia();
-            float aval2 = alimento.ObterAvaliacaoMedia();
+            float aval1 = this.classificacaoMedia;
+            float aval2 = alimento.classificacaoMedia;
 
             return aval1.CompareTo(aval2);
         }
@@ -187,8 +190,8 @@ namespace Mnham_Mnham
             Alimento alimento = obj as Alimento;
             if (alimento != null)
             {
-                float aval1 = this.ObterAvaliacaoMedia();
-                float aval2 = alimento.ObterAvaliacaoMedia();
+                float aval1 = this.classificacaoMedia;
+                float aval2 = alimento.classificacaoMedia;
 
                 return aval1.CompareTo(aval2);
             }

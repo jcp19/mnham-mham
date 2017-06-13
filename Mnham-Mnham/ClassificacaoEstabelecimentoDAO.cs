@@ -5,35 +5,41 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class ClassificacaoEstabelecimentoDAO
+    public class ClassificacaoEstabelecimentoDAO
     {
         public bool ClassificarEstabelecimento(int idEstabelecimento, Classificacao cla)
         {
             bool inseriu = true;
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("INSERT INTO ClassificacaoEstabelecimento(id_cliente, id_estabelecimento, valor, comentario, data) VALUES (@id_c, @id_e, @valor, @comentario, @data)", sqlCon);
+                string txtCmd =
+                    @"INSERT INTO ClassificacaoEstabelecimento(id_cliente, id_estabelecimento, valor, comentario, data)
+                      VALUES (@id_c, @id_e, @valor, @comentario, @data)";
 
-                cmd.Parameters.Add("@id_c", SqlDbType.Int);
-                cmd.Parameters.Add("@id_e", SqlDbType.Int);
-                cmd.Parameters.Add("@valor", SqlDbType.Int);
-                cmd.Parameters.Add("@comentario", SqlDbType.NVarChar, 150);
-                cmd.Parameters.Add("@data", SqlDbType.DateTime);
-
-                cmd.Parameters["@id_c"].Value = cla.IdAutor;
-                cmd.Parameters["@id_e"].Value = idEstabelecimento;
-                cmd.Parameters["@valor"].Value = cla.Avaliacao;
-                cmd.Parameters["@comentario"].Value = cla.Comentario;
-                cmd.Parameters["@data"].Value = cla.Data;
-
-                cmd.Connection.Open();
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (SqlException)
-                {
-                    inseriu = false;
+                    cmd.Parameters.Add("@id_c", SqlDbType.Int);
+                    cmd.Parameters.Add("@id_e", SqlDbType.Int);
+                    cmd.Parameters.Add("@valor", SqlDbType.Int);
+                    cmd.Parameters.Add("@comentario", SqlDbType.NVarChar, 150);
+                    cmd.Parameters.Add("@data", SqlDbType.DateTime);
+
+                    cmd.Parameters["@id_c"].Value = cla.IdAutor;
+                    cmd.Parameters["@id_e"].Value = idEstabelecimento;
+                    cmd.Parameters["@valor"].Value = cla.Avaliacao;
+                    cmd.Parameters["@comentario"].Value = (object)cla.Comentario ?? DBNull.Value;
+                    cmd.Parameters["@data"].Value = cla.Data;
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException)
+                    {
+                        inseriu = false;
+                    }
                 }
             }
             return inseriu;
@@ -42,50 +48,66 @@ namespace Mnham_Mnham
         internal IList<Classificacao> ClassificacoesEstabelecimento(int idEstabelecimento, SqlConnection sqlCon)
         {
             IList<Classificacao> l = new List<Classificacao>();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e", sqlCon);
-            cmd.Parameters.Add("@id_e", SqlDbType.Int);
-            cmd.Parameters["@id_e"].Value = idEstabelecimento;
+            string txtCmd = "SELECT * FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e";
 
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            using (var cmd = new SqlCommand(txtCmd, sqlCon))
             {
-                int avaliacao = Convert.ToInt32(reader["valor"]);
-                string comentario = reader["comentario"].ToString();
-                int idCliente = Convert.ToInt32(reader["id_cliente"]);
-                DateTime data = Convert.ToDateTime(reader["data"]);
+                cmd.Parameters.Add("@id_e", SqlDbType.Int);
+                cmd.Parameters["@id_e"].Value = idEstabelecimento;
 
-                l.Add(new Classificacao(avaliacao, comentario, idCliente, data));
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int avaliacao = Convert.ToInt32(reader["valor"]);
+                        string comentario = reader["comentario"]?.ToString();
+                        int idCliente = Convert.ToInt32(reader["id_cliente"]);
+                        DateTime data = Convert.ToDateTime(reader["data"]);
+
+                        l.Add(new Classificacao(avaliacao, comentario, idCliente, data));
+                    }
+                }
             }
-            reader.Close();
             return l;
         }
 
         internal float ClassificacaoMedia(int idEstabelecimento, SqlConnection sqlCon)
         {
-            SqlCommand cmd = new SqlCommand("SELECT AVG(valor) AS a FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e", sqlCon);
-            cmd.Parameters.Add("@id_e", SqlDbType.Int);
-            cmd.Parameters["@id_e"].Value = idEstabelecimento;
+            float res;
+            string txtCmd = "SELECT AVG(valor) AS a FROM ClassificacaoEstabelecimento WHERE id_estabelecimento = @id_e";
 
-            var reader = cmd.ExecuteReader();
+            using (var cmd = new SqlCommand(txtCmd, sqlCon))
+            {
+                cmd.Parameters.Add("@id_e", SqlDbType.Int);
+                cmd.Parameters["@id_e"].Value = idEstabelecimento;
 
-            reader.Read();
-
-            return (float)(reader["a"] == null ? 0.0 : Convert.ToDouble(reader["a"]));
+                using (var reader = cmd.ExecuteReader())
+                {
+                    reader.Read();
+                    res = (float)(reader["a"] == null ? 0.0 : Convert.ToDouble(reader["a"]));
+                }
+            }
+            return res;
         }
 
         public void RemoverClassificacaoEstabelecimento(int idEstabelecimento, int clienteAutenticado)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("DELETE FROM ClassificacaoEstabelecimento WHERE id_cliente = @id_c AND id_estabelecimento = @id_e", sqlCon);
-                cmd.Parameters.Add("@id_c", SqlDbType.Int);
-                cmd.Parameters.Add("@id_e", SqlDbType.Int);
-
-                cmd.Parameters["@id_c"].Value = clienteAutenticado;
-                cmd.Parameters["@id_e"].Value = idEstabelecimento;
+                string txtCmd = @"DELETE FROM ClassificacaoEstabelecimento
+                                  WHERE id_cliente = @id_c AND id_estabelecimento = @id_e";
 
                 sqlCon.Open();
-                cmd.ExecuteNonQuery();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
+                {
+                    cmd.Parameters.Add("@id_c", SqlDbType.Int);
+                    cmd.Parameters.Add("@id_e", SqlDbType.Int);
+
+                    cmd.Parameters["@id_c"].Value = clienteAutenticado;
+                    cmd.Parameters["@id_e"].Value = idEstabelecimento;
+
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
@@ -93,22 +115,27 @@ namespace Mnham_Mnham
         {
             IList<Classificacao> l = new List<Classificacao>();
 
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM ClassificacaoEstabelecimento WHERE id_cliente = @id_c", sqlCon);
-                cmd.Parameters.Add("@id_c", SqlDbType.Int);
-                cmd.Parameters["@id_c"].Value = clienteAutenticado;
+                string txtCmd = "SELECT * FROM ClassificacaoEstabelecimento WHERE id_cliente = @id_c";
 
-                cmd.Connection.Open();
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    int avaliacao = Convert.ToInt32(reader["valor"]);
-                    string comentario = reader["comentario"].ToString();
-                    // int idAlimento = Convert.ToInt32(reader["id_alimento"]);
-                    DateTime data = Convert.ToDateTime(reader["data"]);
-                    l.Add(new Classificacao(avaliacao, comentario, clienteAutenticado, data));
+                    cmd.Parameters.Add("@id_c", SqlDbType.Int);
+                    cmd.Parameters["@id_c"].Value = clienteAutenticado;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int avaliacao = Convert.ToInt32(reader["valor"]);
+                            string comentario = reader["comentario"]?.ToString();
+                            DateTime data = Convert.ToDateTime(reader["data"]);
+
+                            l.Add(new Classificacao(avaliacao, comentario, clienteAutenticado, data));
+                        }
+                    }
                 }
             }
             return l;

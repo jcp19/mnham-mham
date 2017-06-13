@@ -5,10 +5,10 @@ using System.Data.SqlClient;
 
 namespace Mnham_Mnham
 {
-    class ClienteDAO
+    public class ClienteDAO
     {
-        private PreferenciaDAO preferencias;
-        private NaoPreferenciaDAO naoPreferencias;
+        private readonly PreferenciaDAO preferencias;
+        private readonly NaoPreferenciaDAO naoPreferencias;
 
         public ClienteDAO()
         {
@@ -20,132 +20,136 @@ namespace Mnham_Mnham
         {
             Cliente c = null;
 
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente WHERE email = @email", sqlCon);
-                cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@email"].Value = email;
+                string txtCmd = "SELECT * FROM Cliente WHERE email = @email";
 
-                cmd.Connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool existe = reader.Read();
-
-
-                if (existe)
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    c = new Cliente(Convert.ToInt32(reader["id"]), Convert.ToChar(reader["genero"]), email, reader["nome"].ToString(), reader["palavra_passe"].ToString());
+                    cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+                    cmd.Parameters["@email"].Value = email;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        bool existe = reader.Read();
+
+                        if (existe)
+                        {
+                            int id = Convert.ToInt32(reader["id"]);
+                            char genero = Convert.ToChar(reader["genero"]);
+                            string nome = reader["nome"].ToString();
+                            string palavraPasse = reader["palavra_passe"].ToString();
+
+                            c = new Cliente(id, genero, email, nome, palavraPasse);
+                        }
+                    }
                 }
-                reader.Close();
             }
             return c;
         }
 
         public bool Contains(string email, string password)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT email FROM Cliente WHERE email = @email AND palavra_passe = @pp", sqlCon);
+                string txtCmd = "SELECT email FROM Cliente WHERE email = @email AND palavra_passe = @pass";
 
-                cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@email"].Value = email;
-
-                cmd.Parameters.Add("@pp", SqlDbType.VarChar);
-                cmd.Parameters["@pp"].Value = password;
-
-                cmd.Connection.Open();
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool contains = false;
-
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    contains = reader.Read();
+                    cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+                    cmd.Parameters.Add("@pass", SqlDbType.VarChar);
+
+                    cmd.Parameters["@email"].Value = email;
+                    cmd.Parameters["@pass"].Value = password;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        return reader.Read();
+                    }
                 }
-                finally
-                {
-                    reader.Close();
-                }
-                return contains;
             }
         }
 
         public bool ContemEmail(string email)
         {
-            Cliente c = ObterPorEmail(email);
-            return c != null;
+            return (ObterPorEmail(email) != null);
         }
 
         public Cliente ObterPorId(int id)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            Cliente c = null;
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente WHERE id = @id", sqlCon);
-                cmd.Parameters.Add("@id", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@id"].Value = id;
+                string txtCmd = "SELECT * FROM Cliente WHERE id = @id";
 
-                cmd.Connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool contains = false;
-
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    contains = reader.Read();
-                }
-                finally
-                {
-                    reader.Close();
-                }
+                    cmd.Parameters.Add("@id", SqlDbType.NVarChar, 50);
+                    cmd.Parameters["@id"].Value = id;
 
-                Cliente c = null;
-                if (contains)
-                {
-                    c = new Cliente(id, Convert.ToChar(reader["genero"]), reader["email"].ToString(), reader["nome"].ToString(), reader["palavra_passe"].ToString());
-                }
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        bool existe = reader.Read();
 
-                return c;
+
+                        if (existe)
+                        {
+                            char genero = Convert.ToChar(reader["genero"]);
+                            string email = reader["email"].ToString();
+                            string nome = reader["nome"].ToString();
+                            string palavraPasse = reader["palavra_passe"].ToString();
+
+                            c = new Cliente(id, genero, email, nome, palavraPasse);
+                        }
+                    }
+                }
             }
+            return c;
         }
 
         public bool AdicionarCliente(Cliente cliente)
         // ideia: passar cliente como ref e atualizar o seu id
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            bool adicionou = true;
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 // ignora o id do cliente e cria um novo
-                bool adicionou = true;
+                string txtCmd = @"INSERT INTO Cliente(genero,email,nome,palavra_passe)
+                                  VALUES (@genero, @email, @nome, @palavra_passe);";
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO Cliente(genero,email,nome,palavra_passe) VALUES (@genero, @email, @nome, @palavra_passe);", sqlCon);
-                cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
-                cmd.Parameters["@genero"].Value = cliente.Genero;
-
-                cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@email"].Value = cliente.Email;
-
-                cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
-                cmd.Parameters["@nome"].Value = cliente.Nome;
-
-                cmd.Parameters.Add("@palavra_passe", SqlDbType.VarChar);
-                cmd.Parameters["@palavra_passe"].Value = cliente.PalavraPasse;
-
-                cmd.Connection.Open();
-
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
+                    cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+                    cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
+                    cmd.Parameters.Add("@palavra_passe", SqlDbType.VarChar);
+
+                    cmd.Parameters["@genero"].Value = cliente.Genero;
+                    cmd.Parameters["@email"].Value = cliente.Email;
+                    cmd.Parameters["@nome"].Value = cliente.Nome;
+                    cmd.Parameters["@palavra_passe"].Value = cliente.PalavraPasse;
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException)
+                    {
+                        // se ja existe um cliente registado com o mesmo email ou 
+                        // ha algum problema no acesso à BD
+                        adicionou = false;
+                    }
                 }
-                catch (SqlException)
-                {
-                    // se ja existe um cliente registado com o mesmo email ou 
-                    // ha algum problema no acesso à BD
-                    adicionou = false;
-                }
-                finally
-                {
-                    cmd.Connection.Close();
-                }
-                return adicionou;
             }
+            return adicionou;
         }
+
         public bool AdicionarPreferencia(int clienteAutenticado, Preferencia preferencia)
         {
             return preferencias.AdicionarPreferencia(clienteAutenticado, preferencia);
@@ -177,7 +181,7 @@ namespace Mnham_Mnham
         }
 
         // POR FAZER!!
-        internal void EditarDados(Cliente cliente)
+        public void EditarDados(Cliente cliente)
         {
             throw new NotImplementedException();
         }

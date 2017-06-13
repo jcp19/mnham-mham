@@ -13,11 +13,11 @@ namespace Mnham_Mnham
         private ISet<Preferencia> preferencias;
         private ISet<Preferencia> naoPreferencias;
 
-        public int Id { get { return id; } }
-        public string Email { get { return email; } }
-        public string PalavraPasse { get { return palavraPasse; } }
-        public string Nome { get { return nome; } }
-        public char Genero { get { return genero; } }
+        public int Id { get { return id; } set { id = value; } }
+        public string Email { get { return email; } set { email = value; } }
+        public string PalavraPasse { get { return palavraPasse; } set { palavraPasse = value; } }
+        public string Nome { get { return nome; } set { nome = value; } }
+        public char Genero { get { return genero; } set { genero = value; } }
 
         public Cliente(int id, char genero, string email, string nome, string palavraPasse)
         {
@@ -28,24 +28,20 @@ namespace Mnham_Mnham
             this.genero = genero;
             this.email = email;
             this.nome = nome;
+            this.palavraPasse = palavraPasse;
             this.preferencias = new HashSet<Preferencia>();
             this.naoPreferencias = new HashSet<Preferencia>();
-            this.palavraPasse = palavraPasse;
         }
 
-        public Cliente(char genero, string email, string nome, string palavraPasse) : this(-1, genero, email, nome, palavraPasse)
+        public Cliente(char genero, string email, string nome, string palavraPasse) :
+            this(-1, genero, email, nome, palavraPasse)
         {
 
         }
 
-        public string ObterPass()
+        public ISet<string> ObterNaoPreferencias(string nomeAlimento)
         {
-            return palavraPasse;
-        }
-
-        public List<string> ObterNaoPreferencias(string nomeAlimento)
-        {
-            List<string> naoPrefsAlimento = new List<string>();
+            ISet<string> naoPrefsAlimento = new HashSet<string>();
 
             foreach (var naoPref in naoPreferencias)
             {
@@ -57,9 +53,9 @@ namespace Mnham_Mnham
             return naoPrefsAlimento;
         }
 
-        public List<string> ObterPreferencias(string nomeAlimento)
+        public ISet<string> ObterPreferencias(string nomeAlimento)
         {
-            List<string> prefsAlimento = new List<string>();
+            ISet<string> prefsAlimento = new HashSet<string>();
 
             foreach (var pref in preferencias)
             {
@@ -71,7 +67,7 @@ namespace Mnham_Mnham
             return prefsAlimento;
         }
 
-        public bool RegistarPreferenciaGeral(String designacaoIngrediente)
+        public bool RegistarPreferenciaGeral(string designacaoIngrediente)
         {
             return preferencias.Add(new Preferencia(designacaoIngrediente));
         }
@@ -110,11 +106,6 @@ namespace Mnham_Mnham
         public bool RemoveNaoPreferencia(string designacaoIngrediente, string designacaoAlimento)
         {
             return naoPreferencias.Remove(new Preferencia(designacaoIngrediente, designacaoAlimento));
-        }
-
-        internal void DefinirId(int id)
-        {
-            this.id = id;
         }
     }
 }

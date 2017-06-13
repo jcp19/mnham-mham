@@ -7,133 +7,141 @@ namespace Mnham_Mnham
 {
     public class ProprietarioDAO
     {
-        private EstabelecimentoDAO estabelecimentos;
+        private readonly EstabelecimentoDAO estabelecimentos;
 
         public ProprietarioDAO()
         {
             estabelecimentos = new EstabelecimentoDAO();
         }
 
-        internal Proprietario ObterPorEmail(string email)
+        public Proprietario ObterPorEmail(string email)
         {
             Proprietario p = null;
 
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Proprietario WHERE email = @email", sqlCon);
-                cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@email"].Value = email;
+                string txtCmd = "SELECT * FROM Proprietario WHERE email = @email";
 
-                cmd.Connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool existe = reader.Read();
-                reader.Close();
-
-                if (existe)
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    p = new Proprietario(Convert.ToInt32(reader["id"]), Convert.ToChar(reader["genero"]), email, reader["nome"].ToString(), reader["palavra_passe"].ToString(), reader["contacto_tel"].ToString());
+                    cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+                    cmd.Parameters["@email"].Value = email;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        bool existe = reader.Read();
+
+                        if (existe)
+                        {
+                            int id = Convert.ToInt32(reader["id"]);
+                            char genero = Convert.ToChar(reader["genero"]);
+                            string nome = reader["nome"].ToString();
+                            string palavraPasse = reader["palavra_passe"].ToString();
+                            string contactoTel = reader["contacto_tel"]?.ToString();
+                            p = new Proprietario(id, genero, email, nome, palavraPasse, contactoTel);
+                        }
+                    }
                 }
             }
             return p;
         }
 
-        internal bool AdicionarProprietario(Proprietario proprietario)
+        public bool AdicionarProprietario(Proprietario proprietario)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 // ignora o id do proprietario e cria um novo
-                bool adicionou = false;
+                bool adicionou = true;
+                string txtCmd = @"INSERT INTO Proprietario(email,palavra_passe,nome,contacto_tel,genero)
+                                  VALUES (@email, @palavra_passe, @nome, @contacto_tel, @genero);";
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO Proprietario(email,palavra_passe,nome,contacto_tel,genero) VALUES (@email, @palavra_passe, @nome, @contacto_tel, @genero);", sqlCon);
-                cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
-                cmd.Parameters["@genero"].Value = proprietario.Genero;
-
-                cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@email"].Value = proprietario.Email;
-
-                cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
-                cmd.Parameters["@nome"].Value = proprietario.Nome;
-
-                cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 30);
-                cmd.Parameters["@palavra_passe"].Value = proprietario.PalavraPasse;
-
-                cmd.Parameters.Add("@contacto_tel", SqlDbType.Char, 19);
-                cmd.Parameters["@contacto_tel"].Value = proprietario.ContactoTel;
-
-                cmd.Connection.Open();
-
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (SqlException)
-                {
-                    // se ja existe um proprietario registado com o mesmo email ou 
-                    // ha algum problema no acesso à BD
-                    adicionou = false;
-                }
-                finally
-                {
-                    cmd.Connection.Close();
+                    cmd.Parameters.Add("@genero", SqlDbType.Char, 1);
+                    cmd.Parameters.Add("@email", SqlDbType.NVarChar, 50);
+                    cmd.Parameters.Add("@nome", SqlDbType.NVarChar, 75);
+                    cmd.Parameters.Add("@palavra_passe", SqlDbType.Char, 30);
+                    cmd.Parameters.Add("@contacto_tel", SqlDbType.Char, 19);
+
+                    cmd.Parameters["@genero"].Value = proprietario.Genero;
+                    cmd.Parameters["@email"].Value = proprietario.Email;
+                    cmd.Parameters["@nome"].Value = proprietario.Nome;
+                    cmd.Parameters["@palavra_passe"].Value = proprietario.PalavraPasse;
+                    cmd.Parameters["@contacto_tel"].Value = proprietario.ContactoTel;
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException)
+                    {
+                        // já existe um Proprietario registado com o mesmo email ou houve algum problema no acesso à BD
+                        adicionou = false;
+                    }
                 }
                 return adicionou;
             }
         }
 
-        internal bool RemoverAlimento(int idAlimento)
+        public bool RemoverAlimento(int idAlimento)
         {
             return estabelecimentos.RemoverAlimento(idAlimento);
         }
 
 
         // POR FAZER!!!
-        internal bool EditarDados(Proprietario proprietario)
+        public bool EditarDados(Proprietario proprietario)
         {
             throw new NotImplementedException();
         }
 
-        internal Proprietario ObterPorId(int proprietarioAutenticado)
+        public Proprietario ObterPorId(int proprietarioAutenticado)
         {
-            using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
+            Proprietario p = null;
+
+            using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Proprietario WHERE id = @id", sqlCon);
-                cmd.Parameters.Add("@id", SqlDbType.NVarChar, 50);
-                cmd.Parameters["@id"].Value = proprietarioAutenticado;
+                string txtCmd = "SELECT * FROM Proprietario WHERE id = @id";
 
-                cmd.Connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool contains = false;
-
-                try
+                sqlCon.Open();
+                using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
-                    contains = reader.Read();
-                }
-                finally
-                {
-                    reader.Close();
-                }
+                    cmd.Parameters.Add("@id", SqlDbType.NVarChar, 50);
+                    cmd.Parameters["@id"].Value = proprietarioAutenticado;
 
-                Proprietario p = null;
-                if (contains)
-                {
-                    p = new Proprietario(proprietarioAutenticado, Convert.ToChar(reader["genero"]), reader["email"].ToString(), reader["nome"].ToString(), reader["palavra_passe"].ToString(), reader["contacto_tel"].ToString());
-                }
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        bool encontrado = reader.Read();
 
-                return p;
+                        if (encontrado)
+                        {
+                            char genero = Convert.ToChar(reader["genero"]);
+                            string email = reader["email"].ToString();
+                            string nome = reader["nome"].ToString();
+                            string palavraPasse = reader["palavra_passe"].ToString();
+                            string contactoTel = reader["contacto_tel"]?.ToString();
+
+                            p = new Proprietario(proprietarioAutenticado, genero, email, nome, palavraPasse, contactoTel);
+                        }
+                    }
+                }
             }
+            return p;
         }
 
-        internal IList<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
+        public IList<Estabelecimento> ConsultarEstabelecimentos(int proprietarioAutenticado)
         {
             return estabelecimentos.ConsultarEstabelecimentos(proprietarioAutenticado);
         }
 
-        internal List<Alimento> ConsultarAlimentos(int idEstabelecimento)
+        public IList<Alimento> ConsultarAlimentos(int idEstabelecimento)
         {
-            return ConsultarAlimentos(idEstabelecimento);
+            return estabelecimentos.ConsultarAlimentos(idEstabelecimento);
         }
 
-        internal bool RegistarAlimento(int idEstabelecimento, Alimento alim)
+        public bool RegistarAlimento(int idEstabelecimento, Alimento alim)
         {
             return estabelecimentos.RegistarAlimento(idEstabelecimento, alim);
         }
