@@ -37,6 +37,7 @@ namespace Mnham_Mnham
         private PrimaryDrawerItem itemNaoPrefs;
         private PrimaryDrawerItem itemTerminarSessao;
         private ProfileDrawerItem itemUtilizador;
+        private PrimaryDrawerItem itemTendencias;
         private SecondaryDrawerItem itemDefinicoes;
         private SecondaryDrawerItem itemSobre;
         private TextView titulo;
@@ -198,6 +199,20 @@ namespace Mnham_Mnham
             );
         }
 
+        private void InicializarItemsUtilizador()
+        {
+            itemTendencias = new PrimaryDrawerItem();
+            itemTendencias.WithName("Tendências");
+            //itemTendencias.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
+            itemTendencias.WithIdentifier(8);
+            itemTendencias.WithSelectable(true);
+
+            drawerBuilder.AddDrawerItems(
+                itemTendencias
+            //new DividerDrawerItem(),
+            );
+        }
+
         //=====================================================================
         // HANDLERS
         //=====================================================================
@@ -285,6 +300,9 @@ namespace Mnham_Mnham
                 InicializarItemsLoginRegisto();
             else  // TODO: Testar se o utilizador é um proprietário ou um cliente e criar items diferentes para cada caso!
                 InicializarItemsCliente();
+
+            // Cliente ou Utilizador não Autenticado
+            InicializarItemsUtilizador();
 
             drawer = drawerBuilder.WithOnDrawerItemClickListener(this)
                                   .WithSavedInstance(estadoGravado)
@@ -490,6 +508,9 @@ namespace Mnham_Mnham
                         break;
                     case 7: // Definições
                         Toast.MakeText(this, "Clique em 'Definições'", ToastLength.Short).Show();
+                        break;
+                    case 8: // Tendencias
+                        StartActivity(typeof(TendenciasActivity));
                         break;
                 }
                 drawerItem.WithSetSelected(false);

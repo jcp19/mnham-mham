@@ -84,7 +84,7 @@
                 android:id="@+id/ruaAlimentoResTextView"
                 android:layout_gravity="center"
                 android:layout_below="@id/picAlimentoResImageView"
-                android:layout_marginBottom="8dp" 
+                android:layout_marginBottom="8dp"
                 android:ellipsize="end"
                 android:singleLine="true" />
             <TextView

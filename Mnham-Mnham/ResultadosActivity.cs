@@ -50,9 +50,9 @@ namespace Mnham_Mnham
             else
                 resultados = new List<AlimentoEstabelecimento>(0);
 
-            SetContentView(Resource.Layout.ResultadosLayout);
+            SetContentView(Resource.Layout.ListLayout);
 
-            mRecyclerView = FindViewById<RecyclerView>(Resource.Id.resultadosRecyclerView);
+            mRecyclerView = FindViewById<RecyclerView>(Resource.Id.listRecyclerView);
 
             mLayoutManager = new LinearLayoutManager(this);
             mRecyclerView.SetLayoutManager(mLayoutManager);

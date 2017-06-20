@@ -275,7 +275,7 @@ namespace Mnham_Mnham
             return pedidos.ObterPedidos(clienteAutenticado);
         }
 
-        public SortedSet<Tendencia> ObterTendencias()
+        public List<Tendencia> ObterTendencias()
         {
             Dictionary<string, Tendencia> aux = new Dictionary<string, Tendencia>();
             foreach (string s in pedidos.ObterPedidosUltimaSemana())
@@ -291,12 +291,21 @@ namespace Mnham_Mnham
                     aux.Add(s, t);
                 }
             }
-            SortedSet<Tendencia> tendencias = new SortedSet<Tendencia>();
+            SortedSet<Tendencia> tends = new SortedSet<Tendencia>();
             foreach (Tendencia t in aux.Values)
             {
-                tendencias.Add(t);
+                tends.Add(t);
             }
-            //Alterar para retornar as 5 mais frequentes!!
+            List<Tendencia> tendencias = new List<Tendencia>();
+            int i = 0;
+            foreach (Tendencia tend in tends)
+            {
+                if (i == 5)
+                    break;
+
+                tendencias.Add(tend);
+                i++;
+            }
             return tendencias;
         }
 

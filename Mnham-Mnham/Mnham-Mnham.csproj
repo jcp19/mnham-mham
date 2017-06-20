@@ -172,6 +172,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultadosActivity.cs" />
     <Compile Include="Tendencia.cs" />
+    <Compile Include="TendenciasActivity.cs" />
     <Compile Include="UtilitarioApiGoogle.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +197,7 @@
     <AndroidResource Include="Resources\layout\RegistoPropLayout.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\ResultadosLayout.axml">
+    <AndroidResource Include="Resources\layout\ListLayout.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\AlimentoCardView.axml">
@@ -210,6 +211,9 @@
     <AndroidResource Include="Resources\layout\AdicionarPreferenciasLayout.axml" />
     <AndroidResource Include="Resources\layout\PerfilEstabelecimento.axml" />
     <AndroidResource Include="Resources\layout\RemoverPreferenciasLayout.axml" />
+    <AndroidResource Include="Resources\layout\TendenciaCardView.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
