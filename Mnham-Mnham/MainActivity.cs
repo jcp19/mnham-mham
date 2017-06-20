@@ -3,12 +3,7 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Database;
-using Android.Gms.Common;
-using Android.Gms.Common.Apis;
-using Android.Gms.Location;
 using Android.Graphics;
-using Android.Locations;
 using Android.OS;
 using Android.Speech;
 using Android.Views;
@@ -23,8 +18,8 @@ using Mikepenz.Typeface;
 namespace Mnham_Mnham
 {
     [Activity(Label = "Mnham Mnham", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
-    public class MainActivity : Activity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener,
-        GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener
+    public class MainActivity : Activity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener
+        /* ,GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener*/
     {
         public static readonly MnhamMnham Facade = new MnhamMnham();
         
@@ -56,11 +51,14 @@ namespace Mnham_Mnham
         const int AUTENTICADO = 3;
         const int VOZ = 10;
 
-        // Variáveis e parâmetros usados para obter a localização.
+        private UtilitarioApiGoogle utilitarioApiGoogle;
+        // APAGAR ESTAS 4 v.i. DEPOIS DO UtilitarioApiGoogle estar testado
+        /*
         private GoogleApiClient clienteApiGoogle;
         private LocationRequest pedidoLoc;
         private const long FastestInterval = 500;
         private const long LocationUpdateInterval = 1000;
+        */
         
         //=====================================================================
         // AUXILIARES NA INICIALIZAÇÃO DA ACTIVITY
@@ -207,28 +205,14 @@ namespace Mnham_Mnham
         public void HandlerBotaoPesquisa(object obj, EventArgs args)
         {
             string pedido = editTextPesquisa.Text;
-            Location localizacao = ObterLocalizacao();
+            var intent = new Intent(this, typeof(ResultadosActivity));
 
-            if (localizacao != null)
-            {
-                try
-                {
-                    Facade.EfetuarPedido(pedido, localizacao);
-                }
-                catch (SQLException)
-                {
-                    Toast.MakeText(this, "Não foi possível obter resultados.", ToastLength.Short).Show();
-                    Toast.MakeText(this, "Verifique se tem ligação à Internet.", ToastLength.Short).Show();
-                }
-            }
-            else
-                Toast.MakeText(this, "Localização indisponível. Não é possível prosseguir com o pedido.", ToastLength.Short).Show();
+            intent.PutExtra("pedido", pedido);
+            StartActivity(intent);
         }
 
         public void HandlerBotaoVoz(object obj, EventArgs args)
         {
-            // Toast.MakeText(this, "Clique no botão de voz.", ToastLength.Short).Show();
-
             aGravar = !aGravar;
             if (aGravar)
             {
@@ -259,17 +243,12 @@ namespace Mnham_Mnham
 
                     if (listaRes.Count != 0)
                     {
-                        string textoPedido = editTextPesquisa.Text + listaRes[0];
+                        string textoPedido = listaRes[0];
 
                         editTextPesquisa.Text = textoPedido;
-                        Location localizacao = ObterLocalizacao();
-
-                        Console.WriteLine(localizacao?.ToString() ?? "NULL");
-
-                        if (localizacao != null)
-                            Facade.EfetuarPedido(editTextPesquisa.Text, localizacao);
-                        else
-                            Toast.MakeText(this, "Localização indisponível. Não é possível prosseguir com o pedido.", ToastLength.Short).Show();
+                        var intent = new Intent(this, typeof(ResultadosActivity));
+                        intent.PutExtra("pedido", textoPedido);
+                        StartActivity(intent);
                     }
                     else
                         editTextPesquisa.Text = "";
@@ -325,17 +304,7 @@ namespace Mnham_Mnham
                 // Definir o perfil ativo
                 cabecalhoDrawer.SetActiveProfile(itemUtilizador, false);
             }
-
-            temServicosGooglePlay = ServicosGooglePlayEstaoDisponiveis();
-            if (temServicosGooglePlay)
-            {
-                // a MainActivity é o contexto implementa as interfaces IConnectionCallabacks e IOnConnectionFailedListener
-                clienteApiGoogle = new GoogleApiClient.Builder(this, this, this)
-                    .AddApi(LocationServices.API)
-                    .Build();
-
-                pedidoLoc = new LocationRequest();
-            }
+            utilitarioApiGoogle = MnhamMnhamApp.ObterUtilitarioApiGoogle();
             primeiraExecucao = true;
         }
 
@@ -355,41 +324,38 @@ namespace Mnham_Mnham
                 }
                 primeiraExecucao = false;
             }
-            clienteApiGoogle?.Connect();
+            utilitarioApiGoogle.Connect();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
 
-            if (clienteApiGoogle != null)
+            if (!utilitarioApiGoogle.IsConnected())
             {
-                if (!clienteApiGoogle.IsConnected)
-                {
-                    clienteApiGoogle.Connect();
-                }
+                utilitarioApiGoogle.Connect();
             }
-            else if (ServicosGooglePlayEstaoDisponiveis())
+            if (utilitarioApiGoogle.IsConnected())
             {
-                clienteApiGoogle = new GoogleApiClient.Builder(this, this, this)
-                    .AddApi(LocationServices.API)
-                    .Build();
-
-                pedidoLoc = new LocationRequest();
-                clienteApiGoogle.Connect();
+                utilitarioApiGoogle.PedirAtualizacoesLocalizacao();
             }
         }
 
-        protected override async void OnPause()
+        /*protected override void OnPause()
         {
             base.OnPause();
 
-            if (clienteApiGoogle != null && clienteApiGoogle.IsConnected)
+            if (utilitarioApiGoogle.IsConnected())
             {
-                await LocationServices.FusedLocationApi.RemoveLocationUpdates(clienteApiGoogle, this);
-                clienteApiGoogle.Disconnect();
+                utilitarioApiGoogle.PararAtualizacoesLocalizacao();
             }
-        }
+        }*/
+
+        /*protected override void OnStop()
+        {
+            base.OnStop();
+            utilitarioApiGoogle.Disconnect();
+        }*/
 
         protected override void OnSaveInstanceState(Bundle outState)
         {
@@ -404,15 +370,15 @@ namespace Mnham_Mnham
         // MÉTODOS RELACIONADOS COM OS GOOGLE PLAY SERVICES
         //=====================================================================
 
-        private bool ServicosGooglePlayEstaoDisponiveis()
+        /*private bool ServicosGooglePlayEstaoDisponiveis()
         {
             GoogleApiAvailability disponibilidadeApiGoogle = GoogleApiAvailability.Instance;
             int resQuery = disponibilidadeApiGoogle.IsGooglePlayServicesAvailable(this);
 
             return (resQuery == ConnectionResult.Success);
-        }
+        }*/
 
-        private Location ObterLocalizacao()
+        /*private Location ObterLocalizacao()
         {
             Location loc;
 
@@ -424,9 +390,11 @@ namespace Mnham_Mnham
                 loc = null;
 
             return loc;
-        }
+        }*/
 
-        public async void OnConnected(Bundle connectionHint)
+
+        // -> REMOVER PRÓXIMOS 4 MÉTODOS COMENTADOS DEPOIS DO UtilitarioApiGoogle ESTAR TESTADO
+        /*public async void OnConnected(Bundle connectionHint)
         {
             Toast.MakeText(this, "A ligação aos serviços do Google Play foi bem sucedida.", ToastLength.Short);
 
@@ -468,7 +436,7 @@ namespace Mnham_Mnham
             alerta.SetTitle("Não foi possível ligar aos serviços do Google Play. Código do erro: " + result.ErrorCode);
             alerta.SetPositiveButton("OK", (sender, e) => { return; });
             alerta.Create().Show();
-        }
+        }*/
 
         //=====================================================================
         // RESPOSTA A EVENTOS DO DRAWER

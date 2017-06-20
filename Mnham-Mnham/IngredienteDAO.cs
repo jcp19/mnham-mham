@@ -12,8 +12,8 @@ namespace Mnham_Mnham
             ISet<string> ingredientes = new HashSet<string>();
             string txtCmd = @"
                 SELECT Ingrediente.designacao
-                FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_alimento = Ingrediente.id
-                WHERE Ingrediente.id = @id";
+                FROM Ingrediente INNER JOIN IngredienteAlimento ON IngredienteAlimento.id_ingrediente = Ingrediente.id
+                WHERE IngredienteAlimento.id_alimento = @id";
 
             using (var cmd = new SqlCommand(txtCmd, sqlCon))
             {

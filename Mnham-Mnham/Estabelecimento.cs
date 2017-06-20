@@ -1,6 +1,7 @@
 using Android.Locations;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
@@ -78,7 +79,8 @@ namespace Mnham_Mnham
 
         private Estabelecimento() { }
 
-        public Estabelecimento(int id, string nome, string contactoTel, double latitude, double longitude, string horario, bool permanFechado)
+        [JsonConstructor]
+        public Estabelecimento(int id, string nome, string contactoTel, string morada, double latitude, double longitude, string horario, bool permanFechado)
         {
             this.id = id;
             this.nome = nome;
@@ -87,6 +89,7 @@ namespace Mnham_Mnham
             this.coords.Latitude = latitude;
             this.coords.Longitude = longitude;
             this.horario = horario;
+            this.morada = morada;
             this.permanFechado = permanFechado;
             this.alimentos = new Dictionary<int, Alimento>();
             this.classificacoes = new List<Classificacao>();
@@ -175,7 +178,7 @@ namespace Mnham_Mnham
                 soma += classificacao.Avaliacao;
                 ++total;
             }
-            return soma / (float)total;
+            return (total > 0) ? (soma / (float)total) : 0.0f;
         }
 
         public int CompareTo(Estabelecimento estabelecimento)

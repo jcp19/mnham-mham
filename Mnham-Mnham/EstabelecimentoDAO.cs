@@ -40,8 +40,8 @@ namespace Mnham_Mnham
                             double lon = double.Parse(coords[1]);
 
                             e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(),
-                                reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(),
-                                !Convert.ToBoolean(reader["ativo"]));
+                                reader["contacto_tel"].ToString(), reader["morada"].ToString(), lat, lon,
+                                reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
                         }
                     }
                 }
@@ -89,8 +89,8 @@ namespace Mnham_Mnham
                             double lat = double.Parse(coords[0]);
                             double lon = double.Parse(coords[1]);
                             Estabelecimento e = new Estabelecimento(idEstabelecimento, reader["nome"].ToString(),
-                                reader["contacto_tel"].ToString(), lat, lon, reader["horario"].ToString(),
-                                !Convert.ToBoolean(reader["ativo"]));
+                                reader["contacto_tel"].ToString(), reader["morada"].ToString(), lat, lon,
+                                reader["horario"].ToString(), !Convert.ToBoolean(reader["ativo"]));
 
                             res.Add(e);
                         }

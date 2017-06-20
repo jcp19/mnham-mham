@@ -4,148 +4,148 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <LinearLayout
-      android:id="@+id/mapLayout"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <!--<LinearLayout
+        android:id="@+id/mapLayout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="220dp" />
-  </LinearLayout>
-  <FrameLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
-    <android.support.v7.widget.CardView
+        android:layout_height="wrap_content">
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+    </LinearLayout> -->
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="4dp"
+            card_view:cardUseCompatPadding="true"
+            card_view:cardCornerRadius="5dp"
+            android:id="@+id/alimentoCardView">
+            <RelativeLayout
+                android:id="@+id/perfilLayout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="8dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/picAlimentoPerfilImageView"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/sem_imagem"
+                    android:background="@drawable/rounded_image"
+                    android:layout_alignParentRight="true"
+                    android:padding="8dp" />
+                <TextView
+                    android:id="@+id/nomeAlimentoPerfilTextView"
+                    android:text="Nome Prato"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#333333"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="2dp" />
+                <RatingBar
+                    android:layout_below="@id/nomeAlimentoPerfilTextView"
+                    android:id="@+id/ratingAlimentoPerfilRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1.0"
+                    android:isIndicator="true"
+                    android:layout_marginBottom="8dp"
+                    style="@style/customRatingBar" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Restaurante"
+                    android:id="@+id/restauranteAlimentoPerfilTextView"
+                    android:layout_below="@id/ratingAlimentoPerfilRatingBar"
+                    android:layout_marginBottom="15dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dist."
+                    android:id="@+id/distanciaAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_alignBaseline="@id/restauranteAlimentoPerfilTextView"
+                    android:layout_toRightOf="@id/restauranteAlimentoPerfilTextView"
+                    android:layout_marginLeft="15dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rua"
+                    android:id="@+id/ruaAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_below="@id/restauranteAlimentoPerfilTextView"
+                    android:layout_marginBottom="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contacto"
+                    android:id="@+id/contactoAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_below="@id/ruaAlimentoPerfilTextView" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preço"
+                    android:id="@+id/precoAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/picAlimentoPerfilImageView"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignBaseline="@id/contactoAlimentoPerfilTextView" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ingredientes:"
+                    android:id="@+id/ingrAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_below="@id/contactoAlimentoPerfilTextView"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="15dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ingredientes...."
+                    android:id="@+id/ingredientesAlimentoPerfilTextView"
+                    android:layout_gravity="center"
+                    android:layout_alignBaseline="@id/ingrAlimentoPerfilTextView"
+                    android:layout_toRightOf="@id/ingrAlimentoPerfilTextView" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardElevation="4dp"
-        card_view:cardUseCompatPadding="true"
-        card_view:cardCornerRadius="5dp"
-        android:id="@+id/alimentoCardView">
-      <RelativeLayout
-          android:id="@+id/perfilLayout"
-          android:layout_height="wrap_content"
-          android:layout_width="match_parent"
-          android:padding="8dp">
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/picAlimentoPerfilImageView"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile3"
-            android:background="@drawable/rounded_image"
-            android:layout_alignParentRight="true"
-            android:padding="8dp" />
-        <TextView
-            android:id="@+id/nomeAlimentoPerfilTextView"
-            android:text="Nome Prato"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#333333"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/horarioPerfilButton"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="2dp" />
-        <RatingBar
-            android:layout_below="@id/nomeAlimentoPerfilTextView"
-            android:id="@+id/ratingAlimentoPerfilRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1.0"
-            android:isIndicator="true"
-            android:layout_marginBottom="8dp"
-            style="@style/customRatingBar" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restaurante"
-            android:id="@+id/restauranteAlimentoPerfilTextView"
-            android:layout_below="@id/ratingAlimentoPerfilRatingBar"
-            android:layout_marginBottom="15dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dist."
-            android:id="@+id/distanciaAlimentoPerfilTextView"
             android:layout_gravity="center"
-            android:layout_alignBaseline="@id/restauranteAlimentoPerfilTextView"
-            android:layout_toRightOf="@id/restauranteAlimentoPerfilTextView"
-            android:layout_marginLeft="15dp" />
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="65dp"
+            android:text="Horário"
+            android:layout_marginRight="10dp" />
+        <Button
+            android:id="@+id/comentariosPerfilButton"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:text="Rua"
-            android:id="@+id/ruaAlimentoPerfilTextView"
             android:layout_gravity="center"
-            android:layout_below="@id/restauranteAlimentoPerfilTextView"
-            android:layout_marginBottom="8dp" />
-        <TextView
-            android:layout_width="wrap_content"
+            android:text="Comentários"
+            android:layout_alignBaseline="@id/horarioPerfilButton"
+            android:layout_toRightOf="@id/horarioPerfilButton"
+            android:layout_marginRight="30dp" />
+        <Button
+            android:id="@+id/partilhaPerfilButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Contacto"
-            android:id="@+id/contactoAlimentoPerfilTextView"
             android:layout_gravity="center"
-            android:layout_below="@id/ruaAlimentoPerfilTextView" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preço"
-            android:id="@+id/precoAlimentoPerfilTextView"
-            android:layout_gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/picAlimentoPerfilImageView"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_alignBaseline="@id/contactoAlimentoPerfilTextView" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingredientes:"
-            android:id="@+id/ingrAlimentoPerfilTextView"
-            android:layout_gravity="center"
-            android:layout_below="@id/contactoAlimentoPerfilTextView"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="15dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ingredientes...."
-            android:id="@+id/ingredientesAlimentoPerfilTextView"
-            android:layout_gravity="center"
-            android:layout_alignBaseline="@id/ingrAlimentoPerfilTextView"
-            android:layout_toRightOf="@id/ingrAlimentoPerfilTextView" />
-      </RelativeLayout>
-    </android.support.v7.widget.CardView>
-  </FrameLayout>
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/horarioPerfilButton"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="65dp"
-        android:text="Horário"
-        android:layout_marginRight="10dp" />
-    <Button
-        android:id="@+id/comentariosPerfilButton"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Comentários"
-        android:layout_alignBaseline="@id/horarioPerfilButton"
-        android:layout_toRightOf="@id/horarioPerfilButton"
-        android:layout_marginRight="30dp" />
-    <Button
-        android:id="@+id/partilhaPerfilButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Partilhar"
-        android:layout_alignParentBottom="true" />
-  </RelativeLayout>
+            android:text="Partilhar"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
 </LinearLayout>

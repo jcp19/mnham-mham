@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
@@ -16,9 +17,11 @@ namespace Mnham_Mnham
         private float classificacaoMedia;
 
         // Propriedades
-        public int Id { get { return id; } }
+        public int Id => id;
         public string Designacao { get { return designacao; } set { designacao = value; } }
         public float? Preco { get { return preco; } set { preco = value; } }
+        public ISet<string> Ingredientes => ingredientes;
+        
         public byte[] Foto
         {
             get
@@ -50,7 +53,8 @@ namespace Mnham_Mnham
         // Assegura que não é possível criar alimentos sem especificar os seus atributos.
         private Alimento() { }
 
-        public Alimento(int id, string designacao, float? preco, ISet<string> ingredientes, byte[] foto, int idEstabelecimento)
+        [JsonConstructor]
+        public Alimento(int id, string designacao, ISet<string> ingredientes, int idEstabelecimento, float? preco = null, byte[] foto = null)
         {
             if (preco != null && preco < 0.0f)
                 throw new ArgumentOutOfRangeException("O preço do alimento não pode ser negativo.");
@@ -66,8 +70,8 @@ namespace Mnham_Mnham
             this.idEstabelecimento = idEstabelecimento;
         }
 
-        public Alimento(string designacao, float? preco, ISet<string> ingredientes, byte[] foto) :
-            this(-1, designacao, preco, ingredientes, foto, -1)
+        public Alimento(string designacao, ISet<string> ingredientes, float? preco = null, byte[] foto = null) :
+            this(-1, designacao, ingredientes, -1, preco, foto)
         {
 
         }
@@ -93,8 +97,12 @@ namespace Mnham_Mnham
             {
                 foreach (string ingr in ingredientes)
                 {
-                    if (ingr.Contains(naoPref))
+                    if (ingr.IndexOf(naoPref, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
                         return true;
+                    }
+                    Console.WriteLine(">>>>> INGREDIENTE_ALIMENTO: " + ingr);
+                    Console.WriteLine(">>>>> NAO_PREFERENCIA: " + naoPref);
                 }
             }
             return false;
@@ -108,7 +116,7 @@ namespace Mnham_Mnham
             {
                 foreach (string ingr in ingredientes)
                 {
-                    if (ingr.Contains(pref))
+                    if (ingr.IndexOf(pref, StringComparison.CurrentCultureIgnoreCase) >= 0)
                         n++;
                 }
             }
@@ -163,7 +171,7 @@ namespace Mnham_Mnham
                 soma += classificacao.Avaliacao;
                 ++total;
             }
-            return soma / (float)total;
+            return (total > 0) ? (soma / (float)total) : 0.0f;
         }
 
         public Alimento Clone()

@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
@@ -9,11 +10,12 @@ namespace Mnham_Mnham
         private readonly Alimento alimento;
         private float distancia;
 
-        public int NumeroPreferenciasVerificadas { get { return numeroPreferenciasVerificadas; } }
-        public Estabelecimento Estabelecimento { get { return estabelecimento; } }
-        public Alimento Alimento { get { return alimento; } }
+        public int NumeroPreferenciasVerificadas => numeroPreferenciasVerificadas;
+        public Estabelecimento Estabelecimento => estabelecimento;
+        public Alimento Alimento => alimento;
         public float Distancia { get { return distancia; } set { distancia = value; } }
 
+        [JsonConstructor]
         public AlimentoEstabelecimento(int numeroPreferenciasVerificadas, float distancia, Estabelecimento estabelecimento, Alimento alimento)
         {
             this.numeroPreferenciasVerificadas = numeroPreferenciasVerificadas;

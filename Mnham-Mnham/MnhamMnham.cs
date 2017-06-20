@@ -208,6 +208,9 @@ namespace Mnham_Mnham
                 naoPreferencias = pedidoProcessado.NaoPreferencias;
             }
 
+            Console.WriteLine("PUTA DEITA-TE: ");
+            foreach (var p in naoPreferencias)
+                Console.Write(p + ",");
             //----------------------------------------------------------------------------------------------------
             // Obtenção dos Estabelecimentos e respetivos Alimentos que não contêm não preferências do utilizador
             //----------------------------------------------------------------------------------------------------
@@ -215,7 +218,7 @@ namespace Mnham_Mnham
             IDictionary<int, Estabelecimento> estabsObtidos = new Dictionary<int, Estabelecimento>();
             foreach (Alimento a in estabelecimentos.ObterAlimentos(pedidoProcessado.NomeAlimento))
             {
-                if (a.ContemNaoPreferencias(naoPreferencias) == false)
+                if (!a.ContemNaoPreferencias(naoPreferencias)) // se não contém não preferências
                 {
                     Alimento alim = estabelecimentos.ObterAlimento(a.Id);
                     int nPreferencias = a.QuantasPreferenciasContem(preferencias);
@@ -223,6 +226,7 @@ namespace Mnham_Mnham
                     int idEstab = alim.IdEstabelecimento;
                     Estabelecimento estab;
 
+                    Console.WriteLine(alim.Id);
                     if (estabsObtidos.TryGetValue(idEstab, out estab) == false)
                     {
                         estab = estabelecimentos.ObterEstabelecimento(idEstab);

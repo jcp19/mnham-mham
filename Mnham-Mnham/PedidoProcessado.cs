@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Java.Lang;
 
 namespace Mnham_Mnham
 {
@@ -27,6 +28,9 @@ namespace Mnham_Mnham
         {
             char[] delimitadores = { ' ' };
             string[] palavras = pedido.Split(delimitadores);
+
+            if (pedido[0].Equals("com") || pedido[0].Equals("sem"))
+                throw new ArgumentException("O pedido tem de começar com o nome do alimento.");
 
             this.preferencias = new HashSet<string>();
             this.naoPreferencias = new HashSet<string>();
@@ -61,6 +65,15 @@ namespace Mnham_Mnham
             }
             if (sb.Length > 0)
                 GuardarPalavra(sb.ToString(), contexto);
+
+            /*Console.WriteLine("PREFERÊNCIAS: ");
+            foreach (var preferencia in preferencias)
+                Console.WriteLine(preferencia);
+
+            Console.WriteLine("NÃO PREFERÊNCIAS: ");
+            foreach (var naoPreferencia in naoPreferencias)
+                Console.WriteLine(naoPreferencia);
+            */
         }
 
         private void GuardarPalavra(string palavra, int contexto)
@@ -70,13 +83,14 @@ namespace Mnham_Mnham
                 switch (contexto)
                 {
                     case Contexto.NomeAlimento:
-                        nomeAlimento = palavra;
+                        nomeAlimento = palavra.Trim();
+                        Console.WriteLine(">>> NOME ALIMENTO: " + nomeAlimento);
                         break;
                     case Contexto.Preferencias:
-                        preferencias.Add(palavra);
+                        preferencias.Add(palavra.TrimEnd());
                         break;
                     case Contexto.NaoPreferencias:
-                        naoPreferencias.Add(palavra);
+                        naoPreferencias.Add(palavra.TrimEnd());
                         break;
                 }
             }

@@ -23,13 +23,13 @@
                 android:scaleType="centerCrop"
                 android:paddingBottom="8dp"
                 android:paddingRight="8dp"
-                android:src="@drawable/profile3" />
+                android:src="@drawable/sem_imagem" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
-                android:text="Nome"
+                android:text="n/a"
                 android:id="@+id/nomeAlimentoResTextView"
                 android:layout_gravity="center"
                 android:layout_toRightOf="@id/picAlimentoResImageView"
@@ -53,13 +53,15 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
-                android:text="Restaurante"
+                android:text="n/a"
                 android:id="@+id/restauranteAlimentoResTextView"
                 android:layout_gravity="center"
                 android:layout_toRightOf="@id/picAlimentoResImageView"
                 android:layout_below="@id/ratingAlimentoResRatingBar"
                 android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_marginRight="8dp"
+                android:ellipsize="end"
+                android:singleLine="true" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +84,9 @@
                 android:id="@+id/ruaAlimentoResTextView"
                 android:layout_gravity="center"
                 android:layout_below="@id/picAlimentoResImageView"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp" 
+                android:ellipsize="end"
+                android:singleLine="true" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
-                android:text="Preço"
+                android:text="n/a"
                 android:id="@+id/precoAlimentoResTextView"
                 android:layout_gravity="center"
                 android:layout_alignParentRight="true"

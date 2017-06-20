@@ -45,7 +45,7 @@ namespace Mnham_Mnham
                             reader.Close(); 
                             ISet<string> ings = ingredientes.ObterIngredientes(idAlimento, sqlCon);
 
-                            a = new Alimento(idAlimento, designacao, preco, ings, foto, idEstabelecimento);
+                            a = new Alimento(idAlimento, designacao, ings, idEstabelecimento, preco, foto);
                             a.AdicionarClassificacoes(classificacoes.ClassificacaoAlimento(idAlimento, sqlCon));
                             a.ClassificacaoMedia = a.ObterAvaliacaoMedia();
                         }
@@ -224,7 +224,7 @@ namespace Mnham_Mnham
                         ISet<string> ing = ingredientes.ObterIngredientes(id, sqlCon);
 
                         // Apenas se obtém o id e os ingredientes.
-                        alimentos.Add(new Alimento(id, null, null, ing, null, -1));
+                        alimentos.Add(new Alimento(id, null, ing, -1));
                     }
                     return alimentos;
                 }
@@ -254,7 +254,7 @@ namespace Mnham_Mnham
                             float? preco = (reader["preco"] == DBNull.Value) ? null : (float?)Convert.ToDouble(reader["preco"]);
                             byte[] foto = (reader["foto"] == DBNull.Value) ? null : (byte[])reader["foto"];
 
-                            alimsEstabelecimento.Add(new Alimento(id, designacao, preco, null, foto, idEstabelecimento));
+                            alimsEstabelecimento.Add(new Alimento(id, designacao, null, idEstabelecimento, preco, foto));
                         }
                     }
                 }
