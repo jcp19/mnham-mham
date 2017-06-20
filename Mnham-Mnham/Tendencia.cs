@@ -9,6 +9,8 @@ namespace Mnham_Mnham
 
         public int Repeticoes { get { return repeticoes; } set { repeticoes = value; } }
 
+        public string Pedido { get { return pedido; } }
+
         public Tendencia(string pedido)
         {
             this.pedido = pedido;

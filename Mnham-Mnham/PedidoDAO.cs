@@ -64,9 +64,11 @@ namespace Mnham_Mnham
             using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 DateTime umaSemanaAtras = DateTime.Today.AddDays(-7);
-                string dataFormSql = umaSemanaAtras.ToString("yyyy-mm-dd hh-mm-ss");
-                string txtCmd = "SELECT termo FROM Pedido WHERE Pedido.data >= '" + dataFormSql + "\'";
+                string dataFormSql = umaSemanaAtras.ToString("yyyy-MM-dd HH:mm:ss");
+                string txtCmd = "SELECT termo FROM Pedido WHERE Pedido.data >= \'" + dataFormSql + "\'";
+                //string txtCmd = "SELECT termo FROM Pedido";
 
+                sqlCon.Open();
                 using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
                     using (var reader = cmd.ExecuteReader())
