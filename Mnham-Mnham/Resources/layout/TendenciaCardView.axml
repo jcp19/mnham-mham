@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="25px">
+<FrameLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
     <android.support.v7.widget.CardView
-        android:minWidth="25px"
-        android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tendenciaCardView" />
-</LinearLayout>
+        card_view:cardUseCompatPadding="true"
+        android:id="@+id/alimentoCardView">
+        <RelativeLayout
+            android:id="@+id/cardRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="n/a"
+                android:id="@+id/pedidoResTextView"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                android:text="n/a"
+                android:id="@+id/repeticoesResTextView"
+                android:layout_gravity="center"
+                android:layout_below="@id/pedidoResTextView"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:ellipsize="end"
+                android:singleLine="true" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

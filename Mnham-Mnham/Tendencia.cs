@@ -30,7 +30,7 @@ namespace Mnham_Mnham
             float reps1 = this.repeticoes;
             float reps2 = tend.repeticoes;
 
-            return reps1.CompareTo(reps2);
+            return reps2.CompareTo(reps1);
         }
 
         public int CompareTo(object obj)
@@ -44,7 +44,7 @@ namespace Mnham_Mnham
                 float reps1 = this.repeticoes;
                 float reps2 = tend.repeticoes;
 
-                return reps1.CompareTo(reps2);
+                return reps2.CompareTo(reps1);
             }
             else
                 throw new ArgumentException("O objeto passado como argumento não é uma Tendencia.");

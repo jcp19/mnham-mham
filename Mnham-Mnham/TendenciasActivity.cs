@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace Mnham_Mnham
 {
     [Activity(Label = "TendenciasActivity", Theme = "@style/AppTheme")]
-    public class TendenciasActivity : ListActivity
+    public class TendenciasActivity : Activity
     {
         private RecyclerView mRecyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
@@ -66,8 +66,8 @@ namespace Mnham_Mnham
 
         public TendenciaViewHolder(View itemView, Action<int> listener) : base(itemView)
         {
-            Request = itemView.FindViewById<TextView>(Resource.Id.contactoAlimentoResTextView);
-            Occurrences = itemView.FindViewById<TextView>(Resource.Id.precoAlimentoResTextView);
+            Request = itemView.FindViewById<TextView>(Resource.Id.pedidoResTextView);
+            Occurrences = itemView.FindViewById<TextView>(Resource.Id.repeticoesResTextView);
 
             itemView.Click += (sender, e) => listener(AdapterPosition);
         }

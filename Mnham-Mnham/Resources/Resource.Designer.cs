@@ -3728,6 +3728,9 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f0900e3
 			public const int passwordRegPropEditText = 2131296483;
 			
+			// aapt resource value: 0x7f0900ee
+			public const int pedidoResTextView = 2131296494;
+			
 			// aapt resource value: 0x7f09007a
 			public const int perfilLayout = 2131296378;
 			
@@ -3796,6 +3799,9 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f0900e9
 			public const int remPrefTitleTextView = 2131296489;
+			
+			// aapt resource value: 0x7f0900ef
+			public const int repeticoesResTextView = 2131296495;
 			
 			// aapt resource value: 0x7f09007e
 			public const int restauranteAlimentoPerfilTextView = 2131296382;
@@ -3913,9 +3919,6 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f090020
 			public const int tabMode = 2131296288;
-			
-			// aapt resource value: 0x7f0900ee
-			public const int tendenciaCardView = 2131296494;
 			
 			// aapt resource value: 0x7f090016
 			public const int terrain = 2131296278;
