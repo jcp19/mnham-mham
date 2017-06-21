@@ -43,7 +43,6 @@ namespace Mnham_Mnham
         void OnItemClick(object sender, int position)
         {
             Tendencia itemSelecionado = tendencias[position];
-            string strItemSelecionado = JsonConvert.SerializeObject(itemSelecionado);
             var intent = new Intent(this, typeof(ResultadosActivity));
 
             // handler for the itemClick event;
@@ -52,7 +51,7 @@ namespace Mnham_Mnham
             // if we pass with an intent the info that we already
             // have on the item to the new activity we wont need
             // to retrieve those bits of info from the database
-            //intent.PutExtra("pedido", pedido);
+            intent.PutExtra("pedido", itemSelecionado.Pedido);
             StartActivity(intent);
         }
 
