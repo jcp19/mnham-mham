@@ -18,6 +18,8 @@ namespace Mnham_Mnham
         public string PalavraPasse { get { return palavraPasse; } set { palavraPasse = value; } }
         public string Nome { get { return nome; } set { nome = value; } }
         public char Genero { get { return genero; } set { genero = value; } }
+        public ISet<Preferencia> Preferencias { get { return preferencias; } set { preferencias = value; } }
+        public ISet<Preferencia> NaoPreferencias { get { return naoPreferencias; } set { naoPreferencias = value; } }
 
         public Cliente(int id, char genero, string email, string nome, string palavraPasse)
         {

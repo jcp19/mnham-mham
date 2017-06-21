@@ -104,6 +104,10 @@ namespace Mnham_Mnham
                             string palavraPasse = reader["palavra_passe"].ToString();
 
                             c = new Cliente(id, genero, email, nome, palavraPasse);
+                            ISet<Preferencia> prefs = new HashSet<Preferencia>(preferencias.ConsultarPreferencias(id));
+                            ISet<Preferencia> naoPrefs = new HashSet<Preferencia>(naoPreferencias.ConsultarNaoPreferencias(id));
+                            c.Preferencias = prefs;
+                            c.NaoPreferencias = naoPrefs;
                         }
                     }
                 }
