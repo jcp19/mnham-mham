@@ -29,7 +29,7 @@ namespace Mnham_Mnham
             char[] delimitadores = { ' ' };
             string[] palavras = pedido.Split(delimitadores);
 
-            if (pedido[0].Equals("com") || pedido[0].Equals("sem"))
+            if (pedido.Length == 0 || pedido[0].Equals("com") || pedido[0].Equals("sem"))
                 throw new ArgumentException("O pedido tem de começar com o nome do alimento.");
 
             this.preferencias = new HashSet<string>();

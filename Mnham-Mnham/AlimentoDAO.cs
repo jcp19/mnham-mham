@@ -202,13 +202,15 @@ namespace Mnham_Mnham
             using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 IList<int> idsAlimentos = new List<int>();
-                string txtCmd = "SELECT id from Alimento WHERE CHARINDEX(@v,designacao) > 0";
+                //string txtCmd = "SELECT id from Alimento WHERE CHARINDEX(@v,designacao) > 0";
+                string txtCmd = @"SELECT id FROM Alimento
+                                  WHERE designacao COLLATE Latin1_general_CI_AI LIKE @v COLLATE Latin1_general_CI_AI";
 
                 sqlCon.Open();
                 using (var cmd = new SqlCommand(txtCmd, sqlCon))
                 {
                     cmd.Parameters.Add("@v", SqlDbType.NVarChar, 150);
-                    cmd.Parameters["@v"].Value = nomeAlimento;
+                    cmd.Parameters["@v"].Value = '%' + nomeAlimento + '%';
 
                     using (var reader = cmd.ExecuteReader())
                     {

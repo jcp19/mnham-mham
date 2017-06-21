@@ -51,6 +51,7 @@
       <HintPath>..\packages\Mikepenz.Android.Iconics.Xamarin.Binding.2.5.1\lib\MonoAndroid\android-iconics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Java.Interop" />
     <Reference Include="material-drawer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mikepenz.MaterialDrawer.Xamarin.Android.4.5.8\lib\MonoAndroid\material-drawer.dll</HintPath>
       <Private>True</Private>
@@ -145,6 +146,7 @@
     <Compile Include="HistoricoActivity.cs" />
     <Compile Include="MnhamMnhamApp.cs" />
     <Compile Include="PerfilAlimentoActivity.cs" />
+    <Compile Include="PerfilEstabelecimentoActivity.cs" />
     <Compile Include="PreferenciasActivity.cs" />
     <Compile Include="RegistarPreferenciasActivity.cs" />
     <Compile Include="Alimento.cs" />
@@ -272,6 +274,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\sem_imagem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Google_Maps_Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

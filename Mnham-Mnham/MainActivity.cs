@@ -227,8 +227,15 @@ namespace Mnham_Mnham
             string pedido = editTextPesquisa.Text;
             var intent = new Intent(this, typeof(ResultadosActivity));
 
-            intent.PutExtra("pedido", pedido);
-            StartActivity(intent);
+            if (pedido.Trim().Length == 0)
+            {
+                Toast.MakeText(this, "Escreva algo que pretenda degustar.", ToastLength.Short).Show();
+            }
+            else
+            {
+                intent.PutExtra("pedido", pedido);
+                StartActivity(intent);
+            }
         }
 
         public void HandlerBotaoVoz(object obj, EventArgs args)

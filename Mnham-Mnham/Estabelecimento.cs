@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Android.OS;
 using Java.Interop;
 using Java.Lang;
-using Newtonsoft.Json;
 using IComparable = System.IComparable;
 
 namespace Mnham_Mnham
@@ -83,7 +82,6 @@ namespace Mnham_Mnham
 
         public Estabelecimento() { }
 
-        [JsonConstructor]
         public Estabelecimento(int id, string nome, string contactoTel, string morada, double latitude, double longitude, string horario, bool permanFechado)
         {
             this.id = id;
@@ -193,7 +191,7 @@ namespace Mnham_Mnham
             float aval1 = this.ObterAvaliacaoMedia();
             float aval2 = estabelecimento.ObterAvaliacaoMedia();
 
-            return aval1.CompareTo(aval2);
+            return aval2.CompareTo(aval1);
         }
 
         public int CompareTo(object obj)
@@ -207,7 +205,7 @@ namespace Mnham_Mnham
                 float aval1 = this.ObterAvaliacaoMedia();
                 float aval2 = estabelecimento.ObterAvaliacaoMedia();
 
-                return aval1.CompareTo(aval2);
+                return aval2.CompareTo(aval1);
             }
             else
                 throw new ArgumentException("O objeto passado como argumento não é um Estabelecimento.");

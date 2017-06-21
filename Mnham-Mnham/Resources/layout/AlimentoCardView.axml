@@ -21,11 +21,13 @@
                 android:layout_height="100dp"
                 android:id="@+id/picAlimentoResImageView"
                 android:scaleType="centerCrop"
-                android:paddingBottom="8dp"
-                android:paddingRight="8dp"
-                android:src="@drawable/sem_imagem" />
+                android:src="@drawable/sem_imagem"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="6dp" />
             <TextView
-                android:layout_width="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
@@ -49,7 +51,7 @@
                 android:scaleY="2"
                 android:translationX="35dp" />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
@@ -60,7 +62,7 @@
                 android:layout_below="@id/ratingAlimentoResRatingBar"
                 android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:singleLine="true" />
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +78,7 @@
                 android:layout_alignParentRight="true" />
         <!-- Use lighter Text color here  -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#333333"
@@ -85,7 +87,7 @@
                 android:layout_gravity="center"
                 android:layout_below="@id/picAlimentoResImageView"
                 android:layout_marginBottom="8dp"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:singleLine="true" />
             <TextView
                 android:layout_width="wrap_content"

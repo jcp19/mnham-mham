@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Android.OS;
 using Android.Runtime;
 using Java.Interop;
-using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
@@ -55,7 +54,6 @@ namespace Mnham_Mnham
 
         public Alimento() { }
 
-        [JsonConstructor]
         public Alimento(int id, string designacao, ISet<string> ingredientes, int idEstabelecimento, float? preco = null, byte[] foto = null)
         {
             if (preco != null && preco < 0.0f)
@@ -189,7 +187,7 @@ namespace Mnham_Mnham
             float aval1 = this.classificacaoMedia;
             float aval2 = alimento.classificacaoMedia;
 
-            return aval1.CompareTo(aval2);
+            return aval2.CompareTo(aval1);
         }
 
         public int CompareTo(object obj)
@@ -203,7 +201,7 @@ namespace Mnham_Mnham
                 float aval1 = this.classificacaoMedia;
                 float aval2 = alimento.classificacaoMedia;
 
-                return aval1.CompareTo(aval2);
+                return aval2.CompareTo(aval1);
             }
             else
                 throw new ArgumentException("O objeto passado como argumento não é um Alimento.");

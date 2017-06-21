@@ -43,10 +43,10 @@ namespace Mnham_Mnham
 
             if (res == 0) // em caso de empate do número de preferências.
             {
-                res = alimento.CompareTo(ae.alimento);
+                res = ae.alimento.CompareTo(alimento);
                 if (res == 0) // em caso de empate na comparação de alimentos.
                 {
-                    res = estabelecimento.CompareTo(ae.estabelecimento);
+                    res = ae.estabelecimento.CompareTo(estabelecimento);
                     if (res == 0) // em caso de empate na comparação de estabelecimentos
                     {
                         res = distancia.CompareTo(ae.distancia);
@@ -65,14 +65,14 @@ namespace Mnham_Mnham
             if (ae == null)
                 throw new ArgumentException("O alimento passado com argumento não é um AlimentoEstabelecimento");
 
-            int res = numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
+            int res = ae.numeroPreferenciasVerificadas.CompareTo(numeroPreferenciasVerificadas);
 
             if (res == 0)
             {
-                res = alimento.CompareTo(ae.alimento);
+                res = ae.alimento.CompareTo(alimento);
                 if (res == 0)
                 {
-                    res = estabelecimento.CompareTo(ae.estabelecimento);
+                    res = ae.estabelecimento.CompareTo(ae.estabelecimento);
                     if (res == 0)
                     {
                         res = distancia.CompareTo(ae.Distancia);

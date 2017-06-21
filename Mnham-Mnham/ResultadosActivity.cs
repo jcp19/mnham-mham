@@ -111,6 +111,7 @@ namespace Mnham_Mnham
             Price = itemView.FindViewById<TextView>(Resource.Id.precoAlimentoResTextView);
 
             itemView.Click += (sender, e) => listener(AdapterPosition);
+            RestaurantName.Selected = true;
         }
     }
 
@@ -149,7 +150,7 @@ namespace Mnham_Mnham
             vh.FoodName.Text = alimentoEstabelecimento.Alimento.Designacao;
             vh.Rating.Rating = alimentoEstabelecimento.Alimento.ClassificacaoMedia;
             vh.RestaurantName.Text = alimentoEstabelecimento.Estabelecimento.Nome;
-            vh.Distance.Text = String.Format(alimentoEstabelecimento.Distancia.ToString());
+            vh.Distance.Text = string.Format("{0:F2} Km", alimentoEstabelecimento.Distancia / 1000.0f);
             vh.Street.Text = alimentoEstabelecimento.Estabelecimento.Morada;
             vh.Contact.Text = alimentoEstabelecimento.Estabelecimento.ContactoTel;
         }
