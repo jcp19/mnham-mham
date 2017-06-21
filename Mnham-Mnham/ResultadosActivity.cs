@@ -10,7 +10,6 @@ using Android.Content;
 using Android.Database;
 using Android.Graphics;
 using Android.Locations;
-using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
@@ -75,7 +74,6 @@ namespace Mnham_Mnham
         void OnItemClick(object sender, int position)
         {
             AlimentoEstabelecimento itemSelecionado = resultados[position];
-            string strItemSelecionado = JsonConvert.SerializeObject(itemSelecionado);
             var intent = new Intent(this, typeof(PerfilAlimentoActivity));
 
             // handler for the itemClick event;
@@ -84,7 +82,7 @@ namespace Mnham_Mnham
             // if we pass with an intent the info that we already
             // have on the item to the new activity we wont need
             // to retrieve those bits of info from the database
-            intent.PutExtra("alimentoEstabelecimento", strItemSelecionado);
+            intent.PutExtra("alimentoEstabelecimento", itemSelecionado);
             StartActivity(intent);
         }
     }
