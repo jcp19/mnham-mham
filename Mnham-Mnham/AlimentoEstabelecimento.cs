@@ -39,7 +39,7 @@ namespace Mnham_Mnham
             if (ae == null)
                 return 1;
 
-            int res = numeroPreferenciasVerificadas.CompareTo(ae.numeroPreferenciasVerificadas);
+            int res = ae.numeroPreferenciasVerificadas.CompareTo(numeroPreferenciasVerificadas);
 
             if (res == 0) // em caso de empate do número de preferências.
             {
