@@ -145,13 +145,13 @@ namespace Mnham_Mnham
             }
             if (preco.HasValue)
             {
-                vh.Price.Text = preco.ToString();
+                vh.Price.Text = preco + "€";
             }
             // Campos obrigatórios
             vh.FoodName.Text = alimentoEstabelecimento.Alimento.Designacao;
             vh.Rating.Rating = alimentoEstabelecimento.Alimento.ClassificacaoMedia;
             vh.RestaurantName.Text = alimentoEstabelecimento.Estabelecimento.Nome;
-            vh.Distance.Text = alimentoEstabelecimento.Distancia.ToString();
+            vh.Distance.Text = String.Format(alimentoEstabelecimento.Distancia.ToString());
             vh.Street.Text = alimentoEstabelecimento.Estabelecimento.Morada;
             vh.Contact.Text = alimentoEstabelecimento.Estabelecimento.ContactoTel;
         }
