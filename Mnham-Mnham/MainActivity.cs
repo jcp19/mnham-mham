@@ -174,7 +174,7 @@ namespace Mnham_Mnham
         {
             itemPrefs = new PrimaryDrawerItem();
             itemPrefs.WithName("Preferências");
-            itemPrefs.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
+            //itemPrefs.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
             itemPrefs.WithIdentifier(3);
             itemPrefs.WithSelectable(true);
 
@@ -491,7 +491,7 @@ namespace Mnham_Mnham
                         break;
                     case 3: // Preferências
                         // Toast.MakeText(this, "Clique em 'Preferências'", ToastLength.Short).Show();
-                        StartActivity(typeof(RegistarPreferenciasActivity));
+                        StartActivity(typeof(PreferenciasActivity));
                         break;
                     case 4: // Não preferências
                         // Toast.MakeText(this, "Clique em 'Não Preferências'", ToastLength.Short).Show();

@@ -3326,6 +3326,9 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f09006a
 			public const int addPrefTitleTextView = 2131296362;
 			
+			// aapt resource value: 0x7f0900dd
+			public const int adicionarPreferenciaButton = 2131296477;
+			
 			// aapt resource value: 0x7f090017
 			public const int adjust_height = 2131296279;
 			
@@ -3340,6 +3343,9 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f090070
 			public const int alimentoCardView = 2131296368;
+			
+			// aapt resource value: 0x7f0900da
+			public const int alimentoResTextView = 2131296474;
 			
 			// aapt resource value: 0x7f090031
 			public const int always = 2131296305;
@@ -3368,11 +3374,11 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f090042
 			public const int buttonPanel = 2131296322;
 			
-			// aapt resource value: 0x7f0900e1
-			public const int cancelRegClienteButton = 2131296481;
+			// aapt resource value: 0x7f0900e5
+			public const int cancelRegClienteButton = 2131296485;
 			
-			// aapt resource value: 0x7f0900ea
-			public const int cancelRegPropButton = 2131296490;
+			// aapt resource value: 0x7f0900ee
+			public const int cancelRegPropButton = 2131296494;
 			
 			// aapt resource value: 0x7f0900bb
 			public const int cancel_action = 2131296443;
@@ -3410,23 +3416,23 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f0900d8
 			public const int comentariosRestPerfilButton = 2131296472;
 			
-			// aapt resource value: 0x7f0900e0
-			public const int confirmRegClienteButton = 2131296480;
+			// aapt resource value: 0x7f0900e4
+			public const int confirmRegClienteButton = 2131296484;
 			
-			// aapt resource value: 0x7f0900e9
-			public const int confirmRegPropButton = 2131296489;
+			// aapt resource value: 0x7f0900ed
+			public const int confirmRegPropButton = 2131296493;
 			
-			// aapt resource value: 0x7f0900de
-			public const int confirmaPassRegClienteEditText = 2131296478;
+			// aapt resource value: 0x7f0900e2
+			public const int confirmaPassRegClienteEditText = 2131296482;
 			
-			// aapt resource value: 0x7f0900e6
-			public const int confirmaPassRegPropEditText = 2131296486;
+			// aapt resource value: 0x7f0900ea
+			public const int confirmaPassRegPropEditText = 2131296490;
 			
 			// aapt resource value: 0x7f09006f
 			public const int confirmarAddPrefButton = 2131296367;
 			
-			// aapt resource value: 0x7f0900ef
-			public const int confirmarRemPredButton = 2131296495;
+			// aapt resource value: 0x7f0900f3
+			public const int confirmarRemPredButton = 2131296499;
 			
 			// aapt resource value: 0x7f090081
 			public const int contactoAlimentoPerfilTextView = 2131296385;
@@ -3482,11 +3488,11 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f090097
 			public const int emailLoginEditText = 2131296407;
 			
-			// aapt resource value: 0x7f0900dc
-			public const int emailRegClienteEditText = 2131296476;
+			// aapt resource value: 0x7f0900e0
+			public const int emailRegClienteEditText = 2131296480;
 			
-			// aapt resource value: 0x7f0900e4
-			public const int emailRegPropEditText = 2131296484;
+			// aapt resource value: 0x7f0900e8
+			public const int emailRegPropEditText = 2131296488;
 			
 			// aapt resource value: 0x7f09002f
 			public const int end = 2131296303;
@@ -3503,11 +3509,11 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f090051
 			public const int expanded_menu = 2131296337;
 			
-			// aapt resource value: 0x7f0900df
-			public const int generoRegClienteSpinner = 2131296479;
+			// aapt resource value: 0x7f0900e3
+			public const int generoRegClienteSpinner = 2131296483;
 			
-			// aapt resource value: 0x7f0900e8
-			public const int generoRegPropSpinner = 2131296488;
+			// aapt resource value: 0x7f0900ec
+			public const int generoRegPropSpinner = 2131296492;
 			
 			// aapt resource value: 0x7f090005
 			public const int home = 2131296261;
@@ -3547,6 +3553,9 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f090083
 			public const int ingrAlimentoPerfilTextView = 2131296387;
+			
+			// aapt resource value: 0x7f0900db
+			public const int ingredienteResTextView = 2131296475;
 			
 			// aapt resource value: 0x7f090084
 			public const int ingredientesAlimentoPerfilTextView = 2131296388;
@@ -3689,11 +3698,11 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f09008b
 			public const int nomePerfilComentarioTextView = 2131296395;
 			
-			// aapt resource value: 0x7f0900db
-			public const int nomeRegClienteEditText = 2131296475;
+			// aapt resource value: 0x7f0900df
+			public const int nomeRegClienteEditText = 2131296479;
 			
-			// aapt resource value: 0x7f0900e3
-			public const int nomeRegPropEditText = 2131296483;
+			// aapt resource value: 0x7f0900e7
+			public const int nomeRegPropEditText = 2131296487;
 			
 			// aapt resource value: 0x7f0900d2
 			public const int nomeRestPerfilTextView = 2131296466;
@@ -3725,11 +3734,11 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f090098
 			public const int passwordLoginEditText = 2131296408;
 			
-			// aapt resource value: 0x7f0900dd
-			public const int passwordRegClienteEditText = 2131296477;
+			// aapt resource value: 0x7f0900e1
+			public const int passwordRegClienteEditText = 2131296481;
 			
-			// aapt resource value: 0x7f0900e5
-			public const int passwordRegPropEditText = 2131296485;
+			// aapt resource value: 0x7f0900e9
+			public const int passwordRegPropEditText = 2131296489;
 			
 			// aapt resource value: 0x7f090092
 			public const int pedidoResTextView = 2131296402;
@@ -3740,8 +3749,8 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f0900d1
 			public const int perfilRestLayout = 2131296465;
 			
-			// aapt resource value: 0x7f0900e7
-			public const int phoneNumberRegPropEditText = 2131296487;
+			// aapt resource value: 0x7f0900eb
+			public const int phoneNumberRegPropEditText = 2131296491;
 			
 			// aapt resource value: 0x7f09007b
 			public const int picAlimentoPerfilImageView = 2131296379;
@@ -3757,6 +3766,9 @@ namespace Mnham_Mnham
 			
 			// aapt resource value: 0x7f090079
 			public const int precoAlimentoResTextView = 2131296377;
+			
+			// aapt resource value: 0x7f0900dc
+			public const int preferenciasRecyclerView = 2131296476;
 			
 			// aapt resource value: 0x7f09006e
 			public const int prefsAddPrefEditText = 2131296366;
@@ -3782,29 +3794,29 @@ namespace Mnham_Mnham
 			// aapt resource value: 0x7f0900d3
 			public const int ratingRestPerfilRatingBar = 2131296467;
 			
-			// aapt resource value: 0x7f0900da
-			public const int regClienteTextView = 2131296474;
+			// aapt resource value: 0x7f0900de
+			public const int regClienteTextView = 2131296478;
 			
-			// aapt resource value: 0x7f0900e2
-			public const int regPropTextView = 2131296482;
+			// aapt resource value: 0x7f0900e6
+			public const int regPropTextView = 2131296486;
 			
 			// aapt resource value: 0x7f090095
 			public const int relativeLayout1 = 2131296405;
 			
-			// aapt resource value: 0x7f0900ed
-			public const int remPrefCheckBox = 2131296493;
+			// aapt resource value: 0x7f0900f1
+			public const int remPrefCheckBox = 2131296497;
 			
-			// aapt resource value: 0x7f0900ee
-			public const int remPrefEditText = 2131296494;
-			
-			// aapt resource value: 0x7f0900ec
-			public const int remPrefSpinner = 2131296492;
-			
-			// aapt resource value: 0x7f0900eb
-			public const int remPrefTitleTextView = 2131296491;
+			// aapt resource value: 0x7f0900f2
+			public const int remPrefEditText = 2131296498;
 			
 			// aapt resource value: 0x7f0900f0
-			public const int repeticoesResTextView = 2131296496;
+			public const int remPrefSpinner = 2131296496;
+			
+			// aapt resource value: 0x7f0900ef
+			public const int remPrefTitleTextView = 2131296495;
+			
+			// aapt resource value: 0x7f0900f4
+			public const int repeticoesResTextView = 2131296500;
 			
 			// aapt resource value: 0x7f09007e
 			public const int restauranteAlimentoPerfilTextView = 2131296382;
@@ -4232,28 +4244,34 @@ namespace Mnham_Mnham
 			public const int PerfilEstabelecimento = 2130903110;
 			
 			// aapt resource value: 0x7f030047
-			public const int RegistoClienteLayout = 2130903111;
+			public const int PreferenciaCardView = 2130903111;
 			
 			// aapt resource value: 0x7f030048
-			public const int RegistoPropLayout = 2130903112;
+			public const int PreferenciasLayout = 2130903112;
 			
 			// aapt resource value: 0x7f030049
-			public const int RemoverPreferenciasLayout = 2130903113;
+			public const int RegistoClienteLayout = 2130903113;
 			
 			// aapt resource value: 0x7f03004a
-			public const int select_dialog_item_material = 2130903114;
+			public const int RegistoPropLayout = 2130903114;
 			
 			// aapt resource value: 0x7f03004b
-			public const int select_dialog_multichoice_material = 2130903115;
+			public const int RemoverPreferenciasLayout = 2130903115;
 			
 			// aapt resource value: 0x7f03004c
-			public const int select_dialog_singlechoice_material = 2130903116;
+			public const int select_dialog_item_material = 2130903116;
 			
 			// aapt resource value: 0x7f03004d
-			public const int support_simple_spinner_dropdown_item = 2130903117;
+			public const int select_dialog_multichoice_material = 2130903117;
 			
 			// aapt resource value: 0x7f03004e
-			public const int TendenciaCardView = 2130903118;
+			public const int select_dialog_singlechoice_material = 2130903118;
+			
+			// aapt resource value: 0x7f03004f
+			public const int support_simple_spinner_dropdown_item = 2130903119;
+			
+			// aapt resource value: 0x7f030050
+			public const int TendenciaCardView = 2130903120;
 			
 			static Layout()
 			{

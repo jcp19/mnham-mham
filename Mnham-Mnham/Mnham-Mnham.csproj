@@ -145,6 +145,7 @@
     <Compile Include="HistoricoActivity.cs" />
     <Compile Include="MnhamMnhamApp.cs" />
     <Compile Include="PerfilAlimentoActivity.cs" />
+    <Compile Include="PreferenciasActivity.cs" />
     <Compile Include="RegistarPreferenciasActivity.cs" />
     <Compile Include="Alimento.cs" />
     <Compile Include="AlimentoDAO.cs" />
@@ -218,6 +219,8 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\HistoricoCardView.axml" />
+    <AndroidResource Include="Resources\layout\PreferenciasLayout.axml" />
+    <AndroidResource Include="Resources\layout\PreferenciaCardView.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
