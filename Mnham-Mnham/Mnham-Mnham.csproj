@@ -140,6 +140,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HistoricoActivity.cs" />
     <Compile Include="MnhamMnhamApp.cs" />
     <Compile Include="PerfilAlimentoActivity.cs" />
     <Compile Include="RegistarPreferenciasActivity.cs" />
@@ -214,6 +215,7 @@
     <AndroidResource Include="Resources\layout\TendenciaCardView.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\HistoricoCardView.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">

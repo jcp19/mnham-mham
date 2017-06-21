@@ -10,24 +10,24 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
-using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
-    [Activity(Label = "TendenciasActivity", Theme = "@style/AppTheme")]
-    public class TendenciasActivity : Activity
+    [Activity(Label = "HistoricoActivity", Theme = "@style/AppTheme")]
+    public class HistoricoActivity : Activity
     {
         private RecyclerView mRecyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
-        private TendenciasAdapter mAdapter;
-        private List<Tendencia> tendencias;
+        private HistoricoAdapter mAdapter;
+        private IList<Pedido> historico;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            tendencias = MainActivity.Facade.ObterTendencias();
-            
+            // Create your application here
+            historico = MainActivity.Facade.ConsultarHistorico();
+
             SetContentView(Resource.Layout.ListLayout);
 
             mRecyclerView = FindViewById<RecyclerView>(Resource.Id.listRecyclerView);
@@ -35,66 +35,65 @@ namespace Mnham_Mnham
             mLayoutManager = new LinearLayoutManager(this);
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
-            mAdapter = new TendenciasAdapter(tendencias);
+            mAdapter = new HistoricoAdapter(historico);
             mAdapter.ItemClick += OnItemClick;
             mRecyclerView.SetAdapter(mAdapter);
         }
 
         void OnItemClick(object sender, int position)
         {
-            Tendencia itemSelecionado = tendencias[position];
+            Pedido itemSelecionado = historico[position];
             var intent = new Intent(this, typeof(ResultadosActivity));
 
-            intent.PutExtra("pedido", itemSelecionado.Pedido);
+            intent.PutExtra("pedido", itemSelecionado.Termo);
             StartActivity(intent);
         }
-
     }
 
-    public class TendenciaViewHolder : RecyclerView.ViewHolder
+    public class HistoricoViewHolder : RecyclerView.ViewHolder
     {
         // Add declaration for every view of a result:
         public TextView Request { get; }
-        public TextView Occurrences { get; }
+        public TextView Date { get; }
 
-        public TendenciaViewHolder(View itemView, Action<int> listener) : base(itemView)
+        public HistoricoViewHolder(View itemView, Action<int> listener) : base(itemView)
         {
             Request = itemView.FindViewById<TextView>(Resource.Id.pedidoResTextView);
-            Occurrences = itemView.FindViewById<TextView>(Resource.Id.repeticoesResTextView);
+            Date = itemView.FindViewById<TextView>(Resource.Id.dataResTextView);
 
             itemView.Click += (sender, e) => listener(AdapterPosition);
         }
     }
 
-    public class TendenciasAdapter : RecyclerView.Adapter
+    public class HistoricoAdapter : RecyclerView.Adapter
     {
         // event handler for item clicks
         public event EventHandler<int> ItemClick;
 
-        public IList<Tendencia> Tendencias;
-        public override int ItemCount => Tendencias.Count;
+        public IList<Pedido> Historico;
+        public override int ItemCount => Historico.Count;
 
-        public TendenciasAdapter(IList<Tendencia> tendencias)
+        public HistoricoAdapter(IList<Pedido> historico)
         {
-            this.Tendencias = tendencias;
+            this.Historico = historico;
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             // loads the data at the specified position into the views whose 
             // references are stored in the given view holder
-            Tendencia tend = Tendencias[position];
-            TendenciaViewHolder vh = holder as TendenciaViewHolder;
-            vh.Request.Text = tend.Pedido;
-            vh.Occurrences.Text = tend.Repeticoes.ToString();
+            Pedido tend = Historico[position];
+            HistoricoViewHolder vh = holder as HistoricoViewHolder;
+            vh.Request.Text = tend.Termo;
+            vh.Date.Text = tend.Data.ToString();
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
             // instantiates the item layout file and the view holder
-            View itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.TendenciaCardView, parent, false);
+            View itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.HistoricoCardView, parent, false);
 
-            TendenciaViewHolder vh = new TendenciaViewHolder(itemView, OnClick);
+            HistoricoViewHolder vh = new HistoricoViewHolder(itemView, OnClick);
             return vh;
         }
 
@@ -103,5 +102,4 @@ namespace Mnham_Mnham
             ItemClick?.Invoke(this, position);
         }
     }
-
 }

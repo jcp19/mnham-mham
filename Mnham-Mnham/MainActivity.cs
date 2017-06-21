@@ -38,6 +38,7 @@ namespace Mnham_Mnham
         private PrimaryDrawerItem itemTerminarSessao;
         private ProfileDrawerItem itemUtilizador;
         private PrimaryDrawerItem itemTendencias;
+        private PrimaryDrawerItem itemHistorico;
         private SecondaryDrawerItem itemDefinicoes;
         private SecondaryDrawerItem itemSobre;
         private TextView titulo;
@@ -162,6 +163,7 @@ namespace Mnham_Mnham
                 itemRegCliente,
                 itemRegProprietario,
                 new DividerDrawerItem(),
+                itemTendencias,
                 itemDefinicoes,
                 itemSobre,
                 new DividerDrawerItem()
@@ -188,9 +190,17 @@ namespace Mnham_Mnham
             itemTerminarSessao.WithIdentifier(5);
             itemTerminarSessao.WithSelectable(true);
 
+            itemHistorico = new PrimaryDrawerItem();
+            itemHistorico.WithName("Histórico");
+            //itemTerminarSessao.WithIcon(GoogleMaterial.Icon.GmdExitToApp);
+            itemHistorico.WithIdentifier(9);
+            itemHistorico.WithSelectable(true);
+
             drawerBuilder.AddDrawerItems(
                 itemPrefs,
                 itemNaoPrefs,
+                itemTendencias,
+                itemHistorico,
                 itemTerminarSessao,
                 new DividerDrawerItem(),
                 itemDefinicoes,
@@ -206,11 +216,6 @@ namespace Mnham_Mnham
             //itemTendencias.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
             itemTendencias.WithIdentifier(8);
             itemTendencias.WithSelectable(true);
-
-            drawerBuilder.AddDrawerItems(
-                itemTendencias
-            //new DividerDrawerItem(),
-            );
         }
 
         //=====================================================================
@@ -291,6 +296,7 @@ namespace Mnham_Mnham
             string email = Intent.GetStringExtra("utilizador_email") ?? "";
             InicializarCabecalho(email, estadoGravado);
             InicializarDefinicoesESobre();
+            InicializarItemsUtilizador();
 
             drawerBuilder = new DrawerBuilder()
                 .WithActivity(this)
@@ -300,9 +306,6 @@ namespace Mnham_Mnham
                 InicializarItemsLoginRegisto();
             else  // TODO: Testar se o utilizador é um proprietário ou um cliente e criar items diferentes para cada caso!
                 InicializarItemsCliente();
-
-            // Cliente ou Utilizador não Autenticado
-            InicializarItemsUtilizador();
 
             drawer = drawerBuilder.WithOnDrawerItemClickListener(this)
                                   .WithSavedInstance(estadoGravado)
@@ -511,6 +514,9 @@ namespace Mnham_Mnham
                         break;
                     case 8: // Tendencias
                         StartActivity(typeof(TendenciasActivity));
+                        break;
+                    case 9:
+                        StartActivity(typeof(HistoricoActivity));
                         break;
                 }
                 drawerItem.WithSetSelected(false);
