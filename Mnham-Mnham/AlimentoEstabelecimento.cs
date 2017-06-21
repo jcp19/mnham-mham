@@ -1,9 +1,12 @@
 using System;
-using Newtonsoft.Json;
+using Android.OS;
+using Java.Interop;
+using Java.Lang;
+using IComparable = System.IComparable;
 
 namespace Mnham_Mnham
 {
-    public class AlimentoEstabelecimento : IComparable, IComparable<AlimentoEstabelecimento>
+    public class AlimentoEstabelecimento : Java.Lang.Object, IParcelable, IComparable, IComparable<AlimentoEstabelecimento>
     {
         private readonly int numeroPreferenciasVerificadas;
         private readonly Estabelecimento estabelecimento;
@@ -15,7 +18,8 @@ namespace Mnham_Mnham
         public Alimento Alimento => alimento;
         public float Distancia { get { return distancia; } set { distancia = value; } }
 
-        [JsonConstructor]
+        public AlimentoEstabelecimento() { }
+
         public AlimentoEstabelecimento(int numeroPreferenciasVerificadas, float distancia, Estabelecimento estabelecimento, Alimento alimento)
         {
             this.numeroPreferenciasVerificadas = numeroPreferenciasVerificadas;
@@ -76,6 +80,39 @@ namespace Mnham_Mnham
                 }
             }
             return res;
+        }
+
+        public int DescribeContents()
+        {
+            return 0;
+        }
+
+        public void WriteToParcel(Parcel dest, ParcelableWriteFlags flags)
+        {
+            dest.WriteInt(numeroPreferenciasVerificadas);
+            dest.WriteParcelable(estabelecimento, flags);
+            dest.WriteParcelable(alimento, flags);
+            dest.WriteFloat(distancia);
+        }
+
+        private AlimentoEstabelecimento(Parcel source)
+        {
+            ClassLoader estabelecimentoClassLoader = new Estabelecimento().Class.ClassLoader;
+            ClassLoader alimentoClassLoader = new Alimento().Class.ClassLoader;
+
+            numeroPreferenciasVerificadas = source.ReadInt();
+            estabelecimento = (Estabelecimento)source.ReadParcelable(estabelecimentoClassLoader);
+            alimento = (Alimento)source.ReadParcelable(alimentoClassLoader);
+            distancia = source.ReadFloat();
+        }
+
+        private static readonly CriadorParcelableGenerico<AlimentoEstabelecimento> creator
+            = new CriadorParcelableGenerico<AlimentoEstabelecimento>((parcel) => new AlimentoEstabelecimento(parcel));
+
+        [ExportField("CREATOR")]
+        public static CriadorParcelableGenerico<AlimentoEstabelecimento> ObterCreator()
+        {
+            return creator;
         }
     }
 }

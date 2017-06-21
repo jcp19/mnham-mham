@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace Mnham_Mnham
 {
@@ -36,8 +37,8 @@ namespace Mnham_Mnham
                         {
                             char[] delim = {' '};
                             string[] coords = reader["coords"].ToString().Split(delim);
-                            double lat = double.Parse(coords[0]);
-                            double lon = double.Parse(coords[1]);
+                            double lat = double.Parse(coords[0], CultureInfo.InvariantCulture);
+                            double lon = double.Parse(coords[1], CultureInfo.InvariantCulture);
 
                             e = new Estabelecimento(Convert.ToInt32(reader["id"]), reader["nome"].ToString(),
                                 reader["contacto_tel"].ToString(), reader["morada"].ToString(), lat, lon,

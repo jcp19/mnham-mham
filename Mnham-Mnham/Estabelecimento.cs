@@ -1,11 +1,15 @@
 using Android.Locations;
 using System;
 using System.Collections.Generic;
+using Android.OS;
+using Java.Interop;
+using Java.Lang;
 using Newtonsoft.Json;
+using IComparable = System.IComparable;
 
 namespace Mnham_Mnham
 {
-    public class Estabelecimento : IComparable, IComparable<Estabelecimento>
+    public class Estabelecimento : Java.Lang.Object, IParcelable, IComparable, IComparable<Estabelecimento>
     {
         private readonly int id;
         private string nome;
@@ -77,7 +81,7 @@ namespace Mnham_Mnham
         public float ClassificacaoMedia { get { return classificacaoMedia; } set { classificacaoMedia = value; } }
         public object Classificacoes { get { return classificacoes; } }
 
-        private Estabelecimento() { }
+        public Estabelecimento() { }
 
         [JsonConstructor]
         public Estabelecimento(int id, string nome, string contactoTel, string morada, double latitude, double longitude, string horario, bool permanFechado)
@@ -208,5 +212,103 @@ namespace Mnham_Mnham
             else
                 throw new ArgumentException("O objeto passado como argumento não é um Estabelecimento.");
         }
+
+        public int DescribeContents()
+        {
+            return 0;
+        }
+
+        public void WriteToParcel(Parcel dest, ParcelableWriteFlags flags)
+        {
+            dest.WriteInt(id);
+            dest.WriteString(nome);
+            dest.WriteString(contactoTel);
+            dest.WriteParcelable(coords, flags);
+            dest.WriteString(horario);
+            dest.WriteString(tipo);
+            dest.WriteString(descricao);
+
+            // Escrita dos Nullable<bool>
+            dest.WriteBooleanArray(aceitaReservas.HasValue ? new[] {aceitaReservas.Value} : null);
+            dest.WriteBooleanArray(temMb.HasValue ? new[] { temMb.Value } : null);
+            dest.WriteBooleanArray(temTakeaway.HasValue ? new[] { temTakeaway.Value } : null);
+            dest.WriteBooleanArray(temServMesa.HasValue ? new[] { temServMesa.Value } : null);
+            dest.WriteBooleanArray(temEsplanada.HasValue ? new[] { temEsplanada.Value } : null);
+            dest.WriteBooleanArray(temParqueEstac.HasValue ? new[] { temParqueEstac.Value } : null);
+            dest.WriteBooleanArray(temTv.HasValue ? new[] { temTv.Value } : null);
+            dest.WriteBooleanArray(temWifi.HasValue ? new[] { temWifi.Value } : null);
+            dest.WriteBooleanArray(temZonaFum.HasValue ? new[] { temZonaFum.Value } : null);
+            dest.WriteBooleanArray(permanFechado.HasValue ? new[] { permanFechado.Value } : null);
+            dest.WriteString(morada);
+
+            // Escrita dos restantes campos
+            dest.WriteInt(alimentos.Count);
+            foreach (KeyValuePair<int, Alimento> entrada in alimentos)
+            {
+                dest.WriteInt(entrada.Key);
+                dest.WriteParcelable(entrada.Value, flags);
+            }
+            dest.WriteInt(classificacoes.Count);
+            foreach (var classificacao in classificacoes)
+                dest.WriteParcelable(classificacao, flags);
+
+            dest.WriteByteArray(foto);
+            dest.WriteFloat(classificacaoMedia);
+        }
+
+        private Estabelecimento(Parcel source)
+        {
+            id = source.ReadInt();
+            nome = source.ReadString();
+            contactoTel = source.ReadString();
+            coords = (Location)source.ReadParcelable(new Location("").Class.ClassLoader);
+            horario = source.ReadString();
+            tipo = source.ReadString();
+            descricao = source.ReadString();
+
+            // Leitura dos Nullable<bool>
+            aceitaReservas = source.CreateBooleanArray()?[0];
+            temMb = source.CreateBooleanArray()?[0];
+            temTakeaway = source.CreateBooleanArray()?[0];
+            temServMesa = source.CreateBooleanArray()?[0];
+            temEsplanada = source.CreateBooleanArray()?[0];
+            temParqueEstac = source.CreateBooleanArray()?[0];
+            temTv = source.CreateBooleanArray()?[0];
+            temWifi = source.CreateBooleanArray()?[0];
+            temZonaFum = source.CreateBooleanArray()?[0];
+            permanFechado = source.CreateBooleanArray()?[0];
+
+            // Leitura dos restantes campos.
+            morada = source.ReadString();
+
+            // Escrita dos restantes campos
+            int nAlimentos = source.ReadInt();
+            ClassLoader alimentoClassLoader = new Alimento().Class.ClassLoader;
+            alimentos = new Dictionary<int, Alimento>(nAlimentos);
+            for (int i = 0; i < nAlimentos; ++i)
+            {
+                int id = source.ReadInt();
+                alimentos[id] = (Alimento) source.ReadParcelable(alimentoClassLoader);
+            }
+            
+            int nClassificacoes = source.ReadInt();
+            ClassLoader classificacaoClassLoader = new Classificacao().Class.ClassLoader;
+            classificacoes = new List<Classificacao>(nClassificacoes);
+            for (int i = 0; i < nClassificacoes; ++i)
+                classificacoes[i] = (Classificacao)source.ReadParcelable(classificacaoClassLoader);
+
+            foto = source.CreateByteArray();
+            classificacaoMedia = source.ReadFloat();
+        }
+
+        private static readonly CriadorParcelableGenerico<Estabelecimento> creator
+            = new CriadorParcelableGenerico<Estabelecimento>((parcel) => new Estabelecimento(parcel));
+
+        [ExportField("CREATOR")]
+        public static CriadorParcelableGenerico<Estabelecimento> ObterCreator()
+        {
+            return creator;
+        }
     }
 }
+ 

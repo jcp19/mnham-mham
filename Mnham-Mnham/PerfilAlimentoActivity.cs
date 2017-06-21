@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Android.App;
+using Android.Gms.Maps;
 using Android.Graphics;
 using Android.OS;
 using Android.Widget;
-using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
     [Activity(Label = "PerfilAlimentoActivity", Icon = "@drawable/icon", Theme = "@style/AppTheme")]
-    public class PerfilAlimentoActivity : Activity
+    public class PerfilAlimentoActivity : Activity, IOnMapReadyCallback
     {
         private AlimentoEstabelecimento alimentoEstabelecimento;
         private ImageView foto;
@@ -44,8 +44,7 @@ namespace Mnham_Mnham
             botaoComentarios.Click += HandlerBotaoComentarios;
             botaoPartilha.Click += HandlerBotaoPartilha;
 
-            string jsonAlimentoEstabelecimento = Intent.GetStringExtra("alimentoEstabelecimento");
-            alimentoEstabelecimento = JsonConvert.DeserializeObject<AlimentoEstabelecimento>(jsonAlimentoEstabelecimento);
+            alimentoEstabelecimento = (AlimentoEstabelecimento)Intent.GetParcelableExtra("alimentoEstabelecimento");
             byte[] fotoAlimento = alimentoEstabelecimento.Alimento.Foto;
             float? preco = alimentoEstabelecimento.Alimento.Preco;
             ISet<string> ingredientes = alimentoEstabelecimento.Alimento.Ingredientes;
@@ -75,12 +74,12 @@ namespace Mnham_Mnham
         // Handlers
         private void HandlerBotaoPartilha(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Toast.MakeText(this, "Clique na partilha.", ToastLength.Short);
         }
 
         private void HandlerBotaoComentarios(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Toast.MakeText(this, "Clique nos comentários.", ToastLength.Short);
         }
 
         private void HandlerBotaoHorario(object sender, EventArgs e)
@@ -95,6 +94,11 @@ namespace Mnham_Mnham
                 .Create();
 
             dialogHorario.Show();
+        }
+
+        public void OnMapReady(GoogleMap googleMap)
+        {
+            throw new NotImplementedException();
         }
     }
 }

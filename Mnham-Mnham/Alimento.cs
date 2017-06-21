@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Android.OS;
+using Android.Runtime;
+using Java.Interop;
 using Newtonsoft.Json;
 
 namespace Mnham_Mnham
 {
-    public class Alimento : IComparable, IComparable<Alimento>
+    public class Alimento : Java.Lang.Object, IParcelable, IComparable, IComparable<Alimento>
     {
         // Variáveis de instância
         private int id;
@@ -21,7 +24,7 @@ namespace Mnham_Mnham
         public string Designacao { get { return designacao; } set { designacao = value; } }
         public float? Preco { get { return preco; } set { preco = value; } }
         public ISet<string> Ingredientes => ingredientes;
-        
+
         public byte[] Foto
         {
             get
@@ -50,8 +53,7 @@ namespace Mnham_Mnham
         public float ClassificacaoMedia { get { return classificacaoMedia; } set { classificacaoMedia = value; } }
         public IList<Classificacao> Classificacoes { get { return classificacoes; } }
 
-        // Assegura que não é possível criar alimentos sem especificar os seus atributos.
-        private Alimento() { }
+        public Alimento() { }
 
         [JsonConstructor]
         public Alimento(int id, string designacao, ISet<string> ingredientes, int idEstabelecimento, float? preco = null, byte[] foto = null)
@@ -205,6 +207,63 @@ namespace Mnham_Mnham
             }
             else
                 throw new ArgumentException("O objeto passado como argumento não é um Alimento.");
+        }
+
+        public int DescribeContents()
+        {
+            return 0;
+        }
+
+        public void WriteToParcel(Parcel dest, [GeneratedEnum] ParcelableWriteFlags flags)
+        {
+            dest.WriteInt(id);
+            dest.WriteString(designacao);
+            dest.WriteFloat(preco ?? -1.0f); // Evita complicações com a escrita de um float?, usando -1 quando preco == null.
+            dest.WriteInt(ingredientes.Count); // Para saber quantos ingredientes ler ao recriar o Alimento.
+            foreach (var ingr in ingredientes)
+                dest.WriteString(ingr);
+
+            dest.WriteByteArray(foto);
+            dest.WriteInt(idEstabelecimento);
+            dest.WriteInt(classificacoes.Count);
+            foreach (var classificacao in classificacoes)
+                dest.WriteParcelable(classificacao, flags);
+
+            dest.WriteFloat(classificacaoMedia);
+        }
+
+        private Alimento(Parcel source)
+        {
+            id = source.ReadInt();
+            designacao = source.ReadString();
+            preco = source.ReadFloat();
+            if (preco == -1.0f)
+                preco = null;
+
+            int nIngredientes = source.ReadInt();
+            ingredientes = new HashSet<string>();
+            for (int i = 0; i < nIngredientes; ++i)
+                ingredientes.Add(source.ReadString());
+
+            foto = source.CreateByteArray();
+            idEstabelecimento = source.ReadInt();
+
+            int nClassificacoes = source.ReadInt();
+            classificacoes = new List<Classificacao>(nClassificacoes);
+            var classLoader = new Classificacao().Class.ClassLoader;
+            for (int i = 0; i < nClassificacoes; ++i)
+                classificacoes[i] = (Classificacao)source.ReadParcelable(classLoader);
+
+            classificacaoMedia = source.ReadFloat();
+        }
+
+        private static readonly CriadorParcelableGenerico<Alimento> creator
+            = new CriadorParcelableGenerico<Alimento>((parcel) => new Alimento(parcel));
+
+        [ExportField("CREATOR")]
+        public static CriadorParcelableGenerico<Alimento> ObterCreator()
+        {
+            return creator;
         }
     }
 }

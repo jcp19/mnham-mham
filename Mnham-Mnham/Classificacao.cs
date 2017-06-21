@@ -1,24 +1,25 @@
 using System;
+using Android.OS;
+using Java.Interop;
 
 namespace Mnham_Mnham
 {
-    public sealed class Classificacao
+    public sealed class Classificacao : Java.Lang.Object, IParcelable
     {
         private readonly int avaliacao;
         private readonly string comentario;
         private readonly int idAutor;
         private readonly DateTime data;
 
-        public int Avaliacao { get { return avaliacao; } }
-        public string Comentario { get { return comentario; } }
-        public int IdAutor { get { return idAutor; } }
-        public DateTime Data { get { return data; } }
+        public int Avaliacao => avaliacao;
+        public string Comentario => comentario;
+        public int IdAutor => idAutor;
+        public DateTime Data => data;
 
         public const int AvaliacaoMin = 1;
         public const int AvaliacaoMax = 5;
 
-        // Evita instanciação sem os atributos obrigatórios (avaliacao e idAutor).
-        private Classificacao() { }
+        public Classificacao() { }
 
         public Classificacao(int avaliacao, int idAutor) : this(avaliacao, null, idAutor, DateTime.Now) { }
 
@@ -50,6 +51,37 @@ namespace Mnham_Mnham
         public Classificacao Clone()
         {
             return new Classificacao(this);
+        }
+
+        // Implementação de Parcelable
+        public int DescribeContents()
+        {
+            return 0;
+        }
+
+        public void WriteToParcel(Parcel dest, ParcelableWriteFlags flags)
+        {
+            dest.WriteInt(avaliacao);
+            dest.WriteString(comentario);
+            dest.WriteInt(idAutor);
+            dest.WriteLong(data.Ticks);
+        }
+
+        private Classificacao(Parcel source)
+        {
+            avaliacao = source.ReadInt();
+            comentario = source.ReadString();
+            idAutor = source.ReadInt();
+            data = new DateTime(source.ReadLong());
+        }
+
+        private static readonly CriadorParcelableGenerico<Classificacao> creator
+            = new CriadorParcelableGenerico<Classificacao>((parcel) => new Classificacao(parcel));
+
+        [ExportField("CREATOR")]
+        public static CriadorParcelableGenerico<Classificacao> ObterCreator()
+        {
+            return creator;
         }
     }
 }
