@@ -12,7 +12,7 @@ namespace Mnham_Mnham
 
             using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                string txtCmd = @"INSERT INTO Preferencia(id_cliente, designacao_ingrediente, desingacao_alimento)
+                string txtCmd = @"INSERT INTO Preferencia(id_cliente, designacao_ingrediente, designcacao_alimento)
                                   VALUES (@id_c, @d_ing, @d_al)";
 
                 sqlCon.Open();
@@ -46,7 +46,7 @@ namespace Mnham_Mnham
 
             using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                string txtCmd = @"INSERT INTO NaoPreferencia(id_cliente, designacao_ingrediente, desingacao_alimento)
+                string txtCmd = @"INSERT INTO NaoPreferencia(id_cliente, designacao_ingrediente, designcacao_alimento)
                                   VALUES (@id_c, @d_ing, @d_al)";
 
                 sqlCon.Open();
@@ -81,7 +81,7 @@ namespace Mnham_Mnham
             using (var sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 string txtCmd = @"DELETE FROM Preferencia
-                                  WHERE id_cliente = @id_c AND designacao_ingrediente = @d_ing AND desingacao_alimento = @d_al";
+                                  WHERE id_cliente = @id_c AND designacao_ingrediente = @d_ing AND designcacao_alimento = @d_al";
 
                 sqlCon.Open();
                 using (var cmd = new SqlCommand(txtCmd, sqlCon))
@@ -126,7 +126,7 @@ namespace Mnham_Mnham
                     {
                         while (reader.Read())
                         {
-                            l.Add(new Preferencia(reader["designacao_ingrediente"].ToString(), reader["designacao_alimento"].ToString()));
+                            l.Add(new Preferencia(reader["designacao_ingrediente"].ToString(), reader["designcacao_alimento"].ToString()));
                         }
                     }
                 }

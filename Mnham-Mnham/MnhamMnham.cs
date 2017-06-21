@@ -302,7 +302,7 @@ namespace Mnham_Mnham
             {
                 if (i == 5)
                     break;
-
+                    
                 tendencias.Add(tend);
                 i++;
             }

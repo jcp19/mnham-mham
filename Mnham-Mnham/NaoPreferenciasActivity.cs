@@ -13,21 +13,21 @@ using Android.Support.V7.Widget;
 
 namespace Mnham_Mnham
 {
-    [Activity(Label = "PreferenciasActivity", Theme = "@style/AppTheme")]
-    public class PreferenciasActivity : Activity
+    [Activity(Label = "NaoPreferenciasActivity", Theme = "@style/AppTheme")]
+    public class NaoPreferenciasActivity : Activity
     {
         private RecyclerView mRecyclerView;
         private RecyclerView.LayoutManager mLayoutManager;
-        private PreferenciasAdapter mAdapter;
-        private IList<Preferencia> preferencias;
-        private Button adicionarPreferencia;
+        private NaoPreferenciasAdapter mAdapter;
+        private IList<Preferencia> naoPreferencias;
+        private Button adicionarNaoPreferencia;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             // Create your application here
-            preferencias = MainActivity.Facade.ConsultarPreferencias();
+            naoPreferencias = MainActivity.Facade.ConsultarNaoPreferencias();
 
             SetContentView(Resource.Layout.PreferenciasLayout);
 
@@ -36,43 +36,44 @@ namespace Mnham_Mnham
             mLayoutManager = new LinearLayoutManager(this);
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
-            mAdapter = new PreferenciasAdapter(preferencias);
+            mAdapter = new NaoPreferenciasAdapter(naoPreferencias);
             mAdapter.ItemClick += OnItemClick;
             mRecyclerView.SetAdapter(mAdapter);
 
-            adicionarPreferencia = FindViewById<Button>(Resource.Id.adicionarPreferenciaButton);
-            adicionarPreferencia.Click += AdicionarPreferencia;
+            adicionarNaoPreferencia = FindViewById<Button>(Resource.Id.adicionarPreferenciaButton);
+            adicionarNaoPreferencia.Text = "Adicionar Não Preferências";
+            adicionarNaoPreferencia.Click += AdicionarNaoPreferencia;
         }
 
-        void AdicionarPreferencia(object sender, EventArgs e)
+        void AdicionarNaoPreferencia(object sender, EventArgs e)
         {
             var intent = new Intent(this, typeof(RegistarPreferenciasActivity));
-            intent.PutExtra("naoPreferencia", false);
+            intent.PutExtra("naoPreferencia", true);
             StartActivity(intent);
         }
 
         void OnItemClick(object sender, int position)
         {
-            Preferencia itemSelecionado = preferencias[position];
-            var removerPreferencia = new AlertDialog.Builder(this);
-            removerPreferencia.SetMessage("Remover Preferência?");
-            removerPreferencia.SetNeutralButton("Sim", delegate {
-                MainActivity.Facade.RemoverPreferencia(itemSelecionado.DesignacaoIngrediente, itemSelecionado.DesignacaoAlimento);
+            Preferencia itemSelecionado = naoPreferencias[position];
+            var removerNaoPreferencia = new AlertDialog.Builder(this);
+            removerNaoPreferencia.SetMessage("Remover Não Preferência?");
+            removerNaoPreferencia.SetNeutralButton("Sim", delegate {
+                MainActivity.Facade.RemoverNaoPreferencia(itemSelecionado.DesignacaoIngrediente, itemSelecionado.DesignacaoAlimento);
             });
-            removerPreferencia.SetNegativeButton("Não", delegate { });
+            removerNaoPreferencia.SetNegativeButton("Não", delegate { });
 
             // Show the alert dialog to the user and wait for response.
-            removerPreferencia.Show();
+            removerNaoPreferencia.Show();
         }
     }
 
-    public class PreferenciaViewHolder : RecyclerView.ViewHolder
+    public class NaoPreferenciaViewHolder : RecyclerView.ViewHolder
     {
         // Add declaration for every view of a result:
         public TextView Alimento { get; }
         public TextView Ingrediente { get; }
 
-        public PreferenciaViewHolder(View itemView, Action<int> listener) : base(itemView)
+        public NaoPreferenciaViewHolder(View itemView, Action<int> listener) : base(itemView)
         {
             Alimento = itemView.FindViewById<TextView>(Resource.Id.alimentoResTextView);
             Ingrediente = itemView.FindViewById<TextView>(Resource.Id.ingredienteResTextView);
@@ -81,28 +82,28 @@ namespace Mnham_Mnham
         }
     }
 
-    public class PreferenciasAdapter : RecyclerView.Adapter
+    public class NaoPreferenciasAdapter : RecyclerView.Adapter
     {
         // event handler for item clicks
         public event EventHandler<int> ItemClick;
 
-        public IList<Preferencia> Preferencias;
-        public override int ItemCount => Preferencias.Count;
+        public IList<Preferencia> NaoPreferencias;
+        public override int ItemCount => NaoPreferencias.Count;
 
-        public PreferenciasAdapter(IList<Preferencia> preferencias)
+        public NaoPreferenciasAdapter(IList<Preferencia> naoPreferencias)
         {
-            this.Preferencias = preferencias;
+            this.NaoPreferencias = naoPreferencias;
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             // loads the data at the specified position into the views whose 
             // references are stored in the given view holder
-            Preferencia pref = Preferencias[position];
+            Preferencia nPref = NaoPreferencias[position];
             Console.WriteLine(holder);
-            PreferenciaViewHolder vh = holder as PreferenciaViewHolder;
-            vh.Alimento.Text = pref.DesignacaoAlimento;
-            vh.Ingrediente.Text = pref.DesignacaoIngrediente;
+            NaoPreferenciaViewHolder vh = holder as NaoPreferenciaViewHolder;
+            vh.Alimento.Text = nPref.DesignacaoAlimento;
+            vh.Ingrediente.Text = nPref.DesignacaoIngrediente;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -110,7 +111,7 @@ namespace Mnham_Mnham
             // instantiates the item layout file and the view holder
             View itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.PreferenciaCardView, parent, false);
 
-            PreferenciaViewHolder vh = new PreferenciaViewHolder(itemView, OnClick);
+            NaoPreferenciaViewHolder vh = new NaoPreferenciaViewHolder(itemView, OnClick);
             return vh;
         }
 

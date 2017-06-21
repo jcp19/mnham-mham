@@ -11,7 +11,7 @@ namespace Mnham_Mnham
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
                 bool inseriu;
-                SqlCommand cmd = new SqlCommand("INSERT INTO NaoPreferencia(id_cliente, designacao_ingrediente, desingacao_alimento) VALUES (@id_c, @d_ing, @d_al)", sqlCon);
+                SqlCommand cmd = new SqlCommand("INSERT INTO NaoPreferencia(id_cliente, designacao_ingrediente, designacao_alimento) VALUES (@id_c, @d_ing, @d_al)", sqlCon);
 
                 cmd.Parameters.Add("@id_c", SqlDbType.Int);
                 cmd.Parameters.Add("@d_ing", SqlDbType.NVarChar, 75);
@@ -41,7 +41,7 @@ namespace Mnham_Mnham
 
             using (SqlConnection sqlCon = new SqlConnection(DAO.CONECTION_STRING))
             {
-                SqlCommand cmd = new SqlCommand("DELETE FROM NaoPreferencia WHERE id_cliente = @id_c AND designacao_ingrediente = @d_ing AND desingacao_alimento = @d_al", sqlCon);
+                SqlCommand cmd = new SqlCommand("DELETE FROM NaoPreferencia WHERE id_cliente = @id_c AND designacao_ingrediente = @d_ing AND designacao_alimento = @d_al", sqlCon);
                 cmd.Parameters.Add("@id_c", SqlDbType.Int);
                 cmd.Parameters.Add("@d_ing", SqlDbType.NVarChar, 75);
                 cmd.Parameters.Add("@d_al", SqlDbType.NVarChar, 75);

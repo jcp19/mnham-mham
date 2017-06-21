@@ -2,7 +2,7 @@
 
 namespace Mnham_Mnham
 {
-    public class Tendencia : IComparable, IComparable<Tendencia>
+    public class Tendencia : IComparable<Tendencia>
     {
         private string pedido;
         private int repeticoes;
@@ -14,7 +14,7 @@ namespace Mnham_Mnham
         public Tendencia(string pedido)
         {
             this.pedido = pedido;
-            this.repeticoes = 0;
+            this.repeticoes = 1;
         }
 
         public void inc()
@@ -30,10 +30,18 @@ namespace Mnham_Mnham
             float reps1 = this.repeticoes;
             float reps2 = tend.repeticoes;
 
-            return reps2.CompareTo(reps1);
+            int comp =  reps2.CompareTo(reps1);
+            if (comp == 0)
+            {
+                string pedido1 = this.Pedido;
+                string pedido2 = tend.Pedido;
+
+                comp = pedido1.CompareTo(pedido2);
+            }
+            return comp;
         }
 
-        public int CompareTo(object obj)
+        /*public int CompareTo(object obj)
         {
             if (obj == null)
                 return 1;
@@ -48,6 +56,6 @@ namespace Mnham_Mnham
             }
             else
                 throw new ArgumentException("O objeto passado como argumento não é uma Tendencia.");
-        }
+        }*/
     }
 }

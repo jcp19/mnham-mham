@@ -141,6 +141,7 @@
     <Compile Include="CriadorParcelableGenerico.cs" />
     <Compile Include="HistoricoActivity.cs" />
     <Compile Include="MnhamMnhamApp.cs" />
+    <Compile Include="NaoPreferenciasActivity.cs" />
     <Compile Include="PerfilAlimentoActivity.cs" />
     <Compile Include="PerfilEstabelecimentoActivity.cs" />
     <Compile Include="PreferenciasActivity.cs" />

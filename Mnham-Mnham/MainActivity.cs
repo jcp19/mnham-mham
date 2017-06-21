@@ -180,7 +180,7 @@ namespace Mnham_Mnham
 
             itemNaoPrefs = new PrimaryDrawerItem();
             itemNaoPrefs.WithName("Não Preferências");
-            itemNaoPrefs.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
+            //itemNaoPrefs.WithIcon(GoogleMaterial.Icon.GmdPersonAdd);
             itemNaoPrefs.WithIdentifier(4);
             itemNaoPrefs.WithSelectable(true);
 
@@ -502,7 +502,7 @@ namespace Mnham_Mnham
                         break;
                     case 4: // Não preferências
                         // Toast.MakeText(this, "Clique em 'Não Preferências'", ToastLength.Short).Show();
-                        StartActivity(typeof(RegistarPreferenciasActivity));
+                        StartActivity(typeof(NaoPreferenciasActivity));
                         break;
                     case 5: // Terminar sessão
                         /* Sobre ActivityFlags: https://developer.xamarin.com/api/type/Android.Content.ActivityFlags/ */

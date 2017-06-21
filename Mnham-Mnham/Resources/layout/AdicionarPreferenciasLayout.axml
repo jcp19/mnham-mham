@@ -28,20 +28,11 @@
         android:padding="10dp"
         android:backgroundTint="#ff6d6d6d"
         android:layout_below="@id/addPrefTitleTextView" />
-    <CheckBox
-        android:id="@+id/addPrefCheckBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Não preferência"
-        android:layout_below="@id/addPrefSpinner"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="35dp"
-        android:layout_marginLeft="35dp" />
     <EditText
         android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addPrefCheckBox"
+        android:layout_below="@id/addPrefSpinner"
         android:id="@+id/alimentoAddPrefEditText"
         android:hint="Alimento"
         android:padding="12dp"
