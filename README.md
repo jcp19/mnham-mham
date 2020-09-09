@@ -1,2 +1,2 @@
 # mnham-mham
-Recomendation System made for Software Enginnering class
+Recommendation System made for Software Enginnering class
